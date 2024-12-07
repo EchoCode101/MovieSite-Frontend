@@ -6,6 +6,7 @@ import {
 } from "react-router-dom"; // Import React Router components
 import { useEffect } from "react";
 import "./App.css";
+import headerImage from "./assets/img/logo.svg";
 
 // Import your pages
 import Index from "./pages/Index";
@@ -19,7 +20,7 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Users from "./pages/Users";
 import ResetPassword from "./pages/ResetPassword";
-import NotFound from "./pages/Fof"; // For 404 page
+import NotFound from "./pages/NotFoundPage"; // For 404 page
 
 function App() {
   useEffect(() => {
@@ -44,13 +45,34 @@ function App() {
         {/* Protected routes */}
         {isAuthenticated() ? (
           <>
-            <Route path="/dashboard" element={<Index />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/add-item" element={<AddItem />} />
-            <Route path="/comments" element={<Comments />} />
-            <Route path="/edit-user" element={<EditUser />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/users" element={<Users />} />
+            <Route
+              path="/dashboard"
+              element={<Index headerImage={headerImage} />}
+            />
+            <Route
+              path="/catalog"
+              element={<Catalog headerImage={headerImage} />}
+            />
+            <Route
+              path="/add-item"
+              element={<AddItem headerImage={headerImage} />}
+            />
+            <Route
+              path="/comments"
+              element={<Comments headerImage={headerImage} />}
+            />
+            <Route
+              path="/edit-user"
+              element={<EditUser headerImage={headerImage} />}
+            />
+            <Route
+              path="/reviews"
+              element={<Reviews headerImage={headerImage} />}
+            />
+            <Route
+              path="/users"
+              element={<Users headerImage={headerImage} />}
+            />
           </>
         ) : (
           <Route path="*" element={<Navigate to="/signin" replace />} />

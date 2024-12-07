@@ -11,7 +11,7 @@ const Fof = () => {
                   <p className="page-404__text">
                     The page you are looking for not available!
                   </p>
-                  <a href="index.html" className="page-404__btn">
+                  <a href="/dashboard" className="page-404__btn">
                     go back
                   </a>
                 </div>
