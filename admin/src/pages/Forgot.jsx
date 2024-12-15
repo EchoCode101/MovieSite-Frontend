@@ -1,11 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import config from "../utils/js/config.js";
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const apiUrl = config.apiUrl;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +24,7 @@ const Forgot = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:7100/api/admin/forgotPassword",
+        `${apiUrl}/admin/forgotPassword`,
         { email },
         {
           headers: {
@@ -30,7 +33,7 @@ const Forgot = () => {
         }
       );
 
-      if (response.status >= 200 && response.status < 300) {
+      if (response.status >= 200 && response.status < 299) {
         setSuccess(
           response.data.message ||
             "Please check your inbox, a password reset link has been sent!"
@@ -41,14 +44,30 @@ const Forgot = () => {
         );
       }
     } catch (err) {
-      setError("Network error. Please try again. " + err.message);
+      if (err.response) {
+        // Server responded with an error status code
+        if (err.response.status === 404) {
+          setError("Email not found. Please try again.");
+        } else {
+          setError(
+            err.response.data.message ||
+              "Something went wrong. Please try again."
+          );
+        }
+      } else {
+        // No response from server or network error
+        setError("Network error. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="sign section--bg" data-bg="/src/assets/img/bg.jpg">
+    <div
+      className="sign section--bg"
+      style={{ backgroundImage: "url('/src/assets/img/bg.jpg')" }}
+    >
       <div className="container">
         <div className="row">
           <div className="col-12">
@@ -99,6 +118,9 @@ const Forgot = () => {
                 </button>
                 <span className="sign__text">
                   We will send a password reset link to your email.
+                </span>
+                <span className="sign__text">
+                  Go back to <Link to="/signin">Signin Page</Link>
                 </span>
               </form>
             </div>

@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice.js";
-
+import config from "../utils/js/config.js";
 const Signin = () => {
   const Home = "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const apiUrl = config.apiUrl;
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form submission from refreshing the page
@@ -20,7 +20,7 @@ const Signin = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:7100/api/admin/login",
+        `${apiUrl}/admin/login`,
         { email, password },
         {
           withCredentials: true, // To handle the cookie securely
@@ -76,6 +76,8 @@ const Signin = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="on"
+                    id="email"
                   />
                 </div>
                 <div className="sign__group">
@@ -86,6 +88,8 @@ const Signin = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    autoComplete="on"
+                    id="password"
                   />
                 </div>
                 <div className="sign__group sign__group--checkbox">

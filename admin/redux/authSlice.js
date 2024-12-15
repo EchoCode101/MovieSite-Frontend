@@ -1,21 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-// Backend API base URL
-const API_BASE_URL = "http://localhost:7100/api";
-
+import config from "../src/utils/js/config.js";
 // Async thunk for token validation
 export const validateToken = createAsyncThunk(
   "auth/validateToken",
   async (_, { getState, rejectWithValue }) => {
     const state = getState();
     const encryptedToken = state.auth.token;
+    const apiUrl = config.apiUrl;
 
     if (!encryptedToken) return rejectWithValue("No token found");
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/token/validate`,
+        `${apiUrl}/token/validate`,
         {},
         {
           headers: { authorization: `Bearer ${encryptedToken}` },
@@ -61,6 +59,7 @@ const authSlice = createSlice({
     isAuthenticated: false,
     user: null,
     loading: false,
+    logoutLoading: false, // New state for logout loading
     error: null,
   },
   reducers: {
@@ -79,6 +78,10 @@ const authSlice = createSlice({
       state.user = null;
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
+      state.logoutLoading = false; // Reset logout loading
+    },
+    setLogoutLoading: (state, action) => {
+      state.logoutLoading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -113,5 +116,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout, setLogoutLoading } = authSlice.actions;
 export default authSlice.reducer;

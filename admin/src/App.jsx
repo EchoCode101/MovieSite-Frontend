@@ -47,11 +47,15 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot" element={<Forgot />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route
+            path="/reset-admin-password/:token"
+            element={<ResetPassword />}
+          />
 
           {/* Protected routes */}
           {isAuthenticated() ? (
             <>
+              <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route
                 path="/dashboard"
                 element={

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import config from "../utils/js/config.js";
 
 const Signup = () => {
+  const apiUrl = config.apiUrl;
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -42,7 +44,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:7100/api/admin/signup", {
+      const response = await fetch(`${apiUrl}/admin/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,6 +92,7 @@ const Signup = () => {
                       value={formData.username}
                       onChange={handleChange}
                       required
+                      autoComplete="on"
                       minLength="3"
                     />
                   </div>
@@ -101,6 +104,7 @@ const Signup = () => {
                       placeholder="Email"
                       value={formData.email}
                       onChange={handleChange}
+                      autoComplete="on"
                       required
                     />
                   </div>
@@ -113,6 +117,7 @@ const Signup = () => {
                       value={formData.password}
                       onChange={handleChange}
                       required
+                      autoComplete="on"
                       minLength="6"
                     />
                   </div>

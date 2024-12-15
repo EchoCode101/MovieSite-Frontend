@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import config from "../utils/js/config.js";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -9,7 +9,7 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const { token } = useParams(); // Extract token from URL
   const navigate = useNavigate();
-
+  const apiUrl = config.apiUrl;
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -23,8 +23,9 @@ const ResetPassword = () => {
     }
 
     try {
+      setLoading(true);
       const response = await axios.post(
-        `http://localhost:7100/api/admin/forgotPassword/reset/${token}`,
+        `${apiUrl}/admin/forgotPassword/reset/${token}`,
         { password },
         {
           headers: {
@@ -34,7 +35,7 @@ const ResetPassword = () => {
       );
 
       // Check if status is in the success range (200-299)
-      if (response.status >= 200 && response.status < 300) {
+      if (response.status >= 200 && response.status < 299) {
         setSuccess(
           response.data.message || "Password has been successfully reset."
         );
@@ -43,6 +44,7 @@ const ResetPassword = () => {
         setError(
           response.data.message || "Something went wrong. Please try again."
         );
+        setLoading(false);
       }
     } catch (err) {
       // Handle Axios errors and display error message
@@ -55,13 +57,17 @@ const ResetPassword = () => {
         // If there is no response object, it's a network error
         setError("Network error. Please try again. " + err.message);
       }
+      setLoading(false);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="sign section--bg" data-bg="/src/assets/img/bg.jpg">
+    <div
+      className="sign section--bg"
+      style={{ backgroundImage: "url('/src/assets/img/bg.jpg')" }}
+    >
       <div className="container">
         <div className="row">
           <div className="col-12">
