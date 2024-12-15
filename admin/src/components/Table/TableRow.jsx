@@ -13,7 +13,20 @@ const TableRow = ({ data, buttonData }) => {
       {/*When Data is coming from the Catalog Table, then this table formate will render*/}
       {data.catalogTable && (
         <>
-          <TableCell>{data.title}</TableCell>
+          <td>
+            <div className="main__user">
+              <div className="main__avatar">
+                <img src={data.thumbnailImg} alt="User avatar" />
+              </div>
+              <div className="main__meta">
+                <h3>
+                  <a href="#" className="main__table-text undefined">
+                    {data.title}
+                  </a>
+                </h3>
+              </div>
+            </div>
+          </td>
           <td>
             <div className="main__table-text main__table-text--rate">
               <Svg path={path.a} />
@@ -39,7 +52,6 @@ const TableRow = ({ data, buttonData }) => {
         </>
       )}
       {/*When Data is coming from the Users Table, then this table formate will render*/}
-
       {data.userTable && (
         <>
           <td>
@@ -73,14 +85,23 @@ const TableRow = ({ data, buttonData }) => {
           </td>
         </>
       )}
-
       {/*When Data is coming from the Comments Table, then this table formate will render*/}
-
       {data.commentTable && (
         <>
-          <TableCell>
-            <a href="#">{data.item}</a>
-          </TableCell>
+          <td>
+            <div className="main__user">
+              <div className="main__avatar">
+                <img src={data.thumbnailImg} alt="User avatar" />
+              </div>
+              <div className="main__meta">
+                <h3>
+                  <a href="#" className="main__table-text undefined">
+                    {data.item}
+                  </a>
+                </h3>
+              </div>
+            </div>
+          </td>
           <TableCell>{data.author}</TableCell>
           <TableCell>{data.text}</TableCell>
           <TableCell>{data.likesDislikes}</TableCell>
@@ -99,13 +120,23 @@ const TableRow = ({ data, buttonData }) => {
           </td>
         </>
       )}
-
       {/*When Data is coming from the Reviews Table, then this table formate will render*/}
       {data.reviewTable && (
         <>
-          <TableCell>
-            <a href="#">{data.item}</a>
-          </TableCell>
+          <td>
+            <div className="main__user">
+              <div className="main__avatar">
+                <img src={data.thumbnailImg} alt="User avatar" />
+              </div>
+              <div className="main__meta">
+                <h3>
+                  <a href="#" className="main__table-text undefined">
+                    {data.item}
+                  </a>
+                </h3>
+              </div>
+            </div>
+          </td>
           <TableCell>{data.author}</TableCell>
           <TableCell>{data.text}</TableCell>
           <TableCell>
@@ -139,6 +170,7 @@ TableRow.propTypes = {
   data: PropTypes.shape({
     id: PropTypes.number.isRequired,
     catalogTable: PropTypes.bool,
+    thumbnailImg: PropTypes.string,
     title: PropTypes.string,
     rating: PropTypes.number,
     category: PropTypes.string,

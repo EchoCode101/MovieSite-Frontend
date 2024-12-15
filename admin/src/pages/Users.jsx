@@ -13,7 +13,12 @@ const Users = ({ headerImage }) => {
     title_stats: "3,702",
     searchPlaceholder: "Find user..",
   };
-  const sortByValues = ["Date created", "Pricing plan", "Status"];
+  const sortByValues = {
+    date: "Date created",
+    plan: "Pricing plan",
+    status: "Status",
+  };
+
   const buttonData = [
     {
       iconPath:
@@ -49,7 +54,7 @@ const Users = ({ headerImage }) => {
   ];
   const tableData = [
     {
-      id: 23,
+      id: 21,
       avatar: "/src/assets/img/user.svg",
       name: "John Doe",
       email: "email@email.com",
@@ -62,7 +67,7 @@ const Users = ({ headerImage }) => {
       userTable: true,
     },
     {
-      id: 23,
+      id: 22,
       avatar: "/src/assets/img/user.svg",
       name: "John Doe",
       email: "email@email.com",
@@ -114,88 +119,86 @@ const Users = ({ headerImage }) => {
   };
   return (
     <>
-      <body>
-        <Header headerImage={headerImage} />
-        <DashboardSideBar
-          headerImage={headerImage}
-          activeLink="sidebar__nav-link--active"
-        />
-        <main className="main">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-12">
-                <TableFilters
-                  data={tableFiltersData}
-                  sortByValues={sortByValues}
-                />
-              </div>
+      <Header headerImage={headerImage} />
+      <DashboardSideBar
+        headerImage={headerImage}
+        activeLink="sidebar__nav-link--active"
+      />
+      <main className="main">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12">
+              <TableFilters
+                data={tableFiltersData}
+                sortByValues={sortByValues}
+              />
+            </div>
 
-              <div className="col-12">
-                <div className="main__table-wrap">
-                  <Table
-                    columns={columns}
-                    data={tableData}
-                    buttonData={buttonData}
-                  />
-                </div>
-              </div>
-
-              <div className="col-12">
-                <Paginator
-                  pages={pages}
-                  currentPage={currentPage}
-                  onPageChange={handlePageChange}
+            <div className="col-12">
+              <div className="main__table-wrap">
+                <Table
+                  columns={columns}
+                  data={tableData}
+                  buttonData={buttonData}
                 />
               </div>
             </div>
-          </div>
-        </main>
 
-        <ReusableModal
-          modalId="modal-status"
-          title="Status change"
-          content={[
-            {
-              type: "text",
-              text: "Are you sure about immediately change status?",
-            },
-          ]}
-          buttons={[
-            {
-              className: "modal__btn--apply",
-              text: "Apply",
-              onClick: () => console.log("Apply"),
-            },
-            {
-              className: "modal__btn--dismiss",
-              text: "Dismiss",
-              onClick: () => console.log("Dismiss"),
-            },
-          ]}
-        />
-        <ReusableModal
-          modalId="modal-delete"
-          title="Item delete"
-          content={[
-            {
-              type: "text",
-              text: "Are you sure to permanently delete this item?",
-            },
-          ]}
-          buttons={[
-            {
-              className: "modal__btn--apply",
-              text: "Delete",
-              onClick: () => console.log("Delete"),
-            },
-            {
-              className: "modal__btn--dismiss",
-              text: "Dismiss",
-              onClick: () => console.log("Dismiss"),
-            },
-          ]}
-        />
-      </body>
+            <div className="col-12">
+              <Paginator
+                pages={pages}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <ReusableModal
+        modalId="modal-status"
+        title="Status change"
+        content={[
+          {
+            type: "text",
+            text: "Are you sure about immediately change status?",
+          },
+        ]}
+        buttons={[
+          {
+            className: "modal__btn--apply",
+            text: "Apply",
+            onClick: () => console.log("Apply"),
+          },
+          {
+            className: "modal__btn--dismiss",
+            text: "Dismiss",
+            onClick: () => console.log("Dismiss"),
+          },
+        ]}
+      />
+      <ReusableModal
+        modalId="modal-delete"
+        title="Item delete"
+        content={[
+          {
+            type: "text",
+            text: "Are you sure to permanently delete this item?",
+          },
+        ]}
+        buttons={[
+          {
+            className: "modal__btn--apply",
+            text: "Delete",
+            onClick: () => console.log("Delete"),
+          },
+          {
+            className: "modal__btn--dismiss",
+            text: "Dismiss",
+            onClick: () => console.log("Dismiss"),
+          },
+        ]}
+      />
     </>
   );
 };

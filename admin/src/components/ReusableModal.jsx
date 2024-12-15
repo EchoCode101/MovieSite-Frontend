@@ -1,10 +1,18 @@
 import PropTypes from "prop-types";
-
+import { useSelector, useDispatch } from "react-redux";
+import { closeModal } from "../../redux/modalSlice";
 const ReusableModal = ({ modalId, title, content, buttons, customClass }) => {
+  const isModalOpen = useSelector((state) => state.modal.isModalOpen);
+  const dispatch = useDispatch();
+  const handleCloseModal = () => {
+    dispatch(closeModal()); // Close the modal by dispatching action
+  };
   return (
     <div
       id={modalId}
-      className={`zoom-anim-dialog mfp-hide modal ${customClass}`}
+      className={`zoom-anim-dialog mfp-hide modal ${customClass} ${
+        isModalOpen ? "modal--visible" : ""
+      }`}
     >
       {/* Title */}
       {title && <h6 className="modal__title">{title}</h6>}
@@ -47,14 +55,23 @@ const ReusableModal = ({ modalId, title, content, buttons, customClass }) => {
       })}
 
       {/* Buttons */}
-      {buttons && buttons.length > 0 && (
+      {isModalOpen && buttons && buttons.length > 0 && (
         <div className="modal__btns">
           {buttons.map((button, index) => (
             <button
               key={index}
               className={`modal__btn ${button.className}`}
               type="button"
-              onClick={button.onClick}
+              onClick={() => {
+                console.log(`Button clicked: ${button.text}`); // Debug log
+                if (typeof button.onClick === "function") {
+                  button.onClick(); // Call the function if it's defined
+                }
+
+                if (button.text === "Dismiss") {
+                  handleCloseModal(); // Close modal when dismiss is clicked
+                }
+              }}
             >
               {button.text}
             </button>
@@ -66,6 +83,7 @@ const ReusableModal = ({ modalId, title, content, buttons, customClass }) => {
 };
 
 ReusableModal.propTypes = {
+  isModalOpen: PropTypes.bool,
   modalId: PropTypes.string.isRequired,
   title: PropTypes.string,
   content: PropTypes.arrayOf(

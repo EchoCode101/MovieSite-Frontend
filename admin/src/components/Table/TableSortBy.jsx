@@ -29,11 +29,7 @@ const TableSortBy = ({ sortByValues }) => {
   );
 };
 TableSortBy.propTypes = {
-  sortByValues: PropTypes.shape({
-    createdDate: PropTypes.string.isRequired,
-    rating: PropTypes.string.isRequired,
-    views: PropTypes.string.isRequired,
-  }).isRequired,
+  sortByValues: PropTypes.object.isRequired,
 };
 
 export default TableSortBy;

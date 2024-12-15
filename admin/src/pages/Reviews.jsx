@@ -12,7 +12,7 @@ const Reviews = ({ headerImage }) => {
     title_stats: "9,071",
     searchPlaceholder: "Key word...",
   };
-  const sortByValues = ["Date created", "Rating"];
+  const sortByValues = { date: "Date created", rating: "Rating" };
   const buttonData = [
     {
       iconPath:
@@ -49,6 +49,7 @@ const Reviews = ({ headerImage }) => {
       dislikes: 7,
       createdDate: "24 Oct 2021",
       reviewTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
       id: 24,
@@ -60,9 +61,10 @@ const Reviews = ({ headerImage }) => {
       dislikes: 22,
       createdDate: "24 Oct 2021",
       reviewTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
-      id: 24,
+      id: 25,
       item: "Benched",
       author: "John Doe",
       text: "Lorem Ipsum is simply dummy text...",
@@ -71,9 +73,10 @@ const Reviews = ({ headerImage }) => {
       dislikes: 22,
       createdDate: "24 Oct 2021",
       reviewTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
-      id: 24,
+      id: 26,
       item: "Benched",
       author: "John Doe",
       text: "Lorem Ipsum is simply dummy text...",
@@ -82,6 +85,7 @@ const Reviews = ({ headerImage }) => {
       dislikes: 22,
       createdDate: "24 Oct 2021",
       reviewTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     // Add more rows as needed
   ];
@@ -98,148 +102,146 @@ const Reviews = ({ headerImage }) => {
   };
   return (
     <>
-      <body>
-        <Header headerImage={headerImage} />
-        <DashboardSideBar
-          headerImage={headerImage}
-          activeLink="sidebar__nav-link--active"
-        />
-        <main className="main">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-12">
-                <TableFilters
-                  data={tableFiltersData}
-                  sortByValues={sortByValues}
-                />
-              </div>
+      <Header headerImage={headerImage} />
+      <DashboardSideBar
+        headerImage={headerImage}
+        activeLink="sidebar__nav-link--active"
+      />
+      <main className="main">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12">
+              <TableFilters
+                data={tableFiltersData}
+                sortByValues={sortByValues}
+              />
+            </div>
 
-              <div className="col-12">
-                <div className="main__table-wrap">
-                  <Table
-                    columns={columns}
-                    data={tableData}
-                    buttonData={buttonData}
-                  />
-                </div>
-              </div>
-
-              <div className="col-12">
-                <Paginator
-                  pages={pages}
-                  currentPage={currentPage}
-                  onPageChange={handlePageChange}
+            <div className="col-12">
+              <div className="main__table-wrap">
+                <Table
+                  columns={columns}
+                  data={tableData}
+                  buttonData={buttonData}
                 />
               </div>
             </div>
-          </div>
-        </main>
 
-        <ReusableModal
-          modalId="modal-view"
-          customClass="modal--view"
-          content={[
-            {
-              type: "image",
-              src: "/src/assets/img/user.svg",
-              name: "John Doe",
-              time: "30.08.2018, 17:53",
-            },
-            {
-              type: "text",
-              text: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.",
-              className: "comments__text",
-            },
-            {
-              type: "actions",
-              ratings: [
-                {
-                  icon: (
-                    <svg
-                      width="22"
-                      height="22"
-                      viewBox="0 0 22 22"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M11 7.3273V14.6537"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14.6667 10.9905H7.33333"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  ),
-                  text: "12",
-                },
-                {
-                  icon: (
-                    <svg
-                      width="22"
-                      height="22"
-                      viewBox="0 0 22 22"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M14.6667 10.9905H7.33333"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  ),
-                  text: "7",
-                },
-              ],
-            },
-          ]}
-        />
-        <ReusableModal
-          modalId="modal-delete"
-          title="Item delete"
-          content={[
-            {
-              type: "text",
-              text: "Are you sure to permanently delete this item?",
-            },
-          ]}
-          buttons={[
-            {
-              className: "modal__btn--apply",
-              text: "Delete",
-              onClick: () => console.log("Delete"),
-            },
-            {
-              className: "modal__btn--dismiss",
-              text: "Dismiss",
-              onClick: () => console.log("Dismiss"),
-            },
-          ]}
-        />
-      </body>
+            <div className="col-12">
+              <Paginator
+                pages={pages}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <ReusableModal
+        modalId="modal-view"
+        customClass="modal--view"
+        content={[
+          {
+            type: "image",
+            src: "/src/assets/img/user.svg",
+            name: "John Doe",
+            time: "30.08.2018, 17:53",
+          },
+          {
+            type: "text",
+            text: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.",
+            className: "comments__text",
+          },
+          {
+            type: "actions",
+            ratings: [
+              {
+                icon: (
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 7.3273V14.6537"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M14.6667 10.9905H7.33333"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ),
+                text: "12",
+              },
+              {
+                icon: (
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.6667 10.9905H7.33333"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ),
+                text: "7",
+              },
+            ],
+          },
+        ]}
+      />
+      <ReusableModal
+        modalId="modal-delete"
+        title="Item delete"
+        content={[
+          {
+            type: "text",
+            text: "Are you sure to permanently delete this item?",
+          },
+        ]}
+        buttons={[
+          {
+            className: "modal__btn--apply",
+            text: "Delete",
+            onClick: () => console.log("Delete"),
+          },
+          {
+            className: "modal__btn--dismiss",
+            text: "Dismiss",
+            onClick: () => console.log("Dismiss"),
+          },
+        ]}
+      />
     </>
   );
 };

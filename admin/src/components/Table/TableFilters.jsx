@@ -49,7 +49,7 @@ TableFilters.propTypes = {
     title_stats: PropTypes.string,
     searchPlaceholder: PropTypes.string,
   }).isRequired,
-  sortByValues: PropTypes.objectOf(PropTypes.array).isRequired,
+  sortByValues: PropTypes.object.isRequired,
 };
 
 export default TableFilters;

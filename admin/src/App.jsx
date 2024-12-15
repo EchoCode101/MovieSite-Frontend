@@ -4,7 +4,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom"; // Import React Router components
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import "./App.css";
 import headerImage from "./assets/img/logo.svg";
 
@@ -21,67 +21,79 @@ import Signup from "./pages/Signup";
 import Users from "./pages/Users";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFoundPage"; // For 404 page
+import { useCallback, useEffect } from "react";
+import { Provider } from "react-redux";
+import store from "../redux/store";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  useEffect(() => {
-    console.log("Admin dashboard loaded"); // Debugging purpose
+  // useEffect(() => {
+  //   console.log("Admin dashboard loaded"); // Debugging purpose
+  // }, []);
+
+  const isAuthenticated = useCallback(() => {
+    // Add logic to check if the user is authenticated
+    const token = localStorage.getItem("token");
+    return !!token;
   }, []);
 
-  const isAuthenticated = () => {
-    // Add logic to check if the user is authenticated
-    const token = localStorage.getItem("accessToken");
-    return !!token;
-  };
+  useEffect(() => {}, [isAuthenticated]);
 
   return (
-    <Router>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot" element={<Forgot />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
+    <Provider store={store}>
+      <Router>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot" element={<Forgot />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-        {/* Protected routes */}
-        {isAuthenticated() ? (
-          <>
-            <Route
-              path="/dashboard"
-              element={<Index headerImage={headerImage} />}
-            />
-            <Route
-              path="/catalog"
-              element={<Catalog headerImage={headerImage} />}
-            />
-            <Route
-              path="/add-item"
-              element={<AddItem headerImage={headerImage} />}
-            />
-            <Route
-              path="/comments"
-              element={<Comments headerImage={headerImage} />}
-            />
-            <Route
-              path="/edit-user"
-              element={<EditUser headerImage={headerImage} />}
-            />
-            <Route
-              path="/reviews"
-              element={<Reviews headerImage={headerImage} />}
-            />
-            <Route
-              path="/users"
-              element={<Users headerImage={headerImage} />}
-            />
-          </>
-        ) : (
-          <Route path="*" element={<Navigate to="/signin" replace />} />
-        )}
+          {/* Protected routes */}
+          {isAuthenticated() ? (
+            <>
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Index headerImage={headerImage} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/catalog"
+                element={<Catalog headerImage={headerImage} />}
+              />
+              <Route
+                path="/add-item"
+                element={<AddItem headerImage={headerImage} />}
+              />
+              <Route
+                path="/comments"
+                element={<Comments headerImage={headerImage} />}
+              />
+              <Route
+                path="/edit-user"
+                element={<EditUser headerImage={headerImage} />}
+              />
+              <Route
+                path="/reviews"
+                element={<Reviews headerImage={headerImage} />}
+              />
+              <Route
+                path="/users"
+                element={<Users headerImage={headerImage} />}
+              />
+            </>
+          ) : (
+            <Route path="*" element={<Navigate to="/signin" replace />} />
+          )}
 
-        {/* Fallback route for 404 pages */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+          {/* Fallback route for 404 pages */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </Provider>
   );
 }
 

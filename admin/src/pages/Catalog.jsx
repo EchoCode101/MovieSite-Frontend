@@ -13,7 +13,8 @@ const Catalog = ({ headerImage }) => {
     title_stats: "56,113",
     searchPlaceholder: "Find movie / tv series..",
   };
-  const sortByValues = ["Date created", "Rating", "Views"];
+    const sortByValues = { date: "Date created", rating: "Rating", views:"Views"};
+
   const buttonData = [
     {
       iconPath:
@@ -62,6 +63,7 @@ const Catalog = ({ headerImage }) => {
       createdDate: "2024-12-01",
       catalogTable: true,
       classValue: "main__table-text--green",
+      thumbnailImg:"/src/assets/img/thumbnail.jpg"
     },
     {
       id: 2,
@@ -73,6 +75,7 @@ const Catalog = ({ headerImage }) => {
       createdDate: "2024-12-02",
       catalogTable: true,
       classValue: "main__table-text--red",
+      thumbnailImg:"/src/assets/img/thumbnail.jpg"
     },
     {
       id: 11,
@@ -84,6 +87,7 @@ const Catalog = ({ headerImage }) => {
       createdDate: "2024-12-01",
       catalogTable: true,
       classValue: "main__table-text--green",
+      thumbnailImg:"/src/assets/img/thumbnail.jpg"
     },
     {
       id: 23,
@@ -95,6 +99,7 @@ const Catalog = ({ headerImage }) => {
       createdDate: "2024-12-02",
       catalogTable: true,
       classValue: "main__table-text--red",
+      thumbnailImg:"/src/assets/img/thumbnail.jpg"
     },
   ];
   const totalPages = 5; // Example total pages

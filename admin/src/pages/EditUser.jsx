@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 const EditUser = ({ headerImage }) => {
   return (
     <>
-      <body>
         <Header headerImage={headerImage} />
 
         <DashboardSideBar
@@ -1919,7 +1918,6 @@ const EditUser = ({ headerImage }) => {
             </button>
           </div>
         </div>
-      </body>
     </>
   );
 };

@@ -13,7 +13,8 @@ const Comments = ({ headerImage }) => {
     title_stats: "21,356",
     searchPlaceholder: "Key word...",
   };
-  const sortByValues = ["Date created", "Rating"];
+  const sortByValues = { date: "Date created", rating: "Rating" };
+
   const buttonData = [
     {
       iconPath:
@@ -38,6 +39,7 @@ const Comments = ({ headerImage }) => {
       likesDislikes: "12 / 7",
       createdDate: "24 Oct 2021",
       commentTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
       id: 24,
@@ -47,6 +49,7 @@ const Comments = ({ headerImage }) => {
       likesDislikes: "67 / 22",
       createdDate: "24 Oct 2021",
       commentTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
       id: 25,
@@ -56,6 +59,7 @@ const Comments = ({ headerImage }) => {
       likesDislikes: "44 / 5",
       createdDate: "24 Oct 2021",
       commentTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
       id: 26,
@@ -65,33 +69,37 @@ const Comments = ({ headerImage }) => {
       likesDislikes: "20 / 6",
       createdDate: "24 Oct 2021",
       commentTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
-      id: 26,
+      id: 27,
       item: "Blindspotting",
       author: "Jesse Plemons",
       text: "Lorem Ipsum is simply dummy text...",
       likesDislikes: "20 / 6",
       createdDate: "24 Oct 2021",
       commentTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
-      id: 26,
+      id: 28,
       item: "Blindspotting",
       author: "Jesse Plemons",
       text: "Lorem Ipsum is simply dummy text...",
       likesDislikes: "20 / 6",
       createdDate: "24 Oct 2021",
       commentTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
     {
-      id: 26,
+      id: 29,
       item: "Blindspotting",
       author: "Jesse Plemons",
       text: "Lorem Ipsum is simply dummy text...",
       likesDislikes: "20 / 6",
       createdDate: "24 Oct 2021",
       commentTable: true,
+      thumbnailImg: "/src/assets/img/thumbnail.jpg",
     },
   ];
   const columns = [
@@ -116,145 +124,143 @@ const Comments = ({ headerImage }) => {
 
   return (
     <>
-      <body>
-        <Header headerImage={headerImage} />
-        <DashboardSideBar
-          headerImage={headerImage}
-          activeLink="sidebar__nav-link--active"
-        />
+      <Header headerImage={headerImage} />
+      <DashboardSideBar
+        headerImage={headerImage}
+        activeLink="sidebar__nav-link--active"
+      />
 
-        <main className="main">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-12">
-                <TableFilters
-                  data={tableFiltersData}
-                  sortByValues={sortByValues}
-                />
-              </div>
+      <main className="main">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12">
+              <TableFilters
+                data={tableFiltersData}
+                sortByValues={sortByValues}
+              />
+            </div>
 
-              <div className="col-12">
-                <div className="main__table-wrap">
-                  <Table
-                    columns={columns}
-                    data={tableData}
-                    buttonData={buttonData}
-                  />
-                </div>
-              </div>
-
-              <div className="col-12">
-                <Paginator
-                  pages={pages}
-                  currentPage={currentPage}
-                  onPageChange={handlePageChange}
+            <div className="col-12">
+              <div className="main__table-wrap">
+                <Table
+                  columns={columns}
+                  data={tableData}
+                  buttonData={buttonData}
                 />
               </div>
             </div>
-          </div>
-        </main>
 
-        <div
-          id="modal-view"
-          className="zoom-anim-dialog mfp-hide modal modal--view"
-        >
-          <div className="comments__autor">
-            <img
-              className="comments__avatar"
-              src="/src/assets/img/user.svg"
-              alt=""
-            />
-            <span className="comments__name">John Doe</span>
-            <span className="comments__time">30.08.2018, 17:53</span>
-          </div>
-          <p className="comments__text">
-            There are many variations of passages of Lorem Ipsum available, but
-            the majority have suffered alteration in some form, by injected
-            humour, or randomised words which don&apos;t look even slightly
-            believable. If you are going to use a passage of Lorem Ipsum, you
-            need to be sure there isn&apos;t anything embarrassing hidden in the
-            middle of text.
-          </p>
-          <div className="comments__actions">
-            <div className="comments__rate">
-              <span>
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M11 7.3273V14.6537"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M14.6667 10.9905H7.33333"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                12
-              </span>
-
-              <span>
-                7
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M14.6667 10.9905H7.33333"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+            <div className="col-12">
+              <Paginator
+                pages={pages}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
             </div>
           </div>
         </div>
+      </main>
 
-        <div id="modal-delete" className="zoom-anim-dialog mfp-hide modal">
-          <h6 className="modal__title">Comment delete</h6>
+      <div
+        id="modal-view"
+        className="zoom-anim-dialog mfp-hide modal modal--view"
+      >
+        <div className="comments__autor">
+          <img
+            className="comments__avatar"
+            src="/src/assets/img/user.svg"
+            alt=""
+          />
+          <span className="comments__name">John Doe</span>
+          <span className="comments__time">30.08.2018, 17:53</span>
+        </div>
+        <p className="comments__text">
+          There are many variations of passages of Lorem Ipsum available, but
+          the majority have suffered alteration in some form, by injected
+          humour, or randomised words which don&apos;t look even slightly
+          believable. If you are going to use a passage of Lorem Ipsum, you need
+          to be sure there isn&apos;t anything embarrassing hidden in the middle
+          of text.
+        </p>
+        <div className="comments__actions">
+          <div className="comments__rate">
+            <span>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 22 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 7.3273V14.6537"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M14.6667 10.9905H7.33333"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              12
+            </span>
 
-          <p className="modal__text">
-            Are you sure to permanently delete this comment?
-          </p>
-
-          <div className="modal__btns">
-            <button className="modal__btn modal__btn--apply" type="button">
-              Delete
-            </button>
-            <button className="modal__btn modal__btn--dismiss" type="button">
-              Dismiss
-            </button>
+            <span>
+              7
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 22 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.6667 10.9905H7.33333"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
           </div>
         </div>
-      </body>
+      </div>
+
+      <div id="modal-delete" className="zoom-anim-dialog mfp-hide modal">
+        <h6 className="modal__title">Comment delete</h6>
+
+        <p className="modal__text">
+          Are you sure to permanently delete this comment?
+        </p>
+
+        <div className="modal__btns">
+          <button className="modal__btn modal__btn--apply" type="button">
+            Delete
+          </button>
+          <button className="modal__btn modal__btn--dismiss" type="button">
+            Dismiss
+          </button>
+        </div>
+      </div>
     </>
   );
 };

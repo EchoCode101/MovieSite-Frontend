@@ -2,7 +2,7 @@ import DashboardSideBar from "../components/SideBar/DashboardSideBar";
 import Header from "../components/Header";
 import Stats from "../components/Stats";
 import PropTypes from "prop-types";
-import ReusableModal from "../components/ReusableModal";
+// import ReusableModal from "../components/ReusableModal";
 const statsData = [
   {
     title: "Unique views this month",
@@ -651,7 +651,7 @@ const Index = ({ headerImage }) => {
           </div>
         </div>
       </main>
-      <ReusableModal
+      {/* <ReusableModal
         modalId="modal-logout"
         title="Logout"
         content={[
@@ -672,7 +672,7 @@ const Index = ({ headerImage }) => {
             onClick: () => console.log("Dismiss"),
           },
         ]}
-      />
+      /> */}
     </>
   );
 };

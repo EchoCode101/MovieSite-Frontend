@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/authSlice.js";
 
 const Signin = () => {
+  const Home = "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission from refreshing the page
     setErrorMessage(""); // Reset error message on submit
     setLoading(true);
 
@@ -19,22 +23,14 @@ const Signin = () => {
         "http://localhost:7100/api/admin/login",
         { email, password },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
           withCredentials: true, // To handle the cookie securely
         }
       );
-
-      if (response.data?.token) {
-        // Store token securely
-        localStorage.setItem("accessToken", response.data.token);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
-
-        navigate("/dashboard"); // Redirect to admin dashboard on successful login
-      } else {
-        setErrorMessage("Invalid credentials");
-      }
+      const { token, refreshToken } = response.data;
+      dispatch(loginSuccess({ token, refreshToken }));
+      localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
+      window.location.href = Home;
     } catch (error) {
       setLoading(false);
       if (error.response && error.response.data) {
@@ -55,9 +51,9 @@ const Signin = () => {
           <div className="col-12">
             <div className="sign__content">
               <form className="sign__form" onSubmit={handleSubmit}>
-                <a href="/signin" className="sign__logo">
+                <Link to="/signin" className="sign__logo">
                   <img src="/src/assets/img/logo.svg" alt="Logo" />
-                </a>
+                </Link>
                 {errorMessage && (
                   <div
                     className="sign__group"
@@ -100,10 +96,10 @@ const Signin = () => {
                   {loading ? "Signing in..." : "Sign in"}
                 </button>
                 <span className="sign__text">
-                  Don&apos;t have an account? <a href="/signup">Sign up!</a>
+                  Don&apos;t have an account? <Link to="/signup">Sign up!</Link>
                 </span>
                 <span className="sign__text">
-                  <a href="/forgot">Forgot password?</a>
+                  <Link to="/forgot">Forgot password?</Link>
                 </span>
               </form>
             </div>
