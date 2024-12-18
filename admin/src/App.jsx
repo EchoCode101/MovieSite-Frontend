@@ -64,6 +64,11 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              {/* <Route path="/" element={<Navigate to="/dashboard" />} />
+              <Route
+                path="/dashboard"
+                element={<Index headerImage={headerImage} />}
+              /> */}
               <Route
                 path="/catalog"
                 element={<Catalog headerImage={headerImage} />}

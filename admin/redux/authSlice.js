@@ -1,13 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import config from "../src/utils/js/config.js";
+const apiUrl = config.apiUrl;
+
 // Async thunk for token validation
 export const validateToken = createAsyncThunk(
   "auth/validateToken",
   async (_, { getState, rejectWithValue }) => {
     const state = getState();
     const encryptedToken = state.auth.token;
-    const apiUrl = config.apiUrl;
 
     if (!encryptedToken) return rejectWithValue("No token found");
 
@@ -37,7 +38,7 @@ export const sendRefreshToken = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/token/refresh`,
+        `${apiUrl}/token/refresh`,
         {}, // assuming your backend doesn’t need a request body
         {
           headers: { authorization: `Bearer ${encryptedRefreshToken}` },

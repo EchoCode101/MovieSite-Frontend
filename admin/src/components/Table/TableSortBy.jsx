@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const TableSortBy = ({ sortByValues }) => {
+const TableSortBy = ({ sortByValues, onSortChange, activeSort }) => {
   return (
     <div className="filter" id="filter__sort">
       <span className="filter__item-label">Sort by:</span>
@@ -13,7 +13,15 @@ const TableSortBy = ({ sortByValues }) => {
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <input type="button" value="Date created" />
+        <input
+          type="button"
+          value={
+            Object.keys(sortByValues).find(
+              (key) => sortByValues[key] === activeSort
+            ) || "Select Option"
+          }
+          readOnly
+        />
         <span></span>
       </div>
 
@@ -21,15 +29,24 @@ const TableSortBy = ({ sortByValues }) => {
         className="filter__item-menu dropdown-menu scrollbar-dropdown"
         aria-labelledby="filter-sort"
       >
-        {Object.values(sortByValues).map((sortByValue) => {
-          return <li key={sortByValue}>{sortByValue}</li>;
-        })}
+        {Object.entries(sortByValues).map(([label, value]) => (
+          <li
+            key={value}
+            onClick={() => onSortChange(value)}
+            className={`dropdown-item ${activeSort === value ? "active" : ""}`}
+          >
+            {label}
+          </li>
+        ))}
       </ul>
     </div>
   );
 };
+
 TableSortBy.propTypes = {
+  onSortChange: PropTypes.func.isRequired,
   sortByValues: PropTypes.object.isRequired,
+  activeSort: PropTypes.string,
 };
 
 export default TableSortBy;

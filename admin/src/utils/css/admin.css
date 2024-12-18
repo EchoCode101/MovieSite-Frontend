@@ -651,6 +651,7 @@ body::-webkit-scrollbar-thumb {
   background-color: transparent;
   padding: 10px 15px 0 0;
 }
+
 .main__table-text {
   display: flex;
   flex-direction: row;
@@ -663,6 +664,9 @@ body::-webkit-scrollbar-thumb {
   padding: 20px;
   background-color: #151f30;
   white-space: nowrap;
+}
+.main__table-text .like_dislike {
+  justify-content: center;
 }
 .main__table-text a {
   color: #fff;
@@ -888,7 +892,8 @@ body::-webkit-scrollbar-thumb {
   background-color: #151f30;
   margin-bottom: 20px;
   border-radius: 16px;
-  overflow: hidden;
+  overflow-y: hidden;
+  max-height: 533px;
 }
 .dashbox__title {
   display: flex;
@@ -976,6 +981,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  min-width: 145px;
   align-items: flex-start;
 }
 .filter__item-label {

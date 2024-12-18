@@ -11,6 +11,8 @@ const Paginator = ({ pages, currentPage, onPageChange }) => {
   return (
     <div className="paginator">
       <span className="paginator__pages">
+        {/* items Showing :&nbsp;
+        {itemsPerPage} | */}
         Page {currentPage} of {pages.length}
       </span>
       <ul className="paginator__paginator">
@@ -96,9 +98,10 @@ const Paginator = ({ pages, currentPage, onPageChange }) => {
     </div>
   );
 };
+
 Paginator.propTypes = {
-  pages: PropTypes.arrayOf(PropTypes.number).isRequired,
-  currentPage: PropTypes.number.isRequired,
+  pages: PropTypes.arrayOf(PropTypes.number),
+  currentPage: PropTypes.number,
   onPageChange: PropTypes.func.isRequired,
 };
 

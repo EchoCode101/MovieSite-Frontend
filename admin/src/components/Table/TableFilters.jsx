@@ -1,6 +1,6 @@
 import TableSortBy from "./TableSortBy";
 import PropTypes from "prop-types";
-const TableFilters = ({ data, sortByValues }) => {
+const TableFilters = ({ data, sortByValues, onSortChange, activeSort }) => {
   return (
     <div className="main__title">
       <h2>{data.title}</h2>
@@ -8,7 +8,11 @@ const TableFilters = ({ data, sortByValues }) => {
       <span className="main__title-stat">{data.title_stats} total</span>
 
       <div className="main__title-wrap">
-        <TableSortBy sortByValues={sortByValues} />
+        <TableSortBy
+          activeSort={activeSort}
+          sortByValues={sortByValues}
+          onSortChange={onSortChange}
+        />
 
         <form action="#" className="main__title-form">
           <input type="text" placeholder={data.searchPlaceholder} />
@@ -49,7 +53,9 @@ TableFilters.propTypes = {
     title_stats: PropTypes.string,
     searchPlaceholder: PropTypes.string,
   }).isRequired,
+  onSortChange: PropTypes.func.isRequired,
   sortByValues: PropTypes.object.isRequired,
+  activeSort: PropTypes.string,
 };
 
 export default TableFilters;

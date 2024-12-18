@@ -9,16 +9,22 @@ const Table = ({ data, columns, buttonData }) => {
 
       <tbody>
         {data.map((item, index) => (
-          <TableRow buttonData={buttonData} key={item.id || index} data={item} />
+          <TableRow
+            buttonData={buttonData}
+            key={item.id || index}
+            data={item}
+          />
         ))}
       </tbody>
     </table>
   );
 };
+
 Table.propTypes = {
   buttonData: PropTypes.array.isRequired,
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.arrayOf(PropTypes.object), // Optional
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  loading: PropTypes.bool,
 };
 
 export default Table;

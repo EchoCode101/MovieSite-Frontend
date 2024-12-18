@@ -9,14 +9,20 @@ const TableRow = ({ data, buttonData }) => {
   };
   return (
     <tr>
-      <TableCell>{data.id}</TableCell>
       {/*When Data is coming from the Catalog Table, then this table formate will render*/}
       {data.catalogTable && (
         <>
+          <TableCell>{data.video_id || "N/A"}</TableCell>
           <td>
             <div className="main__user">
               <div className="main__avatar">
-                <img src={data.thumbnailImg} alt="User avatar" />
+                <img
+                  src={
+                    "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSLNQ1t4kHMECW1dLM7F3h1l1vWdZzZTHERYJmlg1NC7Ekl7JpWsIDXVw6EKTgiDzhlTA0u9GqgAU0Bl_gTtIy_Q-G0DdRQR4l7GsqKDSrkBA"
+                    // data.thumbnail_url
+                  }
+                  alt="User avatar"
+                />
               </div>
               <div className="main__meta">
                 <h3>
@@ -30,13 +36,36 @@ const TableRow = ({ data, buttonData }) => {
           <td>
             <div className="main__table-text main__table-text--rate">
               <Svg path={path.a} />
-              {data.rating}
+              {data.rating ? data.rating.toFixed(1) : "N/A"}
             </div>
           </td>
-          <TableCell>{data.category}</TableCell>
-          <TableCell>{data.views}</TableCell>
-          <TableCell classvalue={data.classValue}>{data.status}</TableCell>
-          <TableCell>{data.createdDate}</TableCell>
+
+          <TableCell>{data.category || "N/A"}</TableCell>
+          <TableCell>{data.views || 0}</TableCell>
+          <TableCell
+            classvalue={
+              data.is_active
+                ? "main__table-text--green"
+                : "main__table-text--red"
+            }
+          >
+            {data.is_active ? "Visible" : "Hidden"}
+          </TableCell>
+          <TableCell>
+            {data.uploaded_at
+              ? new Date(data.uploaded_at).toLocaleString("en-US", {
+                  weekday: "long", // e.g., "Monday"
+                  year: "numeric", // e.g., "2024"
+                  month: "long", // e.g., "December"
+                  day: "numeric", // e.g., "16"
+                  hour: "numeric", // e.g., "8"
+                  minute: "numeric", // e.g., "47"
+                  second: "numeric", // e.g., "03"
+                  hour12: true, // e.g., "PM"
+                })
+              : "N/A"}
+          </TableCell>
+
           <td>
             <div className="main__table-btns">
               {buttonData.map((button, index) => (
@@ -54,23 +83,53 @@ const TableRow = ({ data, buttonData }) => {
       {/*When Data is coming from the Users Table, then this table formate will render*/}
       {data.userTable && (
         <>
+          <TableCell>{data.member_id || "N/A"}</TableCell>
           <td>
             <div className="main__user">
               <div className="main__avatar">
-                <img src={data.avatar} alt="User avatar" />
+                <img
+                  src={
+                    "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+                    // data.profile_pic
+                  }
+                  alt="User avatar"
+                />
               </div>
               <div className="main__meta">
-                <h3>{data.name}</h3>
+                <h3>
+                  {data.first_name}&nbsp;{data.last_name}
+                </h3>
                 <span>{data.email}</span>
               </div>
             </div>
           </td>
           <TableCell>{data.username}</TableCell>
-          <TableCell>{data.pricingPlan}</TableCell>
-          <TableCell>{data.comments}</TableCell>
-          <TableCell>{data.reviews}</TableCell>
-          <TableCell>{data.status}</TableCell>
-          <TableCell>{data.createdDate}</TableCell>
+          <TableCell>{data.subscription_plan || "Free"}</TableCell>
+          <TableCell>{data.comments_count}</TableCell>
+          <TableCell>{data.reviews || 0}</TableCell>
+          <TableCell
+            classvalue={
+              data.status === "Active"
+                ? "main__table-text--green"
+                : "main__table-text--red"
+            }
+          >
+            {data.status === "Active" ? "Approved" : "Banned"}
+          </TableCell>
+          <TableCell>
+            {data.date_of_creation
+              ? new Date(data.date_of_creation).toLocaleString("en-US", {
+                  weekday: "long", // e.g., "Monday"
+                  year: "numeric", // e.g., "2024"
+                  month: "long", // e.g., "December"
+                  day: "numeric", // e.g., "16"
+                  hour: "numeric", // e.g., "8"
+                  minute: "numeric", // e.g., "47"
+                  second: "numeric", // e.g., "03"
+                  hour12: true, // e.g., "PM"
+                })
+              : "N/A"}
+          </TableCell>
           <td>
             <div className="main__table-btns">
               {buttonData.map((button, index) => (
@@ -88,24 +147,63 @@ const TableRow = ({ data, buttonData }) => {
       {/*When Data is coming from the Comments Table, then this table formate will render*/}
       {data.commentTable && (
         <>
+          <TableCell>{data.comment_id || "N/A"}</TableCell>
+
           <td>
             <div className="main__user">
               <div className="main__avatar">
-                <img src={data.thumbnailImg} alt="User avatar" />
+                <img
+                  src={
+                    "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSLNQ1t4kHMECW1dLM7F3h1l1vWdZzZTHERYJmlg1NC7Ekl7JpWsIDXVw6EKTgiDzhlTA0u9GqgAU0Bl_gTtIy_Q-G0DdRQR4l7GsqKDSrkBA"
+                    // data.thumbnail_url
+                  }
+                  alt="User avatar"
+                />
               </div>
               <div className="main__meta">
                 <h3>
                   <a href="#" className="main__table-text undefined">
-                    {data.item}
+                    {data.video.title}
                   </a>
                 </h3>
               </div>
             </div>
           </td>
-          <TableCell>{data.author}</TableCell>
-          <TableCell>{data.text}</TableCell>
-          <TableCell>{data.likesDislikes}</TableCell>
-          <TableCell>{data.createdDate}</TableCell>
+          <TableCell>
+            {data.member.first_name}&nbsp;{data.member.last_name}
+          </TableCell>
+          <TableCell>{data.content}</TableCell>
+          <TableCell
+            classvalue={
+              data.likesDislikes.some((likeDislike) => likeDislike.is_like)
+                ? "main__table-text--green"
+                : "main__table-text--red"
+            }
+          >
+            {
+              data.likesDislikes.filter((likeDislike) => likeDislike.is_like)
+                .length
+            }{" "}
+            /{" "}
+            {
+              data.likesDislikes.filter((likeDislike) => !likeDislike.is_like)
+                .length
+            }
+          </TableCell>
+          <TableCell>
+            {data.created_at
+              ? new Date(data.created_at).toLocaleString("en-US", {
+                  weekday: "long", // e.g., "Monday"
+                  year: "numeric", // e.g., "2024"
+                  month: "long", // e.g., "December"
+                  day: "numeric", // e.g., "16"
+                  hour: "numeric", // e.g., "8"
+                  minute: "numeric", // e.g., "47"
+                  second: "numeric", // e.g., "03"
+                  hour12: true, // e.g., "PM"
+                })
+              : "N/A"}
+          </TableCell>
           <td>
             <div className="main__table-btns">
               {buttonData.map((button, index) => (
@@ -123,6 +221,8 @@ const TableRow = ({ data, buttonData }) => {
       {/*When Data is coming from the Reviews Table, then this table formate will render*/}
       {data.reviewTable && (
         <>
+          <TableCell>{data.id || "N/A"}</TableCell>
+
           <td>
             <div className="main__user">
               <div className="main__avatar">
@@ -168,22 +268,41 @@ const TableRow = ({ data, buttonData }) => {
 
 TableRow.propTypes = {
   data: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    video_id: PropTypes.number,
+    member_id: PropTypes.number,
+    comment_id: PropTypes.number,
+    id: PropTypes.number,
     catalogTable: PropTypes.bool,
+    thumbnail_url: PropTypes.string,
     thumbnailImg: PropTypes.string,
+    content: PropTypes.string,
     title: PropTypes.string,
+    video: PropTypes.shape({
+      title: PropTypes.string,
+    }),
+    member: PropTypes.shape({
+      first_name: PropTypes.string,
+      last_name: PropTypes.string,
+    }),
     rating: PropTypes.number,
     category: PropTypes.string,
     views: PropTypes.number,
     classValue: PropTypes.string,
     createdDate: PropTypes.string,
+    date_of_creation: PropTypes.string,
+    created_at: PropTypes.string,
+    uploaded_at: PropTypes.string,
     userTable: PropTypes.bool,
     avatar: PropTypes.string,
+    profile_pic: PropTypes.string,
     name: PropTypes.string,
+    first_name: PropTypes.string,
+    last_name: PropTypes.string,
     email: PropTypes.string,
     username: PropTypes.string,
-    pricingPlan: PropTypes.string,
+    subscription_plan: PropTypes.string,
     comments: PropTypes.number,
+    comments_count: PropTypes.number,
     reviews: PropTypes.number,
     status: PropTypes.string,
     commentTable: PropTypes.bool,
@@ -194,6 +313,7 @@ TableRow.propTypes = {
     reviewTable: PropTypes.bool,
     likes: PropTypes.number,
     dislikes: PropTypes.number,
+    is_active: PropTypes.bool,
   }).isRequired,
   buttonData: PropTypes.arrayOf(
     PropTypes.shape({
