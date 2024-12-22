@@ -1,30 +1,70 @@
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 const Table = ({ data, columns, buttonData }) => {
+  const [visibleDivId, setVisibleDivId] = useState(null);
+
+  const handleToggle = (id) => {
+    setVisibleDivId((prevId) => (prevId === id ? null : id));
+  };
+
+  const handleProceed = (id) => {
+    console.log(`Proceed clicked on div ${id}`);
+    setVisibleDivId(null); // Close the floating div
+  };
+
+  const handleDeny = (id) => {
+    console.log(`Deny clicked on div ${id}`);
+    setVisibleDivId(null); // Close the floating div
+  };
   return (
     <table className="main__table">
       <TableHead columns={columns} />
-
       <tbody>
-        {data.map((item, index) => (
-          <TableRow
-            buttonData={buttonData}
-            key={item.id || index}
-            data={item}
-          />
-        ))}
+        {data.length > 0 ? (
+          data.map((item, index) => (
+            <TableRow
+              key={item.id || index} // Ensure unique key
+              data={{ ...item, id: item.id || index }} // Add unique id if missing
+              columns={columns}
+              buttonData={buttonData}
+              onToggle={handleToggle}
+              onProceed={handleProceed}
+              onDeny={handleDeny}
+              visibleDivId={visibleDivId}
+            />
+          ))
+        ) : (
+          <tr>
+            <td colSpan={columns.length}>
+              <div className="main__table-text">No Data Available</div>
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );
 };
 
 Table.propTypes = {
-  buttonData: PropTypes.array.isRequired,
-  data: PropTypes.arrayOf(PropTypes.object), // Optional
-  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
-  loading: PropTypes.bool,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      accessor: PropTypes.string.isRequired,
+      render: PropTypes.func,
+    })
+  ).isRequired,
+  buttonData: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      iconPath: PropTypes.string.isRequired,
+      href: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+      className: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default Table;

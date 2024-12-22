@@ -3,16 +3,42 @@ import Header from "../components/Header";
 import PropTypes from "prop-types";
 import Table from "../components/Table/Table";
 import Paginator from "../components/Paginator";
-import { useState } from "react";
 import TableFilters from "../components/Table/TableFilters";
-import ReusableModal from "../components/ReusableModal";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+  loadPaginatedReviews,
+  setSortBy,
+  setCurrentPage,
+} from "../../redux/reviewsSlice";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 const Reviews = ({ headerImage }) => {
-  const tableFiltersData = {
-    title: "Reviews",
-    title_stats: "9,071",
-    searchPlaceholder: "Key word...",
+  const dispatch = useDispatch();
+  const {
+    items: reviews,
+    currentPage,
+    totalPages,
+    loading,
+    sortBy,
+    order,
+  } = useSelector((state) => state.reviews);
+
+  useEffect(() => {
+    dispatch(
+      loadPaginatedReviews({
+        page: currentPage,
+        limit: 10,
+        sort: sortBy,
+        order,
+      })
+    );
+  }, [dispatch, currentPage, sortBy, order]);
+
+  const handleSortChange = (sortValue) => {
+    const newOrder = sortValue === sortBy && order === "DESC" ? "ASC" : "DESC";
+    dispatch(setSortBy({ sortBy: sortValue, order: newOrder }));
   };
-  const sortByValues = { date: "Date created", rating: "Rating" };
   const buttonData = [
     {
       iconPath:
@@ -29,77 +55,88 @@ const Reviews = ({ headerImage }) => {
     },
   ];
   const columns = [
-    { label: "ID" },
-    { label: "ITEM" },
-    { label: "AUTHOR" },
-    { label: "TEXT" },
-    { label: "RATING" },
-    { label: "LIKE / DISLIKE" },
-    { label: "CREATED DATE" },
-    { label: "ACTIONS" },
+    { accessor: "review_id", label: "ID" },
+    {
+      accessor: "video",
+      label: "Video Title",
+      render: (value) => (
+        <div className="sidebar__user p-0" style={{ borderBottom: 0 }}>
+          <div
+            className="sidebar__user-img"
+            style={{ width: "50px", height: "50px" }}
+          >
+            <img
+              alt="thumbnail"
+              src={
+                ` https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSLNQ1t4kHMECW1dLM7F3h1l1vWdZzZTHERYJmlg1NC7Ekl7JpWsIDXVw6EKTgiDzhlTA0u9GqgAU0Bl_gTtIy_Q-G0DdRQR4l7GsqKDSrkBA`
+                // ||
+                // `${value.thumbnail_url || "N/A"}`
+              }
+            />
+          </div>
+          <div className="sidebar__user-title">
+            <div className="hover-title-desc">
+              <a href="#" className="tooltip">
+                {value?.title || "N/A"}
+                <span className="tooltiptext">
+                  {value?.description || "N/A"}
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessor: "member",
+      label: "Author",
+      render: (value) =>
+        `${value?.first_name || "Unknown"} ${value?.last_name || ""}`.trim(),
+    },
+    { accessor: "review_content", label: "Text" },
+    { accessor: "rating", label: "Rating" },
+    {
+      label: "Like / Dislike",
+      accessor: "likeCount",
+      render: (value, row) => (
+        <>
+          <span
+            className={
+              row.likeCount > 0
+                ? "main__table-text--green"
+                : "main__table-text--grey"
+            }
+          >
+            {row.likeCount || 0}
+          </span>
+          &nbsp;/&nbsp;
+          <span
+            className={
+              row.dislikeCount > 0
+                ? "main__table-text--red"
+                : "main__table-text--grey"
+            }
+          >
+            {row.dislikeCount || 0}
+          </span>
+        </>
+      ),
+    },
+    {
+      accessor: "createdAt",
+      label: "Created Date",
+      render: (value) =>
+        new Date(value).toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          hour12: true, // e.g., "PM"
+          minute: "2-digit",
+        }),
+    },
   ];
-  const tableData = [
-    {
-      id: 23,
-      item: "I Dream in Another Language",
-      author: "John Doe",
-      text: "Lorem Ipsum is simply dummy text...",
-      rating: 7.9,
-      likes: 12,
-      dislikes: 7,
-      createdDate: "24 Oct 2021",
-      reviewTable: true,
-      thumbnailImg: "/src/assets/img/thumbnail.jpg",
-    },
-    {
-      id: 24,
-      item: "Benched",
-      author: "John Doe",
-      text: "Lorem Ipsum is simply dummy text...",
-      rating: 8.6,
-      likes: 67,
-      dislikes: 22,
-      createdDate: "24 Oct 2021",
-      reviewTable: true,
-      thumbnailImg: "/src/assets/img/thumbnail.jpg",
-    },
-    {
-      id: 25,
-      item: "Benched",
-      author: "John Doe",
-      text: "Lorem Ipsum is simply dummy text...",
-      rating: 8.6,
-      likes: 67,
-      dislikes: 22,
-      createdDate: "24 Oct 2021",
-      reviewTable: true,
-      thumbnailImg: "/src/assets/img/thumbnail.jpg",
-    },
-    {
-      id: 26,
-      item: "Benched",
-      author: "John Doe",
-      text: "Lorem Ipsum is simply dummy text...",
-      rating: 8.6,
-      likes: 67,
-      dislikes: 22,
-      createdDate: "24 Oct 2021",
-      reviewTable: true,
-      thumbnailImg: "/src/assets/img/thumbnail.jpg",
-    },
-    // Add more rows as needed
-  ];
 
-  const totalPages = 5; // Example total pages
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Create an array of page numbers
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
-  const handlePageChange = (page) => {
-    console.log(`Switched to page: ${page}`);
-    setCurrentPage(page);
-  };
   return (
     <>
       <Header headerImage={headerImage} />
@@ -112,115 +149,69 @@ const Reviews = ({ headerImage }) => {
           <div className="row">
             <div className="col-12">
               <TableFilters
-                data={tableFiltersData}
-                sortByValues={sortByValues}
+                data={{
+                  title: "Reviews",
+                  title_stats: reviews?.length || "0",
+                  searchPlaceholder: "Search reviews...",
+                }}
+                sortByValues={{
+                  ID: "review_id",
+                  Date: "createdAt",
+                  Rating: "rating",
+                  Likes: "likes",
+                  Dislikes: "dislikes",
+                }}
+                activeSort={sortBy}
+                onSortChange={handleSortChange}
+                loading={loading}
+                onRefresh={() =>
+                  dispatch(
+                    loadPaginatedReviews({
+                      page: currentPage,
+                      limit: 10,
+                      sort: sortBy,
+                      order,
+                    })
+                  )
+                }
               />
             </div>
-
             <div className="col-12">
-              <div className="main__table-wrap">
-                <Table
-                  columns={columns}
-                  data={tableData}
-                  buttonData={buttonData}
-                />
-              </div>
+              {loading ? (
+                <LoadingSpinner r={20} w={20} h={20} pt={0} pl={0} />
+              ) : (
+                <div className="main__table-wrap">
+                  <Table
+                    columns={columns}
+                    data={reviews || []}
+                    loading={loading}
+                    buttonData={buttonData}
+                  />
+                </div>
+              )}
             </div>
-
             <div className="col-12">
               <Paginator
-                pages={pages}
-                currentPage={currentPage}
-                onPageChange={handlePageChange}
+                pages={Array.from({ length: totalPages || 1 }, (_, i) => i + 1)}
+                currentPage={currentPage || 1}
+                onPageChange={(page) => dispatch(setCurrentPage(page))}
               />
             </div>
           </div>
         </div>
       </main>
+    </>
+  );
+};
 
-      <ReusableModal
-        modalId="modal-view"
-        customClass="modal--view"
-        content={[
-          {
-            type: "image",
-            src: "/src/assets/img/user.svg",
-            name: "John Doe",
-            time: "30.08.2018, 17:53",
-          },
-          {
-            type: "text",
-            text: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.",
-            className: "comments__text",
-          },
-          {
-            type: "actions",
-            ratings: [
-              {
-                icon: (
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 7.3273V14.6537"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M14.6667 10.9905H7.33333"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ),
-                text: "12",
-              },
-              {
-                icon: (
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M14.6667 10.9905H7.33333"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ),
-                text: "7",
-              },
-            ],
-          },
-        ]}
-      />
-      <ReusableModal
+Reviews.propTypes = {
+  headerImage: PropTypes.string.isRequired,
+};
+
+export default Reviews;
+
+{
+  /* <ReusableModal
         modalId="modal-delete"
         title="Item delete"
         content={[
@@ -241,11 +232,5 @@ const Reviews = ({ headerImage }) => {
             onClick: () => console.log("Dismiss"),
           },
         ]}
-      />
-    </>
-  );
-};
-Reviews.propTypes = {
-  headerImage: PropTypes.string.isRequired,
-};
-export default Reviews;
+      /> */
+}

@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchPaginatedComments } from "../services/api";
+import { fetchPaginatedReviews } from "../services/api"; // Adjust API method
 
-export const loadPaginatedComments = createAsyncThunk(
-  "comments/loadPaginatedComments",
+// Async thunk to load paginated reviews
+export const loadPaginatedReviews = createAsyncThunk(
+  "reviews/loadPaginatedReviews",
   async ({ page, limit, sort, order }, thunkAPI) => {
     try {
-      const data = await fetchPaginatedComments(page, limit, sort, order);
+      const data = await fetchPaginatedReviews(page, limit, sort, order);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message });
@@ -13,8 +14,8 @@ export const loadPaginatedComments = createAsyncThunk(
   }
 );
 
-const commentsSlice = createSlice({
-  name: "comments",
+const reviewsSlice = createSlice({
+  name: "reviews",
   initialState: {
     items: [],
     totalPages: 1,
@@ -38,32 +39,31 @@ const commentsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loadPaginatedComments.pending, (state) => {
+      .addCase(loadPaginatedReviews.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loadPaginatedComments.fulfilled, (state, action) => {
+      .addCase(loadPaginatedReviews.fulfilled, (state, action) => {
         state.loading = false;
 
-        const comments = action.payload?.comments || [];
+        const reviews = action.payload?.reviews || [];
 
-        // Map the comments data correctly
-        state.items = comments.map((comment) => ({
-          ...comment,
-          likeCount: parseInt(comment.likesCount) || 0,
-          dislikeCount: parseInt(comment.dislikesCount) || 0,
-          commentTable: true,
+        state.items = reviews.map((review) => ({
+          ...review,
+          likeCount: parseInt(review.likesCount) || 0,
+          dislikeCount: parseInt(review.dislikesCount) || 0,
+          reviewTable: true,
         }));
 
         state.totalPages = action.payload?.totalPages || 1;
         state.currentPage = action.payload?.currentPage || 1;
       })
-      .addCase(loadPaginatedComments.rejected, (state, action) => {
+      .addCase(loadPaginatedReviews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.error || "Something went wrong.";
       });
   },
 });
 
-export const { setSortBy, setCurrentPage } = commentsSlice.actions;
-export default commentsSlice.reducer;
+export const { setSortBy, setCurrentPage } = reviewsSlice.actions;
+export default reviewsSlice.reducer;

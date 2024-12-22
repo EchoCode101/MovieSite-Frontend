@@ -4,6 +4,8 @@ import authReducer from "./authSlice";
 import catalogReducer from "./catalogSlice";
 import usersReducer from "./usersSlice";
 import commentsReducer from "./commentsSlice";
+import reviewsReducer from "./reviewsSlice";
+import indexReducer from "./indexSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
     catalog: catalogReducer,
     users: usersReducer, // Correctly linked reducer
     comments: commentsReducer, // Correctly linked reducer
+    reviews: reviewsReducer, // Correctly linked reducer
+    dashboard: indexReducer,
   },
 });
 

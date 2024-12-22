@@ -690,6 +690,15 @@ body::-webkit-scrollbar-thumb {
 .main__table-text--green {
   color: #29b474;
 }
+.main__table-text--golden {
+  color: #ffd700;
+}
+.main__table-text--mint {
+  color: #10e5b0;
+}
+.main__table-text--pink {
+  color: #e510c8;
+}
 .main__table-text--grey {
   color: rgba(255, 255, 255, 0.5);
 }

@@ -19,7 +19,7 @@ const usersSlice = createSlice({
     items: [],
     totalPages: 1,
     currentPage: 1,
-    sortBy: "date_of_creation",
+    sortBy: "createdAt",
     order: "DESC",
     loading: false,
     error: null,

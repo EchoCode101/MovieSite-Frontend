@@ -4,9 +4,21 @@ import Stats from "../components/Stats";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import IndexTable from "../components/IndexTable";
-import { fetchVideos, fetchMembers, fetchReviews } from "../../services/api";
+import {
+  fetchVideos,
+  fetchMembers,
+  fetchReviews,
+  fetchVideoMetrics,
+  fetchReviewsWithLikesDislikes,
+  fetchDashboardStats,
+} from "../../services/api";
 
 const Index = ({ headerImage }) => {
+  const [stats, setStats] = useState({
+    uniqueViews: 0,
+    itemsAdded: 0,
+    newComments: 0,
+  });
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
@@ -14,45 +26,54 @@ const Index = ({ headerImage }) => {
   const [topItems, setTopItems] = useState([]);
   const [latestItems, setLatestItems] = useState([]);
   const [loadingTopItems, setLoadingTopItems] = useState(false);
+  const [loadingStats, setLoadingStats] = useState(true);
   const [loadingLatestItems, setLoadingLatestItems] = useState(false);
-  const statsData = [
-    {
-      title: "Unique views this month",
-      numbers: "5,678",
-      svg_path:
-        "M21.92,11.6C19.9,6.91,16.1,4,12,4S4.1,6.91,2.08,11.6a1,1,0,0,0,0,.8C4.1,17.09,7.9,20,12,20s7.9-2.91,9.92-7.6A1,1,0,0,0,21.92,11.6ZM12,18c-3.17,0-6.17-2.29-7.9-6C5.83,8.29,8.83,6,12,6s6.17,2.29,7.9,6C18.17,15.71,15.17,18,12,18ZM12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z",
-    },
-    {
-      title: "Items added this month",
-      numbers: "172",
-      svg_path:
-        "M10,13H4a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,19H5V15H9ZM20,3H14a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,20,3ZM19,9H15V5h4Zm1,7H18V14a1,1,0,0,0-2,0v2H14a1,1,0,0,0,0,2h2v2a1,1,0,0,0,2,0V18h2a1,1,0,0,0,0-2ZM10,3H4A1,1,0,0,0,3,4v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,10,3ZM9,9H5V5H9Z",
-    },
-    {
-      title: "New comments",
-      numbers: "2,573",
-      svg_path:
-        "M8,11a1,1,0,1,0,1,1A1,1,0,0,0,8,11Zm4,0a1,1,0,1,0,1,1A1,1,0,0,0,12,11Zm4,0a1,1,0,1,0,1,1A1,1,0,0,0,16,11ZM12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9A10,10,0,0,0,12,2Zm0,18H5.41l.93-.93a1,1,0,0,0,.3-.71,1,1,0,0,0-.3-.7A8,8,0,1,1,12,20Z",
-    },
-    {
-      title: "New Reviews",
-      numbers: reviews.length.toString(),
-      svg_path:
-        "M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Z",
-    },
-  ];
+  // const statsData = [
+  //   {
+  //     title: "Unique views this month",
+  //     numbers: "5,678",
+  //     svg_path:
+  //       "M21.92,11.6C19.9,6.91,16.1,4,12,4S4.1,6.91,2.08,11.6a1,1,0,0,0,0,.8C4.1,17.09,7.9,20,12,20s7.9-2.91,9.92-7.6A1,1,0,0,0,21.92,11.6ZM12,18c-3.17,0-6.17-2.29-7.9-6C5.83,8.29,8.83,6,12,6s6.17,2.29,7.9,6C18.17,15.71,15.17,18,12,18ZM12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z",
+  //   },
+  //   {
+  //     title: "Items added this month",
+  //     numbers: "172",
+  //     svg_path:
+  //       "M10,13H4a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,19H5V15H9ZM20,3H14a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,20,3ZM19,9H15V5h4Zm1,7H18V14a1,1,0,0,0-2,0v2H14a1,1,0,0,0,0,2h2v2a1,1,0,0,0,2,0V18h2a1,1,0,0,0,0-2ZM10,3H4A1,1,0,0,0,3,4v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,10,3ZM9,9H5V5H9Z",
+  //   },
+  //   {
+  //     title: "New comments",
+  //     numbers: "2,573",
+  //     svg_path:
+  //       "M8,11a1,1,0,1,0,1,1A1,1,0,0,0,8,11Zm4,0a1,1,0,1,0,1,1A1,1,0,0,0,12,11Zm4,0a1,1,0,1,0,1,1A1,1,0,0,0,16,11ZM12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9A10,10,0,0,0,12,2Zm0,18H5.41l.93-.93a1,1,0,0,0,.3-.71,1,1,0,0,0-.3-.7A8,8,0,1,1,12,20Z",
+  //   },
+  //   {
+  //     title: "New Reviews",
+  //     numbers: reviews.length.toString(),
+  //     svg_path:
+  //       "M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Z",
+  //   },
+  // ];
 
-  const fetchData = async () => {
+  const refreshTimeDelay = 500;
+  const formatNumber = (value) => {
+    if (value === undefined || value === null || isNaN(value)) return "N/A";
+
+    if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
+    if (value >= 1_000) return `${(value / 1_000).toFixed(1)}k`;
+
+    return value.toString(); // Safely returns the number
+  };
+  // Fetch stats from the API
+  const fetchStats = async () => {
     try {
-      setLoadingTopItems(true);
-      setTimeout(async () => {
-        const { data: videos } = await fetchVideos();
-        setTopItems(videos);
-        setLoadingTopItems(false);
-      }, 1500);
+      setLoadingStats(true);
+      const data = await fetchDashboardStats();
+      setStats(data);
     } catch (error) {
-      console.error("Error fetching videos:", error);
-      setLoadingTopItems(false);
+      console.error("Error fetching stats:", error);
+    } finally {
+      setLoadingStats(false);
     }
   };
   const fetchLatestItemData = async () => {
@@ -62,7 +83,7 @@ const Index = ({ headerImage }) => {
         const { data: videos } = await fetchVideos();
         setLatestItems(videos);
         setLoadingLatestItems(false);
-      }, 1500);
+      }, refreshTimeDelay);
     } catch (error) {
       setLoadingLatestItems(false);
       console.error("Error fetching videos:", error);
@@ -75,7 +96,7 @@ const Index = ({ headerImage }) => {
         const { data: users } = await fetchMembers();
         setUsers(users);
         setLoadingUsers(false);
-      }, 1500);
+      }, refreshTimeDelay);
     } catch (error) {
       console.error("Error fetching users:", error);
       setLoadingUsers(false);
@@ -85,25 +106,86 @@ const Index = ({ headerImage }) => {
     try {
       setLoadingReviews(true);
       setTimeout(async () => {
-        const { data: reviews } = await fetchReviews({
-          startDate: "2024-01-01",
-          endDate: "2024-12-31",
-        });
+        const { data: reviews } = await fetchReviewsWithLikesDislikes();
         setReviews(reviews);
         setLoadingReviews(false);
-      }, 1500);
+      }, refreshTimeDelay);
     } catch (error) {
       console.error("Error fetching reviews:", error);
       setLoadingReviews(false);
     }
   };
+  const fetchDataWithRatingsAndMetrics = async () => {
+    try {
+      setLoadingTopItems(true);
+      setTimeout(async () => {
+        // Fetch videos, reviews, and metrics simultaneously
+        const [{ data: videos }, { data: reviews }, { data: metrics }] =
+          await Promise.all([
+            fetchVideos(),
+            fetchReviews({ startDate: "2024-01-01", endDate: "2024-12-31" }),
+            fetchVideoMetrics(),
+          ]);
+
+        // Merge reviews and metrics into videos
+        const mergedData = videos.map((video) => {
+          const review = reviews.find((rev) => rev.video_id === video.video_id);
+          const metric = metrics.find((m) => m.video_id === video.video_id);
+
+          return {
+            ...video,
+            rating: review ? review.rating : "N/A",
+            views_count: metric?.views_count || 0,
+            shares_count: metric?.shares_count || 0,
+            favorites_count: metric?.favorites_count || 0,
+            report_count: metric?.report_count || 0,
+          };
+        });
+
+        setTopItems(mergedData);
+        setLoadingTopItems(false);
+      }, refreshTimeDelay);
+    } catch (error) {
+      console.error("Error merging data:", error);
+      setLoadingTopItems(false);
+    }
+  };
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
+    fetchDataWithRatingsAndMetrics();
     fetchLatestItemData();
     fetchUsers();
     fetchRecentReviews();
+    fetchStats();
+    formatNumber();
   }, []);
+  const statsData = [
+    {
+      title: "Unique views this month",
+      numbers: loadingStats ? "Loading..." : stats.uniqueViews.toLocaleString(),
+      svg_path:
+        "M21.92,11.6C19.9,6.91,16.1,4,12,4S4.1,6.91,2.08,11.6a1,1,0,0,0,0,.8C4.1,17.09,7.9,20,12,20s7.9-2.91,9.92-7.6A1,1,0,0,0,21.92,11.6ZM12,18c-3.17,0-6.17-2.29-7.9-6C5.83,8.29,8.83,6,12,6s6.17,2.29,7.9,6C18.17,15.71,15.17,18,12,18ZM12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z",
+    },
+    {
+      title: "Videos added this month",
+      numbers: loadingStats ? "Loading..." : stats.itemsAdded.toLocaleString(),
+      svg_path:
+        "M10,13H4a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,19H5V15H9ZM20,3H14a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,20,3ZM19,9H15V5h4Zm1,7H18V14a1,1,0,0,0-2,0v2H14a1,1,0,0,0,0,2h2v2a1,1,0,0,0,2,0V18h2a1,1,0,0,0,0-2ZM10,3H4A1,1,0,0,0,3,4v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,10,3ZM9,9H5V5H9Z",
+    },
+    {
+      title: "New comments",
+      numbers: loadingStats ? "Loading..." : stats.newComments.toLocaleString(),
+      svg_path:
+        "M8,11a1,1,0,1,0,1,1A1,1,0,0,0,8,11Zm4,0a1,1,0,1,0,1,1A1,1,0,0,0,12,11Zm4,0a1,1,0,1,0,1,1A1,1,0,0,0,16,11ZM12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9A10,10,0,0,0,12,2Zm0,18H5.41l.93-.93a1,1,0,0,0,.3-.71,1,1,0,0,0-.3-.7A8,8,0,1,1,12,20Z",
+    },
+    {
+      title: "New Reviews",
+      numbers: loadingStats ? "Loading..." : stats.newReviews.toLocaleString(),
+      svg_path:
+        "M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Z",
+    },
+  ];
   return (
     <>
       <Header headerImage={headerImage} />
@@ -149,12 +231,47 @@ const Index = ({ headerImage }) => {
                 {
                   header: "Rating",
                   accessor: "rating",
-                  render: (value) => (value ? value.toFixed(1) : "N/A"),
+                  render: (value) =>
+                    value ? (
+                      <span
+                        className={`${
+                          value >= 10
+                            ? "main__table-text--green"
+                            : value < 2
+                            ? "main__table-text--red"
+                            : ""
+                        }`}
+                      >
+                        {value.toFixed(1)}
+                      </span>
+                    ) : (
+                      "N/A"
+                    ),
+                },
+                {
+                  header: "Views",
+                  accessor: "views_count",
+                  render: formatNumber,
+                },
+                {
+                  header: "Shares",
+                  accessor: "shares_count",
+                  render: formatNumber,
+                },
+                {
+                  header: "Favorites",
+                  accessor: "favorites_count",
+                  render: formatNumber,
+                },
+                {
+                  header: "Reports",
+                  accessor: "report_count",
+                  render: formatNumber,
                 },
               ]}
               data={topItems}
               loading={loadingTopItems}
-              onRefresh={fetchData}
+              onRefresh={fetchDataWithRatingsAndMetrics}
               viewAllLink="catalog"
             />{" "}
             <IndexTable
@@ -167,9 +284,29 @@ const Index = ({ headerImage }) => {
                 { header: "Title", accessor: "title" },
                 { header: "Category", accessor: "category" },
                 {
-                  header: "Status",
-                  accessor: "is_active",
-                  render: (value) => (value ? "Visible" : "Hidden"),
+                  header: "Access Level",
+                  accessor: "access_level",
+                  render: (value) => (
+                    <span
+                      className={`${
+                        value === "Free"
+                          ? ""
+                          : value === "Basic"
+                          ? "main__table-text--mint"
+                          : value === "Premium"
+                          ? "main__table-text--pink"
+                          : "main__table-text--golden"
+                      }`}
+                    >
+                      {value}
+                    </span>
+                  ),
+                },
+                {
+                  header: "File Size",
+                  accessor: "file_size",
+                  render: (value) =>
+                    value ? `${(value / 1024 / 1024).toFixed(2)} MB` : "N/A",
                 },
               ]}
               data={latestItems}
@@ -192,6 +329,40 @@ const Index = ({ headerImage }) => {
                 },
                 { header: "Email", accessor: "email" },
                 { header: "Username", accessor: "username" },
+                {
+                  header: "Status",
+                  accessor: "status",
+                  render: (value) => (
+                    <span
+                      className={`${
+                        value === "Active"
+                          ? "main__table-text--green"
+                          : "main__table-text--red"
+                      }`}
+                    >
+                      {value}
+                    </span>
+                  ),
+                },
+                {
+                  header: "Plan",
+                  accessor: "subscription_plan",
+                  render: (value) => (
+                    <span
+                      className={`${
+                        value === "Free"
+                          ? ""
+                          : value === "Basic"
+                          ? "main__table-text--mint"
+                          : value === "Premium"
+                          ? "main__table-text--pink"
+                          : "main__table-text--golden"
+                      }`}
+                    >
+                      {value}
+                    </span>
+                  ),
+                },
               ]}
               data={users}
               loading={loadingUsers}
@@ -210,8 +381,8 @@ const Index = ({ headerImage }) => {
                 { header: "ID", accessor: "review_id" },
                 {
                   header: "Item",
-                  accessor: "video.title",
-                  render: (_, row) => row.video?.title || "No Title",
+                  accessor: "review_content",
+                  render: (_, row) => row.review_content || "No Title",
                 },
                 {
                   header: "Author",
@@ -221,7 +392,62 @@ const Index = ({ headerImage }) => {
                       row.member?.last_name || ""
                     }`,
                 },
-                { header: "Rating", accessor: "rating" },
+                {
+                  header: "Rating",
+                  accessor: "rating",
+                  render: (value) =>
+                    value ? (
+                      <span
+                        className={`${
+                          value >= 10
+                            ? "main__table-text--green"
+                            : value < 2
+                            ? "main__table-text--red"
+                            : ""
+                        }`}
+                      >
+                        {value.toFixed(1)}
+                      </span>
+                    ) : (
+                      "N/A"
+                    ),
+                },
+                {
+                  header: "Likes",
+                  accessor: "likes",
+                  render: (value) =>
+                    value ? (
+                      <span
+                        className={`${
+                          value > 0
+                            ? "main__table-text--green"
+                            : "main__table-text--grey"
+                        }`}
+                      >
+                        {value}
+                      </span>
+                    ) : (
+                      "0"
+                    ),
+                },
+                {
+                  header: "Dislikes",
+                  accessor: "dislikes",
+                  render: (value) =>
+                    value ? (
+                      <span
+                        className={`${
+                          value > 0
+                            ? "main__table-text--red"
+                            : "main__table-text--grey"
+                        }`}
+                      >
+                        {value}
+                      </span>
+                    ) : (
+                      "0"
+                    ),
+                },
               ]}
               data={reviews}
               loading={loadingReviews}

@@ -69,7 +69,9 @@ const IndexTable = ({
                     <tr key={index}>
                       {columns.map((col) => (
                         <td key={col.accessor}>
-                          <div className={`main__table-text ${classvalue}`}>
+                          <div
+                            className={`main__table-text ${classvalue || ""}`}
+                          >
                             {col.accessor === "rating" ? (
                               <>
                                 {" "}

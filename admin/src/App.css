@@ -42,7 +42,145 @@
   animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
   stroke-linecap: round;
 }
+.hover-title-desc {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+.hover-title-desc {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
 
+.hover-title-desc .tooltiptext {
+  visibility: hidden;
+  width: 280px; /* Adjust width as needed */
+  max-width: 280px; /* Limit width for better readability */
+  background-color: #182138; /* Slight transparency for aesthetics */
+  color: #fff;
+  border-radius: 4px; /* Slight rounding for cleaner appearance */
+  padding: 8px 12px; /* Adequate padding for text */
+  position: absolute;
+  z-index: 10;
+  bottom: calc(100% + 10px); /* Adds extra height from title */
+  left: 0px; /* Tooltip starts 20px from the title's start */
+  font-size: 12px; /* Adjust font size */
+  white-space: normal; /* Wrap text if it exceeds max-width */
+  line-height: 1.4; /* Improve text readability */
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds slight shadow for visibility */
+  pointer-events: none; /* Prevents interaction issues */
+  border-radius: 12px;
+  border: 2px solid #4d82ff6c;
+}
+
+.hover-title-desc .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* Position arrow at the bottom of the tooltip */
+  left: 15px; /* Center the arrow */
+  transform: translateX(-50%);
+  border-width: 10px; /* Size of the arrow */
+  border-style: solid;
+  border-color: #4d82ff6c transparent transparent transparent; /* Arrow color matches the tooltip */
+}
+
+.hover-title-desc:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+.hover-likes-desc,
+.hover-dislikes-desc {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+.hover-likes-desc .tooltiptext,
+.hover-dislikes-desc .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  max-width: 200px;
+  background-color: #182138;
+  color: #fff;
+  border-radius: 4px;
+  padding: 8px 12px;
+  position: absolute;
+  z-index: 10;
+  bottom: calc(100% + 1px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  border-radius: 12px;
+  border: 2px solid #4d82ff6c;
+}
+
+.hover-likes-desc:hover .tooltiptext,
+.hover-dislikes-desc:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+.refresh-btn {
+  margin: 5px 20px;
+}
+.main__table-text {
+  user-select: none;
+}
+.floating-div-container {
+  position: relative;
+  cursor: pointer;
+}
+.floating-div {
+  position: absolute;
+  top: 40px;
+  right: -10px;
+  background: #181e30;
+  border: 1px solid #c3c3c340;
+  padding: 10px;
+  box-shadow: 2px 3px 4px 1px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  user-select: none;
+  border-radius: 12px;
+  width: max-content;
+  text-align: center;
+}
+.floating-div p {
+  font-size: 14px;
+}
+.floating-btn {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 8px;
+}
+.floating-btn.proceed {
+  background-color: #4caf50;
+  color: rgb(255, 255, 255);
+}
+.floating-btn.deny {
+  background-color: #f44336;
+  color: white;
+}
+.floating-div::after {
+  content: "";
+  position: absolute;
+  bottom: 100%; /* Position arrow at the bottom of the tooltip */
+  right: 3px; /* Center the arrow */
+  transform: translateX(-50%);
+  border-width: 10px; /* Size of the arrow */
+  border-style: solid;
+  border-color: transparent transparent #656b83 transparent; /* Arrow color matches the tooltip */
+}
 @-webkit-keyframes rotate {
   100% {
     -webkit-transform: rotate(360deg);

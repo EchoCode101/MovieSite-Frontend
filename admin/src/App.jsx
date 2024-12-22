@@ -7,6 +7,7 @@ import {
 // import { useEffect } from "react";
 import "./App.css";
 import headerImage from "./assets/img/logo.svg";
+import "react-toastify/dist/ReactToastify.css";
 
 // Import your pages
 import Index from "./pages/Index";
@@ -25,7 +26,7 @@ import { useCallback, useEffect } from "react";
 import { Provider } from "react-redux";
 import store from "../redux/store";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import { ToastContainer } from "react-toastify";
 function App() {
   // useEffect(() => {
   //   console.log("Admin dashboard loaded"); // Debugging purpose
@@ -102,6 +103,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
+      <ToastContainer />
     </Provider>
   );
 }

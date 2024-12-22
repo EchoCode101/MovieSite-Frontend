@@ -19,7 +19,7 @@ const catalogSlice = createSlice({
     items: [],
     totalPages: 1,
     currentPage: 1,
-    sortBy: "last_updated",
+    sortBy: "updatedAt",
     order: "DESC",
     loading: false,
     error: null,
