@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchPaginatedVideos } from "../services/api";
+import { fetchPaginatedVideos } from "../services/allRoutes";
 
 export const loadPaginatedVideos = createAsyncThunk(
   "catalog/loadPaginatedVideos",
@@ -19,8 +19,8 @@ const catalogSlice = createSlice({
     items: [],
     totalPages: 1,
     currentPage: 1,
-    sortBy: "updatedAt",
-    order: "DESC",
+    sortBy: "video_id",
+    order: "ASC",
     loading: false,
     error: null,
   },

@@ -73,9 +73,9 @@ const ResetPassword = () => {
           <div className="col-12">
             <div className="sign__content">
               <form className="sign__form" onSubmit={handleSubmit}>
-                <a href="#" className="sign__logo">
+                <button className="sign__logo a-tag">
                   <img src="/src/assets/img/logo.svg" alt="Logo" />
-                </a>
+                </button>
                 {error && (
                   <div
                     className="sign__group"

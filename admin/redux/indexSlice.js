@@ -3,7 +3,7 @@ import {
   fetchVideos,
   fetchMembers,
   fetchReviewsWithLikesDislikes,
-} from "../services/api";
+} from "../services/allRoutes";
 
 // Fetch unique views
 export const fetchUniqueViews = createAsyncThunk(

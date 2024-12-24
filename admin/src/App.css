@@ -73,7 +73,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds slight shadow for visibility */
   pointer-events: none; /* Prevents interaction issues */
   border-radius: 12px;
-  border: 2px solid #4d82ff6c;
+  border: 2px solid #3e599a;
 }
 
 .hover-title-desc .tooltiptext::after {
@@ -84,7 +84,7 @@
   transform: translateX(-50%);
   border-width: 10px; /* Size of the arrow */
   border-style: solid;
-  border-color: #4d82ff6c transparent transparent transparent; /* Arrow color matches the tooltip */
+  border-color: #3e599a transparent transparent transparent; /* Arrow color matches the tooltip */
 }
 
 .hover-title-desc:hover .tooltiptext {
@@ -143,7 +143,7 @@
   top: 40px;
   right: -10px;
   background: #181e30;
-  border: 1px solid #c3c3c340;
+  border: 1px solid #444755;
   padding: 10px;
   box-shadow: 2px 3px 4px 1px rgba(0, 0, 0, 0.2);
   z-index: 1000;
@@ -179,7 +179,7 @@
   transform: translateX(-50%);
   border-width: 10px; /* Size of the arrow */
   border-style: solid;
-  border-color: transparent transparent #656b83 transparent; /* Arrow color matches the tooltip */
+  border-color: transparent transparent #444755 transparent; /* Arrow color matches the tooltip */
 }
 @-webkit-keyframes rotate {
   100% {

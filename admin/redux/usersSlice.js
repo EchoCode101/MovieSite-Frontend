@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchPaginatedUsers } from "../services/api";
+import { fetchPaginatedUsers } from "../services/allRoutes";
 
 export const loadPaginatedUsers = createAsyncThunk(
   "users/loadPaginatedUsers",

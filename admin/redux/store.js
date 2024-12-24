@@ -6,6 +6,7 @@ import usersReducer from "./usersSlice";
 import commentsReducer from "./commentsSlice";
 import reviewsReducer from "./reviewsSlice";
 import indexReducer from "./indexSlice";
+import memberReducer from "./memberSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     comments: commentsReducer, // Correctly linked reducer
     reviews: reviewsReducer, // Correctly linked reducer
     dashboard: indexReducer,
+    member: memberReducer, // Ensure this is correct
   },
 });
 

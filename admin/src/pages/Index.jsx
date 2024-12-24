@@ -4,6 +4,8 @@ import Stats from "../components/Stats";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import IndexTable from "../components/IndexTable";
+import { Link } from "react-router-dom";
+
 import {
   fetchVideos,
   fetchMembers,
@@ -11,7 +13,7 @@ import {
   fetchVideoMetrics,
   fetchReviewsWithLikesDislikes,
   fetchDashboardStats,
-} from "../../services/api";
+} from "../../services/allRoutes";
 
 const Index = ({ headerImage }) => {
   const [stats, setStats] = useState({
@@ -202,9 +204,9 @@ const Index = ({ headerImage }) => {
               <div className="main__title">
                 <h2>Dashboard</h2>
 
-                <a href="add-item" className="main__title-link">
+                <Link to="/add-item" className="main__title-link a-tag">
                   add item
-                </a>
+                </Link>
               </div>
             </div>
             {statsData.map((stat, index) => (
@@ -216,6 +218,7 @@ const Index = ({ headerImage }) => {
               />
             ))}
             <IndexTable
+              wraprer_number={1}
               title="Top Items"
               svgPath={
                 "M12,6a1,1,0,0,0-1,1V17a1,1,0,0,0,2,0V7A1,1,0,0,0,12,6ZM7,12a1,1,0,0,0-1,1v4a1,1,0,0,0,2,0V13A1,1,0,0,0,7,12Zm10-2a1,1,0,0,0-1,1v6a1,1,0,0,0,2,0V11A1,1,0,0,0,17,10Zm2-8H5A3,3,0,0,0,2,5V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V5A3,3,0,0,0,19,2Zm1,17a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V5A1,1,0,0,1,5,4H19a1,1,0,0,1,1,1Z"
@@ -275,6 +278,7 @@ const Index = ({ headerImage }) => {
               viewAllLink="catalog"
             />{" "}
             <IndexTable
+              wraprer_number={2}
               title="Latest Items"
               svgPath={
                 "M10,13H3a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,20H4V15H9ZM21,2H14a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM20,9H15V4h5Zm1,4H14a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V14A1,1,0,0,0,21,13Zm-1,7H15V15h5ZM10,2H3A1,1,0,0,0,2,3v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V3A1,1,0,0,0,10,2ZM9,9H4V4H9Z"
@@ -315,6 +319,7 @@ const Index = ({ headerImage }) => {
               viewAllLink="catalog"
             />
             <IndexTable
+              wraprer_number={3}
               title="Latest Users"
               svgPath={
                 "M12.3,12.22A4.92,4.92,0,0,0,14,8.5a5,5,0,0,0-10,0,4.92,4.92,0,0,0,1.7,3.72A8,8,0,0,0,1,19.5a1,1,0,0,0,2,0,6,6,0,0,1,12,0,1,1,0,0,0,2,0A8,8,0,0,0,12.3,12.22ZM9,11.5a3,3,0,1,1,3-3A3,3,0,0,1,9,11.5Zm9.74.32A5,5,0,0,0,15,3.5a1,1,0,0,0,0,2,3,3,0,0,1,3,3,3,3,0,0,1-1.5,2.59,1,1,0,0,0-.5.84,1,1,0,0,0,.45.86l.39.26.13.07a7,7,0,0,1,4,6.38,1,1,0,0,0,2,0A9,9,0,0,0,18.74,11.82Z"
@@ -370,6 +375,7 @@ const Index = ({ headerImage }) => {
               viewAllLink="users"
             />
             <IndexTable
+              wraprer_number={4}
               title="Latest Reviews"
               svgPath={
                 "M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"

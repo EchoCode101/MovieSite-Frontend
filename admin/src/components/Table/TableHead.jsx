@@ -6,7 +6,7 @@ const TableHead = ({ columns }) => {
       <tr>
         {columns.map((col, index) => (
           <th key={index} className={col.className || ""}>
-            {col.label}
+            {col.label.toUpperCase()}
           </th>
         ))}
       </tr>

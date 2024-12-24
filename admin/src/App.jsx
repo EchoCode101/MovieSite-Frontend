@@ -1,13 +1,15 @@
 import {
   BrowserRouter as Router,
   Route,
-  Routes,
   Navigate,
-} from "react-router-dom"; // Import React Router components
-// import { useEffect } from "react";
+  Routes,
+} from "react-router-dom";
 import "./App.css";
-import headerImage from "./assets/img/logo.svg";
 import "react-toastify/dist/ReactToastify.css";
+import { Provider } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import headerImage from "./assets/img/logo.svg";
+import store from "../redux/store";
 
 // Import your pages
 import Index from "./pages/Index";
@@ -15,34 +17,34 @@ import AddItem from "./pages/AddItem";
 import Catalog from "./pages/Catalog";
 import Comments from "./pages/Comments";
 import EditUser from "./pages/EditUser";
+import EditVideo from "./pages/EditVideo";
+import EditComment from "./pages/EditComment";
+import EditReview from "./pages/EditReview";
 import Forgot from "./pages/Forgot";
 import Reviews from "./pages/Reviews";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Users from "./pages/Users";
 import ResetPassword from "./pages/ResetPassword";
-import NotFound from "./pages/NotFoundPage"; // For 404 page
-import { useCallback, useEffect } from "react";
-import { Provider } from "react-redux";
-import store from "../redux/store";
+import NotFound from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { ToastContainer } from "react-toastify";
+import UseJQueryReInit from "./components/UseJQueryReInit";
 function App() {
-  // useEffect(() => {
-  //   console.log("Admin dashboard loaded"); // Debugging purpose
-  // }, []);
-
-  const isAuthenticated = useCallback(() => {
-    // Add logic to check if the user is authenticated
-    const token = localStorage.getItem("token");
-    return !!token;
-  }, []);
-
-  useEffect(() => {}, [isAuthenticated]);
-
   return (
     <Provider store={store}>
       <Router>
+        {/* Initialize all jQuery files */}
+        <UseJQueryReInit
+          files={[
+            "/src/utils/js/admin.js",
+            "/src/utils/js/bootstrap.bundle.min.js",
+            "/src/utils/js/jquery-3.5.1.min.js",
+            "/src/utils/js/jquery.magnific-popup.min.js",
+            "/src/utils/js/modal.js",
+            "/src/utils/js/select2.min.js",
+            "/src/utils/js/smooth-scrollbar.js",
+          ]}
+        />
         <Routes>
           {/* Public routes */}
           <Route path="/signin" element={<Signin />} />
@@ -52,53 +54,88 @@ function App() {
             path="/reset-admin-password/:token"
             element={<ResetPassword />}
           />
-
           {/* Protected routes */}
-          {isAuthenticated() ? (
-            <>
-              <Route path="/" element={<Navigate to="/dashboard" />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Index headerImage={headerImage} />
-                  </ProtectedRoute>
-                }
-              />
-              {/* <Route path="/" element={<Navigate to="/dashboard" />} />
-              <Route
-                path="/dashboard"
-                element={<Index headerImage={headerImage} />}
-              /> */}
-              <Route
-                path="/catalog"
-                element={<Catalog headerImage={headerImage} />}
-              />
-              <Route
-                path="/add-item"
-                element={<AddItem headerImage={headerImage} />}
-              />
-              <Route
-                path="/comments"
-                element={<Comments headerImage={headerImage} />}
-              />
-              <Route
-                path="/edit-user"
-                element={<EditUser headerImage={headerImage} />}
-              />
-              <Route
-                path="/reviews"
-                element={<Reviews headerImage={headerImage} />}
-              />
-              <Route
-                path="/users"
-                element={<Users headerImage={headerImage} />}
-              />
-            </>
-          ) : (
-            <Route path="*" element={<Navigate to="/signin" replace />} />
-          )}
-
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Index headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/catalog"
+            element={
+              <ProtectedRoute>
+                <Catalog headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-item"
+            element={
+              <ProtectedRoute>
+                <AddItem headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/comments"
+            element={
+              <ProtectedRoute>
+                <Comments headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/reviews"
+            element={
+              <ProtectedRoute>
+                <Reviews headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                <Users headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />{" "}
+          <Route
+            path="/edit-user/:memberId"
+            element={
+              <ProtectedRoute>
+                <EditUser headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-video/:videoId"
+            element={
+              <ProtectedRoute>
+                <EditVideo headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-comment/:commentId"
+            element={
+              <ProtectedRoute>
+                <EditComment headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-review/:reviewId"
+            element={
+              <ProtectedRoute>
+                <EditReview headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
           {/* Fallback route for 404 pages */}
           <Route path="*" element={<NotFound />} />
         </Routes>

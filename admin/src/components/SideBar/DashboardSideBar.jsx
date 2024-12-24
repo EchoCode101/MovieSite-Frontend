@@ -2,6 +2,7 @@ import SidebarNavItem from "./SidebarNavItem";
 import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom"; // Import useLocation
 import SidebarUser from "./SideBarUser";
+import { Link } from "react-router-dom";
 
 const DashboardSideBar = ({ activeLink, headerImage }) => {
   const location = useLocation(); // Get the current URL
@@ -53,15 +54,15 @@ const DashboardSideBar = ({ activeLink, headerImage }) => {
   return (
     <>
       <div className="sidebar">
-        <a href="dashboard" className="sidebar__logo">
+        <Link to="/dashboard" className="sidebar__logo  a-tag">
           <img src={headerImage} alt="headerImage" />
-        </a>
+        </Link>
 
         <SidebarUser />
         <ul className="sidebar__nav">
           <li className="sidebar__nav-item">
-            <a
-              className="sidebar__nav-link"
+            <button
+              className="sidebar__nav-link a-tag"
               data-toggle="collapse"
               href="#collapseMenu"
               role="button"
@@ -75,26 +76,38 @@ const DashboardSideBar = ({ activeLink, headerImage }) => {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M17,9.17a1,1,0,0,0-1.41,0L12,12.71,8.46,9.17a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42l4.24,4.24a1,1,0,0,0,1.42,0L17,10.59A1,1,0,0,0,17,9.17Z" />
               </svg>
-            </a>
+            </button>
 
             <ul className="collapse sidebar__menu" id="collapseMenu">
               <li>
-                <a href="add-item">Add item</a>
+                <Link className=" a-tag" to="/add-item">
+                  Add item
+                </Link>
               </li>
               <li>
-                <a href="edit-user">Edit user</a>
+                <Link className=" a-tag" to="/edit-user">
+                  Edit user
+                </Link>
               </li>
               <li>
-                <a href="signin">Sign in</a>
+                <Link className=" a-tag" to="/signin">
+                  Sign in
+                </Link>
               </li>
               <li>
-                <a href="signup">Sign up</a>
+                <Link className=" a-tag" to="/signup">
+                  Sign up
+                </Link>
               </li>
               <li>
-                <a href="forgot">Forgot password</a>
+                <Link className=" a-tag" to="/forgot">
+                  Forgot password
+                </Link>
               </li>
               <li>
-                <a href="404">404 page</a>
+                <Link className=" a-tag" to="/404">
+                  404 page
+                </Link>
               </li>
             </ul>
           </li>
@@ -110,11 +123,16 @@ const DashboardSideBar = ({ activeLink, headerImage }) => {
         </ul>
 
         <div className="sidebar__copyright">
-          © Punjabi Dub, 2024-2025. Create by
-          <a href="#" target="_blank">
+          © Punjabi Dub, 2024-2025. <br />
+          Create by Punjabi Dub Team. <br />
+          Designed by{" "}
+          <a
+            href="https://github.com/EchoCode101"
+            target="_blank"
+            className="a-tag"
+          >
             Hamza
           </a>
-          .
         </div>
       </div>
     </>

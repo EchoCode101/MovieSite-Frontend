@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchPaginatedReviews } from "../services/api"; // Adjust API method
+import { fetchPaginatedReviews } from "../services/allRoutes"; // Adjust API method
 
 // Async thunk to load paginated reviews
 export const loadPaginatedReviews = createAsyncThunk(

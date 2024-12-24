@@ -18,8 +18,8 @@ const Paginator = ({ pages, currentPage, onPageChange }) => {
       <ul className="paginator__paginator">
         {/* Previous Button */}
         <li>
-          <a
-            href="#"
+          <button
+            className="a-tag"
             onClick={(e) => {
               e.preventDefault();
               handlePageChange(currentPage - 1);
@@ -45,28 +45,28 @@ const Paginator = ({ pages, currentPage, onPageChange }) => {
                 strokeLinejoin="round"
               ></path>
             </svg>
-          </a>
+          </button>
         </li>
 
         {/* Page Numbers */}
         {pages.map((page) => (
           <li key={page} className={page === currentPage ? "active" : ""}>
-            <a
-              href="#"
+            <button
+              className="a-tag"
               onClick={(e) => {
                 e.preventDefault();
                 handlePageChange(page);
               }}
             >
               {page}
-            </a>
+            </button>
           </li>
         ))}
 
         {/* Next Button */}
         <li>
-          <a
-            href="#"
+          <button
+            className="a-tag"
             onClick={(e) => {
               e.preventDefault();
               handlePageChange(currentPage + 1);
@@ -92,7 +92,7 @@ const Paginator = ({ pages, currentPage, onPageChange }) => {
                 strokeLinejoin="round"
               ></path>
             </svg>
-          </a>
+          </button>
         </li>
       </ul>
     </div>

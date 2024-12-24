@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Fof = () => {
   return (
     <>
@@ -11,9 +13,9 @@ const Fof = () => {
                   <p className="page-404__text">
                     The page you are looking for not available!
                   </p>
-                  <a href="/dashboard" className="page-404__btn">
+                  <Link to="/dashboard" className="page-404__btn a-tag">
                     go back
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

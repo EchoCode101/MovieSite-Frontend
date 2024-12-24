@@ -39,7 +39,7 @@ export const sendRefreshToken = createAsyncThunk(
     try {
       const response = await axios.post(
         `${apiUrl}/token/refresh`,
-        {}, // assuming your backend doesn’t need a request body
+        {},
         {
           headers: { authorization: `Bearer ${encryptedRefreshToken}` },
         }

@@ -1,6 +1,8 @@
 import config from "../src/utils/js/config.js";
 import axios from "axios";
 
+let isRefreshing = false;
+let failedQueue = [];
 const apiUrl = config.apiUrl;
 const API = axios.create({
   baseURL: apiUrl, // Base API URL
@@ -8,69 +10,93 @@ const API = axios.create({
     "Content-Type": "application/json",
   },
 });
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
 
-// Add token automatically if stored in localStorage
+  failedQueue = [];
+};
+
+API.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 403 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return API(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      isRefreshing = true;
+      const encryptedRefreshToken = localStorage.getItem("refreshToken");
+      if (encryptedRefreshToken) {
+        try {
+          const { data } = await axios.post(
+            `${apiUrl}/token/refresh`,
+            {},
+            {
+              headers: { authorization: `Bearer ${encryptedRefreshToken}` },
+            }
+          );
+          const newToken = data.token;
+          localStorage.setItem("token", newToken);
+
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return API(originalRequest);
+        } catch (refreshError) {
+          processQueue(refreshError, null);
+          console.error("Token refresh failed:", refreshError.message);
+          localStorage.clear(); // Clear tokens
+          setTimeout(() => {
+            window.location.href = "/signin"; // Redirect to sign-in page
+          }, 2000);
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
+        }
+      } else {
+        console.error("Refresh token missing. Logging out.");
+        localStorage.clear(); // Clear tokens
+        setTimeout(() => {
+          window.location.href = "/signin"; // Redirect to sign-in page
+        }, 2000);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (token) {
+  const tokenPattern = /^[a-f0-9]+:[a-f0-9]+$/i;
+  if (
+    token &&
+    tokenPattern.test(token) &&
+    token.length >= 830 &&
+    token.length <= 835
+  ) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    console.warn(
+      "No valid token found in localStorage. Redirecting to sign-in..."
+    );
+    localStorage.clear(); // Clear tokens
+    setTimeout(() => {
+      window.location.href = "/signin";
+    }, 2000);
   }
   return config;
 });
-
-export const fetchVideos = () => API.get("/videos");
-export const fetchMembers = () => API.get("/members");
-export const fetchVideoMetrics = () => API.get("/video_metrics");
-
-export const fetchDashboardStats = () =>
-  API.get("/admin/stats").then((response) => response.data);
-
-export const fetchReviewsWithLikesDislikes = () =>
-  API.get("/likes-dislikes/reviews-with-likes-dislikes");
-
-export const fetchVideosWithLikesDislikesMembers = () =>
-  API.get("/videos/likes-dislikes-with-members");
-
-export const fetchReviews = (params) => API.get("/reviews/recent", { params });
-
-export const fetchPaginatedVideos = (
-  page = 1,
-  limit = 10,
-  sort = "updatedAt",
-  order = "DESC"
-) =>
-  API.get(`/videos/paginated`, {
-    params: { page, limit, sort, order },
-  }).then((response) => response.data);
-
-export const fetchPaginatedUsers = (
-  page = 1,
-  limit = 10,
-  sort = "createdAt",
-  order = "DESC"
-) =>
-  API.get(`/members/paginated`, {
-    params: { page, limit, sort, order },
-  }).then((response) => response.data);
-
-export const fetchPaginatedComments = (
-  page = 1,
-  limit = 10,
-  sort = "createdAt",
-  order = "DESC"
-) =>
-  API.get(`/comments/paginated`, {
-    params: { page, limit, sort, order },
-  }).then((response) => response.data);
-
-export const fetchPaginatedReviews = (
-  page = 1,
-  limit = 10,
-  sort = "createdAt",
-  order = "DESC"
-) =>
-  API.get(`/reviews/paginated`, {
-    params: { page, limit, sort, order },
-  }).then((response) => response.data);
 
 export default API;

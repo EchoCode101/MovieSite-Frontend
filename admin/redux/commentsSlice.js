@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchPaginatedComments } from "../services/api";
+import { fetchPaginatedComments } from "../services/allRoutes";
 
 export const loadPaginatedComments = createAsyncThunk(
   "comments/loadPaginatedComments",

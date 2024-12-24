@@ -1,25 +1,38 @@
 import PropTypes from "prop-types";
+import Svg from "../components/Svg";
+import { Link } from "react-router-dom";
 
 const FloatingDiv = ({
   iconPath,
-  href,
   className,
   onProceed,
   onDeny,
   isVisible,
+  toggle,
   onToggle,
+  id,
+  href,
 }) => {
+  const handleClick = (e) => {
+    console.log("FloatingDiv clicked, toggle:", toggle); // Debugging
+    if (toggle) {
+      e.stopPropagation(); // Prevent the event from propagating further
+      onToggle(); // Call the function passed as prop
+    }
+  };
   return (
     <div
       className={`floating-div-container main__table-btn ${className}`}
-      {...(typeof href === "string" ? { href } : { onClick: onToggle })}
+      onClick={handleClick} // Use the handler here
     >
-      {/* Trigger Button */}
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d={iconPath}></path>
-      </svg>
+      {toggle === false ? (
+        <Link className="a-tag" to={`${href}/${id}`}>
+          <Svg path={iconPath} />
+        </Link>
+      ) : (
+        <Svg path={iconPath} />
+      )}
 
-      {/* Conditional Rendering for Floating Div */}
       {isVisible && (
         <div className="floating-div">
           <p>Are you sure?</p>
@@ -40,9 +53,11 @@ FloatingDiv.propTypes = {
   onDeny: PropTypes.func.isRequired,
   iconPath: PropTypes.string.isRequired,
   className: PropTypes.string,
-  href: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   isVisible: PropTypes.bool.isRequired,
   onToggle: PropTypes.func.isRequired,
+  toggle: PropTypes.bool,
+  href: PropTypes.string,
+  id: PropTypes.string.isRequired,
 };
 
 export default FloatingDiv;

@@ -73,9 +73,9 @@ const Forgot = () => {
           <div className="col-12">
             <div className="sign__content">
               <form className="sign__form" onSubmit={handleSubmit}>
-                <a href="#" className="sign__logo">
+                <button className="sign__logo a-tag">
                   <img src="/src/assets/img/logo.svg" alt="Logo" />
-                </a>
+                </button>
                 {error && (
                   <div
                     className="sign__group"
@@ -120,7 +120,10 @@ const Forgot = () => {
                   We will send a password reset link to your email.
                 </span>
                 <span className="sign__text">
-                  Go back to <Link to="/signin">Signin Page</Link>
+                  Go back to{" "}
+                  <Link className=" a-tag" to="/signin">
+                    Signin Page
+                  </Link>
                 </span>
               </form>
             </div>

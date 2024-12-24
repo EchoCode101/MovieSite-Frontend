@@ -30,6 +30,19 @@ const Table = ({ data, columns, buttonData }) => {
               data={{ ...item, id: item.id || index }} // Add unique id if missing
               columns={columns}
               buttonData={buttonData}
+              id={
+                item.member_id ||
+                item.video_id ||
+                item.comment_id ||
+                item.review_id ||
+                item.reply_id
+              }
+              InactiveClassName={
+                item.status == "Inactive"
+                  ? "main__table-btn_inactive--banned"
+                  : ""
+              }
+              status={item.status}
               onToggle={handleToggle}
               onProceed={handleProceed}
               onDeny={handleDeny}
@@ -61,8 +74,10 @@ Table.propTypes = {
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       iconPath: PropTypes.string.isRequired,
-      href: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+      toggle: PropTypes.bool,
+      href: PropTypes.string,
       className: PropTypes.string,
+      InactiveClassName: PropTypes.string,
     })
   ).isRequired,
 };

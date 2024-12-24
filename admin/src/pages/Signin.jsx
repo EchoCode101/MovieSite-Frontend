@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/authSlice.js";
 import config from "../utils/js/config.js";
+// import { useNavigate } from "react-router-dom";
 const Signin = () => {
   const Home = "/dashboard";
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ const Signin = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const apiUrl = config.apiUrl;
-
+  // const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form submission from refreshing the page
     setErrorMessage(""); // Reset error message on submit
@@ -28,9 +29,11 @@ const Signin = () => {
       );
       const { token, refreshToken } = response.data;
       dispatch(loginSuccess({ token, refreshToken }));
-      localStorage.setItem("token", token);
-      localStorage.setItem("refreshToken", refreshToken);
+      // localStorage.setItem("token", token);
+      // localStorage.setItem("refreshToken", refreshToken);
       window.location.href = Home;
+
+      // navigate(Home);
     } catch (error) {
       setLoading(false);
       if (error.response && error.response.data) {
@@ -51,7 +54,7 @@ const Signin = () => {
           <div className="col-12">
             <div className="sign__content">
               <form className="sign__form" onSubmit={handleSubmit}>
-                <Link to="/signin" className="sign__logo">
+                <Link to="/signin" className="sign__logo a-tag">
                   <img src="/src/assets/img/logo.svg" alt="Logo" />
                 </Link>
                 {errorMessage && (
@@ -100,10 +103,15 @@ const Signin = () => {
                   {loading ? "Signing in..." : "Sign in"}
                 </button>
                 <span className="sign__text">
-                  Don&apos;t have an account? <Link to="/signup">Sign up!</Link>
+                  Don&apos;t have an account?{" "}
+                  <Link className=" a-tag" to="/signup">
+                    Sign up!
+                  </Link>
                 </span>
                 <span className="sign__text">
-                  <Link to="/forgot">Forgot password?</Link>
+                  <Link className=" a-tag" to="/forgot">
+                    Forgot password?
+                  </Link>
                 </span>
               </form>
             </div>

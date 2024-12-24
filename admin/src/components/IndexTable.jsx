@@ -1,6 +1,7 @@
 // IndexTable.js
 import PropTypes from "prop-types";
 import LoadingSpinner from "./LoadingSpinner";
+import { Link } from "react-router-dom";
 import Svg from "../components/Svg";
 const IndexTable = ({
   title,
@@ -12,6 +13,7 @@ const IndexTable = ({
   svgPath,
   svgPath1,
   classvalue,
+  wraprer_number,
 }) => {
   return (
     <div className="col-12 col-xl-6">
@@ -39,15 +41,15 @@ const IndexTable = ({
               </button>
             )}
             {viewAllLink && (
-              <a className="dashbox__more" href={viewAllLink}>
+              <Link className="dashbox__more a-tag" to={`/${viewAllLink}`}>
                 View All
-              </a>
+              </Link>
             )}
           </div>
         </div>
 
         <div
-          className="dashbox__table-wrap dashbox__table-wrap--1"
+          className={`dashbox__table-wrap dashbox__table-wrap--${wraprer_number}`}
           data-scrollbar="true"
           tabIndex="-1"
           style={{ overflow: "hidden", outline: "none" }}
@@ -56,7 +58,7 @@ const IndexTable = ({
             <thead>
               <tr>
                 {columns.map((col) => (
-                  <th key={col.accessor}>{col.header}</th>
+                  <th key={col.accessor}>{col.header.toUpperCase()}</th>
                 ))}
               </tr>
             </thead>
@@ -121,6 +123,7 @@ IndexTable.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   viewAllLink: PropTypes.string,
   svgPath: PropTypes.string,
+  wraprer_number: PropTypes.number,
   svgPath1: PropTypes.string,
 };
 

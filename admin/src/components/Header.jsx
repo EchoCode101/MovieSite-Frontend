@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 const Header = ({ headerImage }) => {
   return (
     <header className="header">
       <div className="header__content">
-        <a href="/" className="header__logo">
+        <Link to="/" className="header__logo a-tag">
           <img src={headerImage} alt="logo" />
-        </a>
+        </Link>
 
         <button className="header__btn" type="button">
           <span></span>

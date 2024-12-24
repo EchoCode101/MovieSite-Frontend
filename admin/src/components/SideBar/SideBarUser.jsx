@@ -11,16 +11,23 @@ const SidebarUser = () => {
       dispatch(logout());
     }, 1500);
   };
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   return (
     <div className="sidebar__user">
       <div className="sidebar__user-img">
-        <img src={userSvg} alt="User Svg" />
+        <img src={user?.profileImage || userSvg} alt="User Svg" />
       </div>
 
       <div className="sidebar__user-title">
-        <span>Admin</span>
-        <p>John Doe</p>
+        <span>
+          {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+        </span>
+        <p>
+          {user?.first_name?.charAt(0).toUpperCase() +
+            user?.first_name?.slice(1)}{" "}
+          {user?.last_name?.charAt(0).toUpperCase() + user?.last_name?.slice(1)}
+        </p>
       </div>
       <button
         className="sidebar__user-btn open-modal"

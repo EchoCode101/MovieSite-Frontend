@@ -10,6 +10,8 @@ const TableRow = ({
   onProceed,
   onDeny,
   visibleDivId,
+  id,
+  status,
 }) => {
   return (
     <tr>
@@ -24,14 +26,24 @@ const TableRow = ({
         <td>
           <div className="main__table-btns">
             {buttonData.map((button, index) => {
-              const uniqueId = `${data.id}-${button.id}`; // Combine row id and button id for a truly unique ID
-              console.log("uniqueId: " + uniqueId); // Debugging log
+              const uniqueId = `${data.id}-${button.id}`;
+              const buttonInactiveClass =
+                status === "Inactive" && index === 0
+                  ? "main__table-btn_inactive--banned"
+                  : "";
+              // Apply inactive class only to the first button
+
+              // Combine row id and button id for a truly unique ID
+              // console.log("Rendering FloatingDiv with uniqueId:", uniqueId); // Debugging log
+              // console.log("uniqueId: " + uniqueId); // Debugging log
               return (
                 <FloatingDiv
+                  id={String(id)} // Convert memberId to a string
                   isVisible={visibleDivId === uniqueId}
                   key={uniqueId} // Use uniqueId as the key
                   iconPath={button.iconPath}
-                  className={button.className}
+                  className={`${button.className} ${buttonInactiveClass}`}
+                  toggle={button.toggle}
                   href={button.href}
                   onToggle={() => onToggle(uniqueId)}
                   onProceed={() => onProceed(uniqueId)}
@@ -56,16 +68,18 @@ TableRow.propTypes = {
   ).isRequired,
   buttonData: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       className: PropTypes.string,
       iconPath: PropTypes.string.isRequired,
-      href: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+      toggle: PropTypes.bool,
+      href: PropTypes.string,
     })
   ),
   onToggle: PropTypes.func.isRequired,
   onProceed: PropTypes.func.isRequired,
   onDeny: PropTypes.func.isRequired,
   visibleDivId: PropTypes.string, // Use string instead of number for flexibility
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  status: PropTypes.string,
 };
 
 export default TableRow;

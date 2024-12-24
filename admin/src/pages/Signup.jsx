@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../utils/js/config.js";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const apiUrl = config.apiUrl;
@@ -70,7 +71,10 @@ const Signup = () => {
 
   return (
     <>
-      <div className="sign section--bg" data-bg="/src/assets/img/bg.jpg">
+      <div
+        className="sign section--bg"
+        style={{ backgroundImage: "url('/src/assets/img/bg.jpg')" }}
+      >
         <div className="container">
           <div className="row">
             <div className="col-12">
@@ -80,9 +84,9 @@ const Signup = () => {
                   className="sign__form"
                   onSubmit={handleSubmit}
                 >
-                  <a href="#" className="sign__logo">
+                  <button className="sign__logo a-tag">
                     <img src="/src/assets/img/logo.svg" alt="" />
-                  </a>
+                  </button>
                   <div className="sign__group">
                     <input
                       type="text"
@@ -144,7 +148,9 @@ const Signup = () => {
                   )}{" "}
                   <span className="sign__text">
                     Already have an account?
-                    <a href="/signin">Sign in!</a>
+                    <Link className=" a-tag" to="/signin">
+                      Sign in!
+                    </Link>
                   </span>
                 </form>
               </div>
