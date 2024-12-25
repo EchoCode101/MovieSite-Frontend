@@ -17,7 +17,7 @@ const AddItem = ({ headerImage }) => {
             <div className="row">
               <div className="col-12">
                 <div className="main__title">
-                  <h2>Add new item</h2>
+                  <h2>Add New Video</h2>
                 </div>
               </div>
 

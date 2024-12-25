@@ -181,6 +181,21 @@
   border-style: solid;
   border-color: transparent transparent #444755 transparent; /* Arrow color matches the tooltip */
 }
+.toast-pending {
+  background-color: #ffeeba !important; /* Light yellow background */
+  color: #856404 !important; /* Dark yellow text */
+}
+
+.toast-success {
+  background-color: #d4edda !important; /* Light green background */
+  color: #155724 !important; /* Dark green text */
+}
+
+.toast-error {
+  background-color: #f8d7da !important; /* Light red background */
+  color: #721c24 !important; /* Dark red text */
+}
+
 @-webkit-keyframes rotate {
   100% {
     -webkit-transform: rotate(360deg);

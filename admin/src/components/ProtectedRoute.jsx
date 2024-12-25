@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { validateToken, sendRefreshToken, logout } from "../../redux/authSlice";
 import LoadingSpinner from "./LoadingSpinner";
+import { showErrorToast, toastPromise } from "../utils/js/toastUtils";
 
 const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch();
@@ -11,56 +12,44 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, token, refreshToken, loading } = useSelector(
     (state) => state.auth
   );
-  const Link = "/signin";
-  // const [redirecting, setRedirecting] = useState(false); // Prevent repeated redirects
-
+  const toastDisplayed = useRef(false); // Track if toast has been displayed
   useEffect(() => {
     const checkAuth = async () => {
       if (!token) {
         dispatch(logout());
         navigate("/signin", { replace: true });
-        // window.location.href = Link;
         return;
       }
-      try {
-        // Validate the token
-        const validation = await dispatch(validateToken()).unwrap();
-        if (!validation) {
-          // If validation fails and a refresh token exists, try to refresh
-
-          const tokenPattern = /^[a-f0-9]+:[a-f0-9]+$/i;
-          if (
-            refreshToken &&
-            tokenPattern.test(token) &&
-            token.length >= 510 &&
-            token.length <= 515
-          ) {
-            const refresh = await dispatch(sendRefreshToken()).unwrap();
-            if (!refresh) throw new Error("Token refresh failed");
-          } else {
-            throw new Error("No valid refresh token");
+      if (!toastDisplayed.current) {
+        try {
+          // Validate token
+          await toastPromise(
+            dispatch(validateToken()).unwrap(),
+            "Validating token...",
+            "Token validated successfully!",
+            "Invalid token, logging out."
+          );
+          if (!isAuthenticated && refreshToken) {
+            await toastPromise(
+              dispatch(sendRefreshToken()).unwrap(),
+              "Refreshing token...",
+              "Token refreshed successfully!",
+              "Failed to refresh token, logging out."
+            );
           }
-          //   if (refresh.error) {
-          //     // Refresh failed; log out and redirect to sign-in
-          //     dispatch(logout());
-          //     // navigate("/signin");
-          //     window.location.href = Link;
-          //   }
-          // } else {
-          //   // No refresh token; log out and redirect to sign-in
-          //   dispatch(logout());
-          //   // navigate("/signin");
-          //   window.location.href = Link;
-          // }
+        } catch (error) {
+          showErrorToast(
+            "Authentication Error: " + (error.message || "Network Error")
+          );
+          dispatch(logout());
+          navigate("/signin", { replace: true });
+        } finally {
+          toastDisplayed.current = true; // Ensure this runs only once
         }
-      } catch (error) {
-        console.error("Authentication Error:", error.message);
-        dispatch(logout());
-        navigate("/signin", { replace: true });
       }
     };
     checkAuth();
-  }, [token, dispatch, navigate, refreshToken]);
+  }, [token, dispatch, navigate, refreshToken, isAuthenticated]);
 
   if (loading)
     return (

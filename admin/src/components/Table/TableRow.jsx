@@ -7,7 +7,6 @@ const TableRow = ({
   columns,
   buttonData,
   onToggle,
-  onProceed,
   onDeny,
   visibleDivId,
   id,
@@ -46,7 +45,7 @@ const TableRow = ({
                   toggle={button.toggle}
                   href={button.href}
                   onToggle={() => onToggle(uniqueId)}
-                  onProceed={() => onProceed(uniqueId)}
+                  onProceed={() => button.onProceed && button.onProceed(id)} // Dynamically call `onProceed`
                   onDeny={() => onDeny(uniqueId)}
                 />
               );

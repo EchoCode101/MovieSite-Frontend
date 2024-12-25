@@ -6,7 +6,7 @@ import MemberProfile from "../components/EditUserComp/MemberProfile";
 import MemberComments from "../components/EditUserComp/MemberComments";
 import MemberReviews from "../components/EditUserComp/MemberReviews";
 import ProfileDetailsForm from "../components/EditUserComp/ProfileDetailsForm";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMemberData, updateMemberData } from "../../redux/memberSlice";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -16,21 +16,19 @@ const EditUser = ({ headerImage }) => {
   const dispatch = useDispatch();
   const { memberData, status, error } = useSelector((state) => state.member);
   // console.log("memberData:", JSON.stringify(memberData, null, 2));
-  useEffect(() => {
+
+  const onRefresh = useCallback(() => {
     if (memberId) {
       dispatch(fetchMemberData(memberId));
     }
   }, [dispatch, memberId]);
+  useEffect(() => {
+    onRefresh();
+  }, [onRefresh]);
   // console.log("Member Data:", memberData); // Check the output
-  useEffect(() => {
-    // Fetch member data when the component loads
-    if (memberId) {
-      dispatch(fetchMemberData(memberId));
-    }
-  }, [dispatch, memberId]);
 
   if (status === "loading") {
-    return <LoadingSpinner r={20} w={20} h={20} pt={0} pl={0} />;
+    return <LoadingSpinner r={20} w={30} h={"100vh"} />;
   }
 
   if (status === "failed") {
@@ -56,7 +54,13 @@ const EditUser = ({ headerImage }) => {
             </div>
 
             <div className="col-12">
-              {memberData && <MemberProfile data={memberData} />}
+              {memberData && (
+                <MemberProfile
+                  data={memberData}
+                  status={status}
+                  onRefresh={onRefresh}
+                />
+              )}
               <div className="tab-content" id="myTabContent">
                 <div
                   className="tab-pane fade show active"

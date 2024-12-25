@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import InputField from "../../components/EditUserComp/InputField";
 import { useEffect, useState } from "react";
 import { updateMemberById } from "../../../services/allRoutes";
-// import { fetchMemberData } from "../../../redux/memberSlice";
+import { showWarningToast, toastPromise } from "../../utils/js/toastUtils";
 
 const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
   const [formData, setFormData] = useState({
@@ -38,10 +38,29 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
 
     if (Object.keys(updatedFields).length > 0) {
       try {
-        const updatedMember = await updateMemberById(
-          profileData.member_id,
-          updatedFields
+        const updatedMember = await toastPromise(
+          updateMemberById(profileData.member_id, updatedFields), // Pass the promise directly
+          "Updating user...", // Pending message
+          "User updated successfully!", // Success message
+          "Failed to update user. Please try again.", // Error message // Error message
+          {
+            pendingIcon: "🔄", // Custom icon for pending state
+            successIcon: "🎉", // Custom icon for success state
+            errorIcon: "🚫", // Custom icon for error state
+            position: "bottom-right", // Position for all toasts
+            autoClose: 5000, // Auto-close time in milliseconds
+            pendingOptions: {
+              className: "toast-pending", // Custom CSS class for pending
+            },
+            successOptions: {
+              className: "toast-success", // Custom CSS class for success
+            },
+            errorOptions: {
+              className: "toast-error", // Custom CSS class for error
+            },
+          }
         );
+
         console.log("Updated Member:", updatedMember);
         onSave(updatedMember);
       } catch (error) {
@@ -49,51 +68,9 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
       }
     } else {
       console.log("No changes detected.");
+      showWarningToast("No changes detected."); // Warn if no changes
     }
   };
-
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => ({ ...prev, [name]: value }));
-  // };
-  // const handleSave = async () => {
-  //   const updatedFields = {};
-  //   for (const key in formData) {
-  //     if (formData[key] !== profileData[key]) {
-  //       updatedFields[key] = formData[key];
-  //     }
-  //   }
-
-  //   if (Object.keys(updatedFields).length > 0) {
-  //     try {
-  //       const updatedMember = await updateMemberById(
-  //         profileData.member_id,
-  //         updatedFields
-  //       );
-  //       console.log("Updated Member:", updatedMember);
-  //       onSave(updatedMember);
-  //     } catch (error) {
-  //       console.error("Error updating member:", error);
-  //     }
-  //   } else {
-  //     console.log("No changes detected.");
-  //   }
-  // };
-
-  // const handleSave = async () => {
-  //   try {
-  //     console.log("Form Data to Send:", formData); // Debugging log
-  //     const updatedMember = await updateMemberById(
-  //       profileData.member_id,
-  //       formData
-  //     );
-  //     // fetchMemberData(profileData.member_id); // Refetch to ensure consistency
-  //     console.log("Updated Member Response:", updatedMember);
-  //     onSave(updatedMember); // Notify parent component of the updated data
-  //   } catch (error) {
-  //     console.error("Error updating member:", error);
-  //   }
-  // };
 
   return (
     <div className="sign__wrap">

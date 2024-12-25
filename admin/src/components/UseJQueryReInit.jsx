@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
 const UseJQueryReInit = ({ files }) => {
@@ -12,11 +13,16 @@ const UseJQueryReInit = ({ files }) => {
       const script = document.createElement("script");
       script.src = filePath;
       script.async = true;
-      script.onload = () => console.log(`${filePath} loaded successfully`);
-      script.onerror = () => console.error(`Failed to load ${filePath}`);
+      script.onload = () => {
+        console.log(`${filePath} loaded successfully`);
+      };
+      script.onerror = () => {
+        console.error(`Failed to load ${filePath}`);
+        toast.error(`Failed to load ${filePath}`);
+      };
       document.body.appendChild(script);
       scriptElements.push(script);
-    });      
+    });
 
     // Cleanup scripts on component unmount or route change
     return () => {

@@ -235,7 +235,7 @@ const Index = ({ headerImage }) => {
                   header: "Rating",
                   accessor: "rating",
                   render: (value) =>
-                    value ? (
+                    value !== "N/A" ? (
                       <span
                         className={`${
                           value >= 10
@@ -402,7 +402,7 @@ const Index = ({ headerImage }) => {
                   header: "Rating",
                   accessor: "rating",
                   render: (value) =>
-                    value ? (
+                    value !== "N/A" ? (
                       <span
                         className={`${
                           value >= 10

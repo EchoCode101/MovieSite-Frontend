@@ -1,5 +1,6 @@
 import config from "../src/utils/js/config.js";
 import axios from "axios";
+import { showErrorToast } from "../src/utils/js/toastUtils.js";
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -52,11 +53,12 @@ API.interceptors.response.use(
           );
           const newToken = data.token;
           localStorage.setItem("token", newToken);
-
+          processQueue(null, newToken);
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return API(originalRequest);
         } catch (refreshError) {
           processQueue(refreshError, null);
+          showErrorToast("Session expired. Please log in again.");
           console.error("Token refresh failed:", refreshError.message);
           localStorage.clear(); // Clear tokens
           setTimeout(() => {
@@ -67,6 +69,7 @@ API.interceptors.response.use(
           isRefreshing = false;
         }
       } else {
+        showErrorToast("No valid refresh token found. Logging out.");
         console.error("Refresh token missing. Logging out.");
         localStorage.clear(); // Clear tokens
         setTimeout(() => {
@@ -91,6 +94,10 @@ API.interceptors.request.use((config) => {
     console.warn(
       "No valid token found in localStorage. Redirecting to sign-in..."
     );
+    showErrorToast(
+      "No valid token found in localStorage. Redirecting to sign-in..."
+    );
+
     localStorage.clear(); // Clear tokens
     setTimeout(() => {
       window.location.href = "/signin";

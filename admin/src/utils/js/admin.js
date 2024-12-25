@@ -1,26 +1,26 @@
 $(document).ready(function () {
   ("use strict"); // start of use strict
-  var delay = 100;
+  var delay = 500;
   /*==============================
   Menu
   ==============================*/
-  // setTimeout(() => {
+  setTimeout(() => {
     $(".header__btn").on("click", function () {
       console.log("Sidebar toggle clicked");
       $(this).toggleClass("header__btn--active");
       $(".header").toggleClass("header--active");
       $(".sidebar").toggleClass("sidebar--active");
     });
-  // }, delay);
+  }, delay);
   /*==============================
   Filter
   ==============================*/
-  // setTimeout(() => {
+  setTimeout(() => {
     $(".filter__item-menu li").each(function () {
       $(this).attr("data-value", $(this).text().toLowerCase());
     });
-  // }, delay);
-  // setTimeout(() => {
+  }, delay);
+  setTimeout(() => {
     $(".filter__item-menu li").on("click", function () {
       var text = $(this).text();
       var item = $(this);
@@ -29,16 +29,16 @@ $(document).ready(function () {
         .find(".filter__item-btn input")
         .val(text);
     });
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
   /*==============================
   Tabs
   ==============================*/
-  // setTimeout(() => {
+  setTimeout(() => {
     $(".profile__mobile-tabs-menu li").each(function () {
       $(this).attr("data-value", $(this).text().toLowerCase());
     });
-  // }, delay);
-  // setTimeout(() => {
+  }, delay);
+  setTimeout(() => {
     $(".profile__mobile-tabs-menu li").on("click", function () {
       var text = $(this).text();
       var item = $(this);
@@ -47,11 +47,11 @@ $(document).ready(function () {
         .find(".profile__mobile-tabs-btn input")
         .val(text);
     });
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
   /*==============================
   Modal
   ==============================*/
-  // setTimeout(() => {
+  setTimeout(() => {
     $(".open-modal").magnificPopup({
       fixedContentPos: true,
       fixedBgPos: true,
@@ -63,40 +63,40 @@ $(document).ready(function () {
       removalDelay: 300,
       mainClass: "my-mfp-zoom-in",
     });
-  // }, delay);
-  // setTimeout(() => {
+  }, delay);
+  setTimeout(() => {
     $(".modal__btn--dismiss").on("click", function (e) {
       e.preventDefault();
       $.magnificPopup.close();
     });
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
   /*==============================
   Select2
   ==============================*/
-  // setTimeout(() => {
+  setTimeout(() => {
     $("#quality").select2({
       placeholder: "Choose quality",
       allowClear: true,
     });
-  // }, delay);
-  // setTimeout(() => {
+  }, delay);
+  setTimeout(() => {
     $("#country").select2({
       placeholder: "Choose country / countries",
     });
-  // }, delay);
-  // setTimeout(() => {
+  }, delay);
+  setTimeout(() => {
     $("#genre").select2({
       placeholder: "Choose genre / genres",
     });
-  // }, delay);
-  // setTimeout(() => {
+  }, delay);
+  setTimeout(() => {
     $("#subscription, #status").select2();
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
   /*==============================
   Upload cover
   ==============================*/
   function readURL(input) {
-    // setTimeout(() => {
+    setTimeout(() => {
       if (input.files && input.files[0]) {
         var reader = new FileReader();
 
@@ -106,17 +106,17 @@ $(document).ready(function () {
 
         reader.readAsDataURL(input.files[0]);
       }
-    // }, delay);
+    }, delay);
   }
-  // setTimeout(() => {
+  setTimeout(() => {
     $("#form__img-upload").on("change", function () {
       readURL(this);
     });
-  // }, delay);
+  }, delay);
   /*==============================
 	Upload video
 	==============================*/
-  // setTimeout(() => {
+  setTimeout(() => {
     $(".form__video-upload").on("change", function () {
       var videoLabel = $(this).attr("data-name");
 
@@ -126,11 +126,11 @@ $(document).ready(function () {
         $(videoLabel).text("Upload video");
       }
     });
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
   /*==============================
 	Upload gallery
 	==============================*/
-  // setTimeout(() => {
+  setTimeout(() => {
     $(".form__gallery-upload").on("change", function () {
       var length = $(this).get(0).files.length;
       var galleryLabel = $(this).attr("data-name");
@@ -141,13 +141,13 @@ $(document).ready(function () {
         $(galleryLabel).text($(this)[0].files[0].name);
       }
     });
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
 
   /*==============================
 	Scrollbar
 	==============================*/
   var Scrollbar = window.Scrollbar;
-  // setTimeout(() => {
+  setTimeout(() => {
     if ($(".sidebar__nav").length) {
       Scrollbar.init(document.querySelector(".sidebar__nav"), {
         damping: 0.1,
@@ -156,8 +156,8 @@ $(document).ready(function () {
         continuousScrolling: true,
       });
     }
-  // }, delay); // Delay of 500ms
-  // setTimeout(() => {
+  }, delay); // Delay of 500ms
+  setTimeout(() => {
     document.querySelectorAll(".dashbox__table-wrap").forEach((element) => {
       Scrollbar.init(element, {
         damping: 0.1,
@@ -167,9 +167,9 @@ $(document).ready(function () {
       });
       // console.log(`Smooth Scrollbar initialized for ${element.className}`);
     });
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
 
-  // setTimeout(() => {
+  setTimeout(() => {
     if ($(".main__table-wrap").length) {
       Scrollbar.init(document.querySelector(".main__table-wrap"), {
         damping: 0.1,
@@ -178,11 +178,11 @@ $(document).ready(function () {
         continuousScrolling: true,
       });
     }
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
   /*==============================
 	Bg
 	==============================*/
-  // setTimeout(() => {
+  setTimeout(() => {
     $(".section--bg").each(function () {
       if ($(this).attr("data-bg")) {
         $(this).css({
@@ -193,5 +193,5 @@ $(document).ready(function () {
         });
       }
     });
-  // }, delay); // Delay of 500ms
+  }, delay); // Delay of 500ms
 });

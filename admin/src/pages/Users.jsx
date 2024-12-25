@@ -13,7 +13,8 @@ import Table from "../components/Table/Table";
 import Paginator from "../components/Paginator";
 import TableFilters from "../components/Table/TableFilters";
 import LoadingSpinner from "../components/LoadingSpinner";
-
+import { toast } from "react-toastify";
+import { deleteMemberById } from "../../services/allRoutes";
 const Users = ({ headerImage }) => {
   const dispatch = useDispatch();
   const {
@@ -24,6 +25,32 @@ const Users = ({ headerImage }) => {
     sortBy,
     order,
   } = useSelector((state) => state.users);
+
+  // Delete handler for users
+  const deleteHandler = async (userId) => {
+    try {
+      await toast.promise(
+        deleteMemberById(userId),
+        {
+          pending: "Deleting user...",
+          success: "User deleted successfully!",
+          error: "Failed to delete user.",
+        },
+        { autoClose: 3000, draggable: true }
+      );
+      // Reload users after deletion
+      dispatch(
+        loadPaginatedUsers({
+          page: currentPage,
+          limit: 10,
+          sort: sortBy,
+          order,
+        })
+      );
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
 
   useEffect(() => {
     dispatch(
@@ -160,6 +187,7 @@ const Users = ({ headerImage }) => {
         "M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18ZM20,6H16V5a3,3,0,0,0-3-3H11A3,3,0,0,0,8,5V6H4A1,1,0,0,0,4,8H5V19a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V8h1a1,1,0,0,0,0-2ZM10,5a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1V6H10Zm7,14a1,1,0,0,1-1,1H8a1,1,0,0,1-1-1V8H17Zm-3-1a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z",
       toggle: true,
       className: "main__table-btn--delete",
+      onProceed: deleteHandler, // Pass delete handler
     },
   ];
 

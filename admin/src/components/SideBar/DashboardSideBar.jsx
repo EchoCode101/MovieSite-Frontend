@@ -80,8 +80,13 @@ const DashboardSideBar = ({ activeLink, headerImage }) => {
 
             <ul className="collapse sidebar__menu" id="collapseMenu">
               <li>
-                <Link className=" a-tag" to="/add-item">
-                  Add item
+                <Link className=" a-tag" to="/add-video">
+                  Add Video
+                </Link>
+              </li>
+              <li>
+                <Link className=" a-tag" to="/add-user">
+                  Add User
                 </Link>
               </li>
               <li>

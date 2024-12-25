@@ -78,7 +78,7 @@ const Reviews = ({ headerImage }) => {
           </div>
           <div className="sidebar__user-title">
             <div className="hover-title-desc">
-              <button  className="tooltip a-tag">
+              <button className="tooltip a-tag">
                 {value?.title || "N/A"}
                 <span className="tooltiptext">
                   {value?.description || "N/A"}
@@ -96,7 +96,26 @@ const Reviews = ({ headerImage }) => {
         `${value?.first_name || "Unknown"} ${value?.last_name || ""}`.trim(),
     },
     { accessor: "review_content", label: "Text" },
-    { accessor: "rating", label: "Rating" },
+    {
+      accessor: "rating",
+      label: "Rating",
+      render: (value) =>
+        value !== "N/A" ? (
+          <span
+            className={`${
+              value >= 10
+                ? "main__table-text--green"
+                : value < 2
+                ? "main__table-text--red"
+                : ""
+            }`}
+          >
+            {value.toFixed(1)}
+          </span>
+        ) : (
+          "N/A"
+        ),
+    },
     {
       label: "Like / Dislike",
       accessor: "likeCount",

@@ -14,7 +14,6 @@ const FloatingDiv = ({
   href,
 }) => {
   const handleClick = (e) => {
-    console.log("FloatingDiv clicked, toggle:", toggle); // Debugging
     if (toggle) {
       e.stopPropagation(); // Prevent the event from propagating further
       onToggle(); // Call the function passed as prop

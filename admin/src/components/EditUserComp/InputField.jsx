@@ -9,6 +9,7 @@ const InputField = ({
   value,
   inputTitle,
   disabled,
+  required,
 }) => {
   return (
     <div className="col-12 col-md-6 col-lg-12 col-xl-6">
@@ -25,6 +26,8 @@ const InputField = ({
           onChange={onChange} // Pass the onChange handler
           value={value}
           disabled={disabled}
+          required={required}
+          autoComplete="off"
         />
       </div>
     </div>
@@ -39,5 +42,6 @@ InputField.propTypes = {
   onChange: PropTypes.func, // Mark as required
   inputTitle: PropTypes.string,
   disabled: PropTypes.bool,
+  required: PropTypes.bool,
 };
 export default InputField;

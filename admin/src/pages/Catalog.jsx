@@ -14,11 +14,8 @@ import {
   fetchVideos,
   fetchVideosWithLikesDislikesMembers,
 } from "../../services/allRoutes";
-import UseJQueryReInit from "../components/UseJQueryReInit";
 
 const Catalog = ({ headerImage }) => {
-  UseJQueryReInit("/src/utils/js/admin.js");
-
   const [loadingItems, setLoadingItems] = useState(false);
   const [videoData, setVideoData] = useState([]);
   const dispatch = useDispatch();
@@ -87,7 +84,7 @@ const Catalog = ({ headerImage }) => {
       accessor: "rating",
       label: "Rating",
       render: (value) =>
-        value ? (
+        value !== "N/A" ? (
           <span
             className={`${
               value >= 10
@@ -98,6 +95,7 @@ const Catalog = ({ headerImage }) => {
             }`}
           >
             {value.toFixed(1)}
+            {/* {console.log(value)} */}
           </span>
         ) : (
           "N/A"
