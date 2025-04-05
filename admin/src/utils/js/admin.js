@@ -85,8 +85,23 @@ $(document).ready(function () {
     });
   }, delay);
   setTimeout(() => {
-    $("#genre").select2({
+    $("#tags").select2({
       placeholder: "Choose genre / genres",
+    });
+  }, delay);
+  setTimeout(() => {
+    $("#video_format").select2({
+      placeholder: "Choose Video Formate",
+    });
+  }, delay);
+  setTimeout(() => {
+    $("#license_type").select2({
+      placeholder: "Choose Liecense Type",
+    });
+  }, delay);
+  setTimeout(() => {
+    $("#age_restriction").select2({
+      placeholder: "Choose Age Restriction",
     });
   }, delay);
   setTimeout(() => {

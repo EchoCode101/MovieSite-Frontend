@@ -100,3 +100,9 @@ export const deleteMemberById = async (memberId) => {
     throw new Error(errorMessage);
   }
 };
+
+// Add Video API
+export const createVideo = async (videoData) => {
+  const response = await API.post("/videos", videoData);
+  return response.data;
+};

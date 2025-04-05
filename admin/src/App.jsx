@@ -13,7 +13,7 @@ import store from "../redux/store";
 
 // Import your pages
 import Index from "./pages/Index";
-import AddItem from "./pages/AddVideo";
+import AddVideo from "./pages/AddVideo";
 import Catalog from "./pages/Catalog";
 import Comments from "./pages/Comments";
 import EditUser from "./pages/EditUser";
@@ -30,6 +30,7 @@ import NotFound from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UseJQueryReInit from "./components/UseJQueryReInit";
 import AddUserForm from "./pages/CreateMember";
+import VideoUpload from "./pages/VideoUpload";
 function App() {
   return (
     <Provider store={store}>
@@ -77,7 +78,15 @@ function App() {
             path="/add-video"
             element={
               <ProtectedRoute>
-                <AddItem headerImage={headerImage} />
+                <AddVideo headerImage={headerImage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/upload-video"
+            element={
+              <ProtectedRoute>
+                <VideoUpload headerImage={headerImage} />
               </ProtectedRoute>
             }
           />
