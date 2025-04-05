@@ -1,4 +1,4 @@
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
+// import DashboardSideBar from "../components/SideBar/DashboardSideBar";
 import Header from "../components/Header";
 import Stats from "../components/Stats";
 import PropTypes from "prop-types";
@@ -30,6 +30,7 @@ const Index = ({ headerImage }) => {
   const [loadingTopItems, setLoadingTopItems] = useState(false);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingLatestItems, setLoadingLatestItems] = useState(false);
+  console.log("Index component rendering...");
   // const statsData = [
   //   {
   //     title: "Unique views this month",
@@ -192,10 +193,10 @@ const Index = ({ headerImage }) => {
     <>
       <Header headerImage={headerImage} />
 
-      <DashboardSideBar
+      {/* <DashboardSideBar
         headerImage={headerImage}
         activeLink="sidebar__nav-link--active"
-      />
+      /> */}
 
       <main className="main">
         <div className="container-fluid">
