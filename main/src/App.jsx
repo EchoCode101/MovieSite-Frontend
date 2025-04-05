@@ -17,6 +17,19 @@ import Index from "./pages/Index";
 import ContactUs from "./pages/ContactUs";
 import About from "./pages/About";
 import Catalog from "./pages/Catalog";
+import Live from "./pages/Live";
+import Pricing from "./pages/Pricing";
+import Privacy from "./pages/Privacy";
+import Profile from "./pages/Profile";
+import Interview from "./pages/Interview";
+import FreeUserVidPlayer from "./pages/FreeUserVidPlayer";
+import PaidUserVidPlayer from "./pages/PaidUserVidPlayer";
+import PremiumPaidUserVidPlayer from "./pages/PremiumPaidUserVidPlayer";
+import CategoryDetailed from "./pages/CategoryDetailed";
+import CategorySimple from "./pages/CategorySimple";
+import PremiumPaidUserMainPage from "./pages/PremiumPaidUserMainPage";
+import PaidUserMainPage from "./pages/PaidUserMainPage";
+import FreeUserMainPage from "./pages/FreeUserMainPage";
 import Forgot from "./pages/Forgot";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
@@ -28,7 +41,7 @@ function App() {
     <Provider store={store}>
       <Router>
         {/* Initialize all jQuery files */}
-        {/* <UseJQueryReInit
+        <UseJQueryReInit
           files={[
             "/src/utils/js/jquery-3.5.1.min.js",
             "/src/utils/js/jquery.magnific-popup.min.js",
@@ -41,7 +54,7 @@ function App() {
             "/src/utils/js/smooth-scrollbar.js",
             "/src/utils/js/bootstrap.bundle.min.js",
           ]}
-        /> */}
+        />
         <Routes>
           {/* Public routes */}
           <Route path="/signin" element={<Signin />} />
@@ -58,6 +71,110 @@ function App() {
             element={
               // <ProtectedRoute>
               <Index headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/FreeUserMainPage"
+            element={
+              // <ProtectedRoute>
+              <FreeUserMainPage headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PaidUserMainPage"
+            element={
+              // <ProtectedRoute>
+              <PaidUserMainPage headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PremiumPaidUserMainPage"
+            element={
+              // <ProtectedRoute>
+              <PremiumPaidUserMainPage headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/CategorySimple"
+            element={
+              // <ProtectedRoute>
+              <CategorySimple headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/CategoryDetailed"
+            element={
+              // <ProtectedRoute>
+              <CategoryDetailed headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PremiumPaidUserVidPlayer"
+            element={
+              // <ProtectedRoute>
+              <PremiumPaidUserVidPlayer headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/PaidUserVidPlayer"
+            element={
+              // <ProtectedRoute>
+              <PaidUserVidPlayer headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/FreeUserVidPlayer"
+            element={
+              // <ProtectedRoute>
+              <FreeUserVidPlayer headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Interview"
+            element={
+              // <ProtectedRoute>
+              <Interview headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Profile"
+            element={
+              // <ProtectedRoute>
+              <Profile headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Privacy"
+            element={
+              // <ProtectedRoute>
+              <Privacy headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Pricing"
+            element={
+              // <ProtectedRoute>
+              <Pricing headerImage={headerImage} />
+              //  </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Live"
+            element={
+              // <ProtectedRoute>
+              <Live headerImage={headerImage} />
               //  </ProtectedRoute>
             }
           />

@@ -47,7 +47,10 @@ const Signin = () => {
   return (
     <div
       className="sign section--bg"
-      style={{ backgroundImage: "url('/src/assets/img/bg.jpg')" }}
+      style={{
+        background:
+          "url('/src/assets/img/bg.jpg') center center / cover no-repeat",
+      }}
     >
       <div className="container">
         <div className="row">

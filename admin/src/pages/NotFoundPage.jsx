@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Fof = () => {
   return (
     <>
-      <div className="page-404 section--bg" data-bg="img/bg.jpg">
+      <div className="page-404 section--bg" data-bg="/src/assets/img/bg.jpg">
         <div className="container">
           <div className="row">
             <div className="col-12">

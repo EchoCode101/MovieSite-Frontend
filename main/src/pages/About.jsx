@@ -37,10 +37,10 @@ const About = ({ headerImage }) => {
               <p className="section__text section__text--small">
                 Many desktop publishing packages and
                 <a href="#"> web page</a> editors now use Lorem Ipsum as their
-                default model text, and a search for &apos;lorem ipsum&apos; will uncover
-                many web sites still in their infancy. Various versions have
-                evolved over the years, sometimes by accident, sometimes on
-                purpose (injected humour and the like).
+                default model text, and a search for &apos;lorem ipsum&apos;
+                will uncover many web sites still in their infancy. Various
+                versions have evolved over the years, sometimes by accident,
+                sometimes on purpose (injected humour and the like).
               </p>
 
               <p className="section__text section__text--small">
@@ -128,8 +128,8 @@ const About = ({ headerImage }) => {
                 <h3 className="feature__title">Choose your Plan</h3>
                 <p className="feature__text">
                   If you are going to use a passage of Lorem Ipsum, you need to
-                  be sure there isn&apos;t anything embarrassing hidden in the middle
-                  of text
+                  be sure there isn&apos;t anything embarrassing hidden in the
+                  middle of text
                 </p>
               </div>
             </div>
@@ -507,46 +507,49 @@ const About = ({ headerImage }) => {
         </div>
       </section>
 
-      <div className="section section--pb0" hidden>
+      <div className="section section--pb0">
         <div className="container">
           <div className="row">
             <div className="col-12">
               <div className="partners owl-carousel">
                 <a href="#" className="partners__img">
-                  <img src="img/partners/3docean-light-background.png" alt="" />
-                </a>
-
-                <a href="#" className="partners__img">
                   <img
-                    src="img/partners/activeden-light-background.png"
+                    src="/src/assets/img/partners/3docean-light-background.png"
                     alt=""
                   />
                 </a>
 
                 <a href="#" className="partners__img">
                   <img
-                    src="img/partners/audiojungle-light-background.png"
+                    src="/src/assets/img/partners/activeden-light-background.png"
                     alt=""
                   />
                 </a>
 
                 <a href="#" className="partners__img">
                   <img
-                    src="img/partners/codecanyon-light-background.png"
+                    src="/src/assets/img/partners/audiojungle-light-background.png"
                     alt=""
                   />
                 </a>
 
                 <a href="#" className="partners__img">
                   <img
-                    src="img/partners/photodune-light-background.png"
+                    src="/src/assets/img/partners/codecanyon-light-background.png"
                     alt=""
                   />
                 </a>
 
                 <a href="#" className="partners__img">
                   <img
-                    src="img/partners/themeforest-light-background.png"
+                    src="/src/assets/img/partners/photodune-light-background.png"
+                    alt=""
+                  />
+                </a>
+
+                <a href="#" className="partners__img">
+                  <img
+                    src="/src/assets/img/partners/themeforest-light-background.png"
                     alt=""
                   />
                 </a>

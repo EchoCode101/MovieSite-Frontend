@@ -246,46 +246,49 @@ const ContactUs = ({ headerImage }) => {
         </div>
       </section>
 
-      <div className="section section--pb0" hidden>
+      <div className="section section--pb0">
         <div className="container">
           <div className="row">
             <div className="col-12">
               <div className="partners owl-carousel">
                 <a href="#" className="partners__img">
-                  <img src="img/partners/3docean-light-background.png" alt="" />
-                </a>
-
-                <a href="#" className="partners__img">
                   <img
-                    src="img/partners/activeden-light-background.png"
+                    src="/src/assets/img/partners/3docean-light-background.png"
                     alt=""
                   />
                 </a>
 
                 <a href="#" className="partners__img">
                   <img
-                    src="img/partners/audiojungle-light-background.png"
+                    src="/src/assets/img/partners/activeden-light-background.png"
                     alt=""
                   />
                 </a>
 
                 <a href="#" className="partners__img">
                   <img
-                    src="img/partners/codecanyon-light-background.png"
+                    src="/src/assets/img/partners/audiojungle-light-background.png"
                     alt=""
                   />
                 </a>
 
                 <a href="#" className="partners__img">
                   <img
-                    src="img/partners/photodune-light-background.png"
+                    src="/src/assets/img/partners/codecanyon-light-background.png"
                     alt=""
                   />
                 </a>
 
                 <a href="#" className="partners__img">
                   <img
-                    src="img/partners/themeforest-light-background.png"
+                    src="/src/assets/img/partners/photodune-light-background.png"
+                    alt=""
+                  />
+                </a>
+
+                <a href="#" className="partners__img">
+                  <img
+                    src="/src/assets/img/partners/themeforest-light-background.png"
                     alt=""
                   />
                 </a>
