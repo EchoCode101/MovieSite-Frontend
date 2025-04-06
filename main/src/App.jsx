@@ -68,7 +68,7 @@ function AppContent() {
         />
         {/* Protected routes */}
         <Route
-          path="/FreeUserMainPage"
+          path="/"
           element={
             // <ProtectedRoute>
             <FreeUserMainPage />

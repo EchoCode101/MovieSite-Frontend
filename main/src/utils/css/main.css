@@ -275,13 +275,13 @@ body::-webkit-scrollbar-thumb {
 .header__nav-link--live svg {
   width: 12px;
   stroke: inherit;
-  fill: inherit;
+  fill: #ff4e4e;
   margin-top: 3px;
 }
 .header__nav-link--live:hover svg,
 .header__nav-link--live[aria-expanded="true"] svg {
   stroke: inherit;
-  fill: inherit;
+  fill: rgb(211, 0, 0);
 }
 .header__nav-item {
   margin-bottom: 20px;
