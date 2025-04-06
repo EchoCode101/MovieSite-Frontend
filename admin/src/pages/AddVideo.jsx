@@ -1,13 +1,10 @@
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
 import { useState } from "react";
 import { toastPromise } from "../utils/js/toastUtils";
 import { createVideo } from "../../services/allRoutes";
 import { toast } from "react-toastify";
 import CloudinaryUploader from "../components/CloudinaryUploader";
 
-const AddVideo = ({ headerImage }) => {
+const AddVideo = () => {
   const availableTags = [
     { id: 1, name: "Action" },
     { id: 2, name: "Drama" },
@@ -98,13 +95,6 @@ const AddVideo = ({ headerImage }) => {
 
   return (
     <>
-      <Header headerImage={headerImage} />
-
-      <DashboardSideBar
-        headerImage={headerImage}
-        activeLink="sidebar__nav-link--active"
-      />
-
       <main className="main">
         <div className="container-fluid">
           <div className="row">
@@ -701,7 +691,5 @@ const AddVideo = ({ headerImage }) => {
     </>
   );
 };
-AddVideo.propTypes = {
-  headerImage: PropTypes.string.isRequired,
-};
+
 export default AddVideo; // Use default export

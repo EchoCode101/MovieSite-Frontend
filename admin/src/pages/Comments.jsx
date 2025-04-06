@@ -4,18 +4,14 @@ import {
   loadPaginatedComments,
   setSortBy,
   setCurrentPage,
-} from "../../redux/commentsSlice";
-import { Link } from "react-router-dom";
+} from "../../redux/slices/commentsSlice";
 
-import Header from "../components/Header";
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
 import Table from "../components/Table/Table";
 import Paginator from "../components/Paginator";
 import TableFilters from "../components/Table/TableFilters";
-import PropTypes from "prop-types";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-const Comments = ({ headerImage }) => {
+const Comments = () => {
   const dispatch = useDispatch();
   const {
     items: comments,
@@ -144,12 +140,6 @@ const Comments = ({ headerImage }) => {
 
   return (
     <>
-      <Header headerImage={headerImage} />
-      <DashboardSideBar
-        headerImage={headerImage}
-        activeLink="sidebar__nav-link--active"
-      />
-
       <main className="main">
         <div className="container-fluid">
           <div className="row">
@@ -209,9 +199,7 @@ const Comments = ({ headerImage }) => {
     </>
   );
 };
-Comments.propTypes = {
-  headerImage: PropTypes.string.isRequired,
-};
+
 export default Comments;
 {
   /* <div

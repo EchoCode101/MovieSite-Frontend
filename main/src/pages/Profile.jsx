@@ -1,11 +1,6 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
-
-const Profile = ({ headerImage }) => {
+const Profile = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
       <section className="section section--head">
         <div className="container">
           <div className="row">
@@ -26,7 +21,6 @@ const Profile = ({ headerImage }) => {
           </div>
         </div>
       </section>
-
       <div className="catalog catalog--page">
         <div className="container">
           <div className="row">
@@ -1720,14 +1714,16 @@ const Profile = ({ headerImage }) => {
           </div>
         </div>
       </div>
-
       <div className="section" hidden>
         <div className="container">
           <div className="row">
             <div className="col-12">
               <div className="partners owl-carousel">
                 <a href="#" className="partners__img">
-                  <img src="/src/assets/img/partners/3docean-light-background.png" alt="" />
+                  <img
+                    src="/src/assets/img/partners/3docean-light-background.png"
+                    alt=""
+                  />
                 </a>
 
                 <a href="#" className="partners__img">
@@ -1769,7 +1765,6 @@ const Profile = ({ headerImage }) => {
           </div>
         </div>
       </div>
-
       <form
         action="#"
         id="modal-topup"
@@ -1826,13 +1821,9 @@ const Profile = ({ headerImage }) => {
         <button className="sign__btn" type="button">
           Proceed
         </button>
-      </form>
-      <Footer headerImage={headerImage} />
+      </form>{" "}
     </>
   );
-};
-Profile.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default Profile;

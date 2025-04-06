@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchMemberById, updateMemberById } from "../services/allRoutes";
+import { fetchMemberById, updateMemberById } from "../../services/allRoutes";
 
 // Async Thunks
 export const fetchMemberData = createAsyncThunk(

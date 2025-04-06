@@ -1,7 +1,9 @@
-import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+import { selectHeaderImage } from "../../redux/slices/headerSlice";
 import { Link } from "react-router-dom";
 
-const Header = ({ headerImage }) => {
+const Header = () => {
+  const headerImage = useSelector(selectHeaderImage);
   return (
     <header className="header">
       <div className="header__content">
@@ -18,7 +20,5 @@ const Header = ({ headerImage }) => {
     </header>
   );
 };
-Header.propTypes = {
-  headerImage: PropTypes.string.isRequired,
-};
+
 export default Header;

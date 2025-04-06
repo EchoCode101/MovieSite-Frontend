@@ -1,11 +1,8 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
 
-const Catalog = ({ headerImage }) => {
+
+const Catalog = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
       <section className="section section--head section--head-fixed">
         <div className="container">
           <div className="row">
@@ -1806,12 +1803,8 @@ const Catalog = ({ headerImage }) => {
           </div>
         </div>
       </section>
-      <Footer headerImage={headerImage} />
     </>
   );
-};
-Catalog.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default Catalog;

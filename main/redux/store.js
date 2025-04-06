@@ -1,12 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import modalReducer from "./modalSlice";
-import authReducer from "./authSlice";
-import catalogReducer from "./catalogSlice";
-import usersReducer from "./usersSlice";
-import commentsReducer from "./commentsSlice";
-import reviewsReducer from "./reviewsSlice";
-import indexReducer from "./indexSlice";
-import memberReducer from "./memberSlice";
+import modalReducer from "./slices/modalSlice";
+import authReducer from "./slices/authSlice";
+import catalogReducer from "./slices/catalogSlice";
+import usersReducer from "./slices/usersSlice";
+import commentsReducer from "./slices/commentsSlice";
+import reviewsReducer from "./slices/reviewsSlice";
+import indexReducer from "./slices/indexSlice";
+import memberReducer from "./slices/memberSlice";
+import headerReducer from "./slices/headerSlice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     reviews: reviewsReducer, // Correctly linked reducer
     dashboard: indexReducer,
     member: memberReducer, // Ensure this is correct
+    header: headerReducer,
   },
 });
 

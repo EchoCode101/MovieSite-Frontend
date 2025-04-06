@@ -3,17 +3,16 @@ import {
   Route,
   Navigate,
   Routes,
+  useLocation,
 } from "react-router-dom";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import headerImage from "./assets/img/logo.svg";
 
 // Import your pages
 import store from "../redux/store";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Index from "./pages/Index";
 import ContactUs from "./pages/ContactUs";
 import About from "./pages/About";
 import Catalog from "./pages/Catalog";
@@ -36,6 +35,173 @@ import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFoundPage";
 import UseJQueryReInit from "./components/UseJQueryReInit";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+
+function AppContent() {
+  const location = useLocation();
+
+  // Define routes where Header and Footer should not be displayed
+  const noHeaderFooterRoutes = [
+    "/signin",
+    "/signup",
+    "/forgot",
+    "/reset-admin-password/:token",
+    "*",
+  ];
+
+  const shouldShowHeaderFooter = !noHeaderFooterRoutes.includes(
+    location.pathname
+  );
+
+  return (
+    <>
+      {shouldShowHeaderFooter && <Header />}
+      <Routes>
+        {/* Public routes */}
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot" element={<Forgot />} />
+        <Route
+          path="/reset-admin-password/:token"
+          element={<ResetPassword />}
+        />
+        {/* Protected routes */}
+        <Route
+          path="/FreeUserMainPage"
+          element={
+            // <ProtectedRoute>
+            <FreeUserMainPage />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/PaidUserMainPage"
+          element={
+            // <ProtectedRoute>
+            <PaidUserMainPage />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/PremiumPaidUserMainPage"
+          element={
+            // <ProtectedRoute>
+            <PremiumPaidUserMainPage />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/CategorySimple"
+          element={
+            // <ProtectedRoute>
+            <CategorySimple />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/CategoryDetailed"
+          element={
+            // <ProtectedRoute>
+            <CategoryDetailed />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/PremiumPaidUserVidPlayer"
+          element={
+            // <ProtectedRoute>
+            <PremiumPaidUserVidPlayer />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/PaidUserVidPlayer"
+          element={
+            // <ProtectedRoute>
+            <PaidUserVidPlayer />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/FreeUserVidPlayer"
+          element={
+            // <ProtectedRoute>
+            <FreeUserVidPlayer />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Interview"
+          element={
+            // <ProtectedRoute>
+            <Interview />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Profile"
+          element={
+            // <ProtectedRoute>
+            <Profile />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Privacy"
+          element={
+            // <ProtectedRoute>
+            <Privacy />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Pricing"
+          element={
+            // <ProtectedRoute>
+            <Pricing />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Live"
+          element={
+            // <ProtectedRoute>
+            <Live />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/catalog"
+          element={
+            // <ProtectedRoute>
+            <Catalog />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            // <ProtectedRoute>
+            <About />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contactus"
+          element={
+            // <ProtectedRoute>
+            <ContactUs />
+            //  </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      {shouldShowHeaderFooter && <Footer />}
+    </>
+  );
+}
+
 function App() {
   return (
     <Provider store={store}>
@@ -55,157 +221,7 @@ function App() {
             "/src/utils/js/bootstrap.bundle.min.js",
           ]}
         />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot" element={<Forgot />} />
-          <Route
-            path="/reset-admin-password/:token"
-            element={<ResetPassword />}
-          />
-          {/* Protected routes */}
-          {/* <Route path="/" element={<Navigate to="/dashboard" />} /> */}
-          <Route
-            path="/"
-            element={
-              // <ProtectedRoute>
-              <Index headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/FreeUserMainPage"
-            element={
-              // <ProtectedRoute>
-              <FreeUserMainPage headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/PaidUserMainPage"
-            element={
-              // <ProtectedRoute>
-              <PaidUserMainPage headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/PremiumPaidUserMainPage"
-            element={
-              // <ProtectedRoute>
-              <PremiumPaidUserMainPage headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/CategorySimple"
-            element={
-              // <ProtectedRoute>
-              <CategorySimple headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/CategoryDetailed"
-            element={
-              // <ProtectedRoute>
-              <CategoryDetailed headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/PremiumPaidUserVidPlayer"
-            element={
-              // <ProtectedRoute>
-              <PremiumPaidUserVidPlayer headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/PaidUserVidPlayer"
-            element={
-              // <ProtectedRoute>
-              <PaidUserVidPlayer headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/FreeUserVidPlayer"
-            element={
-              // <ProtectedRoute>
-              <FreeUserVidPlayer headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/Interview"
-            element={
-              // <ProtectedRoute>
-              <Interview headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/Profile"
-            element={
-              // <ProtectedRoute>
-              <Profile headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/Privacy"
-            element={
-              // <ProtectedRoute>
-              <Privacy headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/Pricing"
-            element={
-              // <ProtectedRoute>
-              <Pricing headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/Live"
-            element={
-              // <ProtectedRoute>
-              <Live headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/catalog"
-            element={
-              // <ProtectedRoute>
-              <Catalog headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/about"
-            element={
-              // <ProtectedRoute>
-              <About headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/contactus"
-            element={
-              // <ProtectedRoute>
-              <ContactUs headerImage={headerImage} />
-              //  </ProtectedRoute>
-            }
-          />
-
-          {/* Fallback route for 404 pages */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppContent />
       </Router>
       <ToastContainer />
     </Provider>

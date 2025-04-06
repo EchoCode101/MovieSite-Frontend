@@ -1,17 +1,18 @@
 // import Paginator from "../components/Paginator";
-import PropTypes from "prop-types";
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
-import Header from "../components/Header";
+
 import MemberProfile from "../components/EditUserComp/MemberProfile";
 import MemberComments from "../components/EditUserComp/MemberComments";
 import MemberReviews from "../components/EditUserComp/MemberReviews";
 import ProfileDetailsForm from "../components/EditUserComp/ProfileDetailsForm";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMemberData, updateMemberData } from "../../redux/memberSlice";
+import {
+  fetchMemberData,
+  updateMemberData,
+} from "../../redux/slices/memberSlice";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useParams } from "react-router-dom";
-const EditUser = ({ headerImage }) => {
+const EditUser = () => {
   const { memberId } = useParams();
   const dispatch = useDispatch();
   const { memberData, status, error } = useSelector((state) => state.member);
@@ -39,13 +40,6 @@ const EditUser = ({ headerImage }) => {
 
   return (
     <>
-      <Header headerImage={headerImage} />
-
-      <DashboardSideBar
-        headerImage={headerImage}
-        activeLink="sidebar__nav-link--active"
-      />
-
       <main className="main">
         <div className="container-fluid">
           <div className="row">
@@ -114,9 +108,7 @@ const EditUser = ({ headerImage }) => {
     </>
   );
 };
-EditUser.propTypes = {
-  headerImage: PropTypes.string.isRequired,
-};
+
 export default EditUser;
 {
   /* <div className="col-12">

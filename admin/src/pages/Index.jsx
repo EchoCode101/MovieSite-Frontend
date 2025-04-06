@@ -1,7 +1,4 @@
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
-import Header from "../components/Header";
 import Stats from "../components/Stats";
-import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import IndexTable from "../components/IndexTable";
 import { Link } from "react-router-dom";
@@ -15,7 +12,7 @@ import {
   fetchDashboardStats,
 } from "../../services/allRoutes";
 
-const Index = ({ headerImage }) => {
+const Index = () => {
   const [stats, setStats] = useState({
     uniqueViews: 0,
     itemsAdded: 0,
@@ -190,13 +187,6 @@ const Index = ({ headerImage }) => {
   ];
   return (
     <>
-      <Header headerImage={headerImage} />
-
-      <DashboardSideBar
-        headerImage={headerImage}
-        activeLink="sidebar__nav-link--active"
-      />
-
       <main className="main">
         <div className="container-fluid">
           <div className="row">
@@ -465,9 +455,6 @@ const Index = ({ headerImage }) => {
       </main>
     </>
   );
-};
-Index.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default Index;

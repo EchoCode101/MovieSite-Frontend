@@ -1,13 +1,14 @@
 import Table from "../components/Table/Table";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
 import Paginator from "../components/Paginator";
 import TableFilters from "../components/Table/TableFilters";
 import { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
+
 import { useSelector, useDispatch } from "react-redux";
-import { loadPaginatedVideos, setSortBy } from "../../redux/catalogSlice";
+import {
+  loadPaginatedVideos,
+  setSortBy,
+} from "../../redux/slices/catalogSlice";
 import {
   fetchReviews,
   fetchVideoMetrics,
@@ -15,7 +16,7 @@ import {
   fetchVideosWithLikesDislikesMembers,
 } from "../../services/allRoutes";
 
-const Catalog = ({ headerImage }) => {
+const Catalog = () => {
   const [loadingItems, setLoadingItems] = useState(false);
   const [videoData, setVideoData] = useState([]);
   const dispatch = useDispatch();
@@ -288,11 +289,6 @@ const Catalog = ({ headerImage }) => {
   }, [dispatch, currentPage, sortBy, order, fetchDataWithRatingsAndMetrics]);
   return (
     <>
-      <Header headerImage={headerImage} />
-      <DashboardSideBar
-        headerImage={headerImage}
-        activeLink="sidebar__nav-link--active"
-      />
       <main className="main">
         <div className="container-fluid">
           <div className="row">
@@ -344,7 +340,5 @@ const Catalog = ({ headerImage }) => {
     </>
   );
 };
-Catalog.propTypes = {
-  headerImage: PropTypes.string.isRequired,
-};
+
 export default Catalog;

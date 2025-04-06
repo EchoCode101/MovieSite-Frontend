@@ -1,21 +1,18 @@
-import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loadPaginatedUsers,
   setSortBy,
   setCurrentPage,
-} from "../../redux/usersSlice";
+} from "../../redux/slices/usersSlice";
 
-import Header from "../components/Header";
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
 import Table from "../components/Table/Table";
 import Paginator from "../components/Paginator";
 import TableFilters from "../components/Table/TableFilters";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { toast } from "react-toastify";
 import { deleteMemberById } from "../../services/allRoutes";
-const Users = ({ headerImage }) => {
+const Users = () => {
   const dispatch = useDispatch();
   const {
     items: users,
@@ -193,11 +190,6 @@ const Users = ({ headerImage }) => {
 
   return (
     <>
-      <Header headerImage={headerImage} />
-      <DashboardSideBar
-        headerImage={headerImage}
-        activeLink="sidebar__nav-link--active"
-      />
       <main className="main">
         <div className="container-fluid">
           <div className="row">
@@ -255,10 +247,6 @@ const Users = ({ headerImage }) => {
       </main>
     </>
   );
-};
-
-Users.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default Users;

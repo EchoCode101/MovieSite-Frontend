@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../redux/authSlice.js";
+import { loginSuccess } from "../../redux/slices/authSlice.js";
 import config from "../utils/js/config.js";
 // import { useNavigate } from "react-router-dom";
 const Signin = () => {
@@ -47,7 +47,10 @@ const Signin = () => {
   return (
     <div
       className="sign section--bg"
-      style={{ background: "url('/src/assets/img/bg.jpg') center center / cover no-repeat" }}
+      style={{
+        background:
+          "url('/src/assets/img/bg.jpg') center center / cover no-repeat",
+      }}
     >
       <div className="container">
         <div className="row">

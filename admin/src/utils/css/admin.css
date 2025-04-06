@@ -212,7 +212,7 @@ body::-webkit-scrollbar-thumb {
   width: 80%;
 }
 .header__logo img {
-  width: 80px;
+  width: 180px;
   height: auto;
   display: block;
 }

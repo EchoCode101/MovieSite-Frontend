@@ -1,11 +1,6 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
-
-const CategorySimple = ({ headerImage }) => {
+const CategorySimple = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
       <section className="section section--head">
         <div className="container">
           <div className="row">
@@ -1680,12 +1675,8 @@ const CategorySimple = ({ headerImage }) => {
           </div>
         </div>
       </section>
-      <Footer headerImage={headerImage} />
     </>
   );
-};
-CategorySimple.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default CategorySimple;

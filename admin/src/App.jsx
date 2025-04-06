@@ -3,34 +3,174 @@ import {
   Route,
   Navigate,
   Routes,
+  useLocation,
 } from "react-router-dom";
 import "./App.css";
-import "react-toastify/dist/ReactToastify.css";
+import store from "../redux/store";
 import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import headerImage from "./assets/img/logo.svg";
-import store from "../redux/store";
+import "react-toastify/dist/ReactToastify.css";
+import UseJQueryReInit from "./components/UseJQueryReInit";
 
 // Import your pages
 import Index from "./pages/Index";
-import AddVideo from "./pages/AddVideo";
+import Users from "./pages/Users";
+import Forgot from "./pages/Forgot";
+import Signup from "./pages/Signup";
+import Signin from "./pages/Signin";
+import Reviews from "./pages/Reviews";
 import Catalog from "./pages/Catalog";
 import Comments from "./pages/Comments";
 import EditUser from "./pages/EditUser";
+import AddVideo from "./pages/AddVideo";
+import Header from "./components/Header";
 import EditVideo from "./pages/EditVideo";
-import EditComment from "./pages/EditComment";
-import EditReview from "./pages/EditReview";
-import Forgot from "./pages/Forgot";
-import Reviews from "./pages/Reviews";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
-import Users from "./pages/Users";
-import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFoundPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import UseJQueryReInit from "./components/UseJQueryReInit";
-import AddUserForm from "./pages/CreateMember";
+import EditReview from "./pages/EditReview";
 import VideoUpload from "./pages/VideoUpload";
+import EditComment from "./pages/EditComment";
+import AddUserForm from "./pages/CreateMember";
+import ResetPassword from "./pages/ResetPassword";
+import ProtectedRoute from "./components/ProtectedRoute";
+import DashboardSideBar from "./components/SideBar/DashboardSideBar";
+
+function AppContent() {
+  const location = useLocation();
+
+  // Define routes where Header should NOT be displayed
+  const noHeaderSideBarRoutes = [
+    "/signin",
+    "/signup",
+    "/forgot",
+    "/reset-admin-password/:token",
+    "/upload-video",
+    "*",
+  ];
+
+  const shouldShowHeaderFooter = !noHeaderSideBarRoutes.includes(
+    location.pathname
+  );
+  return (
+    <>
+      {shouldShowHeaderFooter && <Header />}
+      {shouldShowHeaderFooter && (
+        <DashboardSideBar activeLink="sidebar__nav-link--active" />
+      )}
+
+      <Routes>
+        {/* Public routes */}
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot" element={<Forgot />} />
+        <Route
+          path="/reset-admin-password/:token"
+          element={<ResetPassword />}
+        />
+        {/* Protected routes */}
+        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Index />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/catalog"
+          element={
+            <ProtectedRoute>
+              <Catalog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-video"
+          element={
+            <ProtectedRoute>
+              <AddVideo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/upload-video"
+          element={
+            <ProtectedRoute>
+              <VideoUpload />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-user"
+          element={
+            <ProtectedRoute>
+              <AddUserForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/comments"
+          element={
+            <ProtectedRoute>
+              <Comments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reviews"
+          element={
+            <ProtectedRoute>
+              <Reviews />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <Users />
+            </ProtectedRoute>
+          }
+        />{" "}
+        <Route
+          path="/edit-user/:memberId"
+          element={
+            <ProtectedRoute>
+              <EditUser />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-video/:videoId"
+          element={
+            <ProtectedRoute>
+              <EditVideo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-comment/:commentId"
+          element={
+            <ProtectedRoute>
+              <EditComment />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-review/:reviewId"
+          element={
+            <ProtectedRoute>
+              <EditReview />
+            </ProtectedRoute>
+          }
+        />
+        {/* Fallback route for 404 pages */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
+  );
+}
+
 function App() {
   return (
     <Provider store={store}>
@@ -47,116 +187,7 @@ function App() {
             "/src/utils/js/smooth-scrollbar.js",
           ]}
         />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot" element={<Forgot />} />
-          <Route
-            path="/reset-admin-password/:token"
-            element={<ResetPassword />}
-          />
-          {/* Protected routes */}
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Index headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/catalog"
-            element={
-              <ProtectedRoute>
-                <Catalog headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-video"
-            element={
-              <ProtectedRoute>
-                <AddVideo headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/upload-video"
-            element={
-              <ProtectedRoute>
-                <VideoUpload headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-user"
-            element={
-              <ProtectedRoute>
-                <AddUserForm headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/comments"
-            element={
-              <ProtectedRoute>
-                <Comments headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/reviews"
-            element={
-              <ProtectedRoute>
-                <Reviews headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/users"
-            element={
-              <ProtectedRoute>
-                <Users headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />{" "}
-          <Route
-            path="/edit-user/:memberId"
-            element={
-              <ProtectedRoute>
-                <EditUser headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/edit-video/:videoId"
-            element={
-              <ProtectedRoute>
-                <EditVideo headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/edit-comment/:commentId"
-            element={
-              <ProtectedRoute>
-                <EditComment headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/edit-review/:reviewId"
-            element={
-              <ProtectedRoute>
-                <EditReview headerImage={headerImage} />
-              </ProtectedRoute>
-            }
-          />
-          {/* Fallback route for 404 pages */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppContent />
       </Router>
       <ToastContainer />
     </Provider>

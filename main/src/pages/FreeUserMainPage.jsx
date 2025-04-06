@@ -1,12 +1,6 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
-
-const FreeUserMainPage = ({ headerImage }) => {
+const FreeUserMainPage = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
-
       <div className="home home--title">
         <div className="container">
           <div className="row">
@@ -3459,7 +3453,7 @@ const FreeUserMainPage = ({ headerImage }) => {
           <div className="row">
             <div className="col-12">
               <h2 className="section__title">
-                <b>Flix</b>TV Originals
+                <b>Punjabi</b>Dub Originals
               </h2>
               <p className="section__text">
                 Celebrity interviews, trending entertainment stories, and expert
@@ -3501,8 +3495,8 @@ const FreeUserMainPage = ({ headerImage }) => {
                     </a>
                     <h3 className="interview__title">
                       <a href="interview.html">
-                        What Was Ben Affleck Planning for His Unmade &apos;Batman&apos;
-                        Film?
+                        What Was Ben Affleck Planning for His Unmade
+                        &apos;Batman&apos; Film?
                       </a>
                     </h3>
                   </div>
@@ -3743,12 +3737,8 @@ const FreeUserMainPage = ({ headerImage }) => {
           </div>
         </div>
       </section>
-      <Footer headerImage={headerImage} />
     </>
   );
-};
-FreeUserMainPage.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default FreeUserMainPage;

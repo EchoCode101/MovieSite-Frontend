@@ -1,6 +1,6 @@
 import userSvg from "../../assets/img/user.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, setLogoutLoading } from "../../../redux/authSlice";
+import { logout, setLogoutLoading } from "../../../redux/slices/authSlice";
 import LoadingSpinner from "../LoadingSpinner";
 
 const SidebarUser = () => {

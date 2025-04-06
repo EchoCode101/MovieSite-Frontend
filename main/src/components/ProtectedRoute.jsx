@@ -2,7 +2,11 @@ import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { validateToken, sendRefreshToken, logout } from "../../redux/authSlice";
+import {
+  validateToken,
+  sendRefreshToken,
+  logout,
+} from "../../redux/slices/authSlice";
 import LoadingSpinner from "./LoadingSpinner";
 import { showErrorToast, toastPromise } from "../utils/js/toastUtils";
 

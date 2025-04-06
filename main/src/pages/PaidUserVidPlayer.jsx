@@ -1,11 +1,6 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
-
-const PaidUserVidPlayer = ({ headerImage }) => {
+const PaidUserVidPlayer = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
       <section className="section section--head section--head-fixed section--gradient section--details-bg">
         <div
           className="section__bg"
@@ -2263,12 +2258,8 @@ const PaidUserVidPlayer = ({ headerImage }) => {
           </div>
         </div>
       </section>
-      <Footer headerImage={headerImage} />
     </>
   );
-};
-PaidUserVidPlayer.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default PaidUserVidPlayer;

@@ -1,11 +1,6 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
-
-const ContactUs = ({ headerImage }) => {
+const ContactUs = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
       <section className="section section--head section--head-fixed">
         <div className="container">
           <div className="row">
@@ -14,7 +9,6 @@ const ContactUs = ({ headerImage }) => {
                 Contact Us
               </h1>
             </div>
-
             <div className="col-12 col-xl-6">
               <ul className="breadcrumb">
                 <li className="breadcrumb__item">
@@ -98,8 +92,8 @@ const ContactUs = ({ headerImage }) => {
                   <a href="tel:+18092345678">+1 809 234-56-78</a>
                 </li>
                 <li>
-                  <a href="mailto:support@flixtv.template">
-                    support@flixtv.template
+                  <a href="mailto:support@PunjabiDub.template">
+                    support@PunjabiDub.template
                   </a>
                 </li>
               </ul>
@@ -297,12 +291,8 @@ const ContactUs = ({ headerImage }) => {
           </div>
         </div>
       </div>
-      <Footer headerImage={headerImage} />
     </>
   );
-};
-ContactUs.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default ContactUs;

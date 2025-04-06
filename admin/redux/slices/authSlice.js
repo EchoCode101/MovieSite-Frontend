@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import config from "../src/utils/js/config.js";
+import config from "../../src/utils/js/config.js";
 const apiUrl = config.apiUrl;
 
 // Async thunk for token validation

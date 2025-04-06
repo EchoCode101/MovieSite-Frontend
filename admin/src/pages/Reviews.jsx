@@ -1,6 +1,3 @@
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
 import Table from "../components/Table/Table";
 import Paginator from "../components/Paginator";
 import TableFilters from "../components/Table/TableFilters";
@@ -10,10 +7,10 @@ import {
   loadPaginatedReviews,
   setSortBy,
   setCurrentPage,
-} from "../../redux/reviewsSlice";
+} from "../../redux/slices/reviewsSlice";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-const Reviews = ({ headerImage }) => {
+const Reviews = () => {
   const dispatch = useDispatch();
   const {
     items: reviews,
@@ -160,11 +157,6 @@ const Reviews = ({ headerImage }) => {
 
   return (
     <>
-      <Header headerImage={headerImage} />
-      <DashboardSideBar
-        headerImage={headerImage}
-        activeLink="sidebar__nav-link--active"
-      />
       <main className="main">
         <div className="container-fluid">
           <div className="row">
@@ -223,10 +215,6 @@ const Reviews = ({ headerImage }) => {
       </main>
     </>
   );
-};
-
-Reviews.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default Reviews;

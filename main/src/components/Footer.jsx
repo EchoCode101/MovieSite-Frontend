@@ -1,7 +1,8 @@
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-
-const Footer = ({ headerImage }) => {
+import { useSelector } from "react-redux";
+import { selectHeaderImage } from "../../redux/slices/headerSlice";
+const Footer = () => {
+  const headerImage = useSelector(selectHeaderImage);
   return (
     <>
       <footer className="footer">
@@ -161,7 +162,7 @@ const Footer = ({ headerImage }) => {
             </div>
 
             <div className="col-6 col-md-4 col-lg-3 col-xl-2 order-1 order-md-2 order-lg-1 order-xl-2 offset-md-2 offset-lg-0 offset-xl-1">
-              <h6 className="footer__title">FlixTV</h6>
+              <h6 className="footer__title">Punjabi Dub</h6>
               <div className="footer__nav">
                 <a href="about.html">About us</a>
                 <a href="profile.html">My profile</a>
@@ -229,7 +230,5 @@ const Footer = ({ headerImage }) => {
     </>
   );
 };
-Footer.propTypes = {
-  headerImage: PropTypes.string.isRequired,
-};
+
 export default Footer;

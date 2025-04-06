@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchPaginatedVideos } from "../services/allRoutes";
+import { fetchPaginatedVideos } from "../../services/allRoutes";
 
 export const loadPaginatedVideos = createAsyncThunk(
   "catalog/loadPaginatedVideos",

@@ -1,11 +1,8 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
 
-const Pricing = ({ headerImage }) => {
+
+const Pricing = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
       <section className="section section--head section--head-fixed">
         <div className="container">
           <div className="row">
@@ -684,12 +681,10 @@ const Pricing = ({ headerImage }) => {
           </div>
         </div>
       </div>
-      <Footer headerImage={headerImage} />
+      
     </>
   );
 };
-Pricing.propTypes = {
-  headerImage: PropTypes.string.isRequired,
-};
+
 
 export default Pricing;

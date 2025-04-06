@@ -1,11 +1,6 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
-
-const Live = ({ headerImage }) => {
+const Live = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
       <section className="section section--head section--head-fixed">
         <div className="container">
           <div className="row">
@@ -1176,12 +1171,8 @@ const Live = ({ headerImage }) => {
           </div>
         </div>
       </div>
-      <Footer headerImage={headerImage} />
     </>
   );
-};
-Live.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default Live;

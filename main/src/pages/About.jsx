@@ -1,11 +1,7 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import PropTypes from "prop-types";
 
-const About = ({ headerImage }) => {
+const About = () => {
   return (
     <>
-      <Header headerImage={headerImage} />
 
       <section className="section section--head section--head-fixed">
         <div className="container">
@@ -559,12 +555,8 @@ const About = ({ headerImage }) => {
         </div>
       </div>
 
-      <Footer headerImage={headerImage} />
     </>
   );
-};
-About.propTypes = {
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default About;

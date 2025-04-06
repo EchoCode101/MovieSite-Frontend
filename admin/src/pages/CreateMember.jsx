@@ -3,11 +3,10 @@ import PropTypes from "prop-types";
 import { createMember } from "../../services/allRoutes";
 import { toastPromise } from "../utils/js/toastUtils";
 import InputField from "../components/EditUserComp/InputField";
-import DashboardSideBar from "../components/SideBar/DashboardSideBar";
-import Header from "../components/Header";
+
 import { toast } from "react-toastify";
 
-const AddUserForm = ({ headerImage }) => {
+const AddUserForm = () => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -76,13 +75,6 @@ const AddUserForm = ({ headerImage }) => {
 
   return (
     <>
-      <Header headerImage={headerImage} />
-
-      <DashboardSideBar
-        headerImage={headerImage}
-        activeLink="sidebar__nav-link--active"
-      />
-
       <main className="main">
         <div className="container-fluid">
           <div className="row">
@@ -217,7 +209,6 @@ const AddUserForm = ({ headerImage }) => {
 };
 AddUserForm.propTypes = {
   onUserAdded: PropTypes.func,
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default AddUserForm;

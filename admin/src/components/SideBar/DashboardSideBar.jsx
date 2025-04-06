@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom"; // Import useLocation
 import SidebarUser from "./SideBarUser";
 import { Link } from "react-router-dom";
-
-const DashboardSideBar = ({ activeLink, headerImage }) => {
+import { useSelector } from "react-redux";
+import { selectHeaderImage } from "../../../redux/slices/headerSlice";
+const DashboardSideBar = ({ activeLink }) => {
   const location = useLocation(); // Get the current URL
   // Function to check if the current location matches the href
   const isActiveLink = (href) => {
@@ -44,13 +45,13 @@ const DashboardSideBar = ({ activeLink, headerImage }) => {
     },
     {
       href: "../main/index",
-      text: "Back to FlixTV",
+      text: "Back to PunjabiDub",
       svgPath:
         "M17,11H9.41l3.3-3.29a1,1,0,1,0-1.42-1.42l-5,5a1,1,0,0,0-.21.33,1,1,0,0,0,0,.76,1,1,0,0,0,.21.33l5,5a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42L9.41,13H17a1,1,0,0,0,0-2Z",
     },
     // Add more items as needed
   ];
-
+  const headerImage = useSelector(selectHeaderImage);
   return (
     <>
       <div className="sidebar">
@@ -145,7 +146,6 @@ const DashboardSideBar = ({ activeLink, headerImage }) => {
 };
 DashboardSideBar.propTypes = {
   activeLink: PropTypes.string.isRequired,
-  headerImage: PropTypes.string.isRequired,
 };
 
 export default DashboardSideBar;
