@@ -60,7 +60,7 @@ class ErrorBoundary extends React.Component {
             We're sorry, but something unexpected happened. Please try
             refreshing the page.
           </p>
-          {process.env.NODE_ENV === "development" && this.state.error && (
+          {import.meta.env.DEV && this.state.error && (
             <details
               style={{
                 marginBottom: "2rem",
