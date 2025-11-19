@@ -25,7 +25,7 @@ const FloatingDiv = ({
       onClick={handleClick} // Use the handler here
     >
       {toggle === false ? (
-        <Link className="a-tag" to={`${href}/${id}`}>
+        <Link className="a-tag" to={href ? `${href}/${id}` : `#${id}`}>
           <Svg path={iconPath} />
         </Link>
       ) : (

@@ -1,0 +1,32 @@
+/* Smooth Scrollbar CSS Replacement */
+.sidebar__nav,
+.dashbox__table-wrap,
+.main__table-wrap {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(47, 128, 237, 0.3) transparent;
+}
+
+.sidebar__nav::-webkit-scrollbar,
+.dashbox__table-wrap::-webkit-scrollbar,
+.main__table-wrap::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar__nav::-webkit-scrollbar-track,
+.dashbox__table-wrap::-webkit-scrollbar-track,
+.main__table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar__nav::-webkit-scrollbar-thumb,
+.dashbox__table-wrap::-webkit-scrollbar-thumb,
+.main__table-wrap::-webkit-scrollbar-thumb {
+  background-color: rgba(47, 128, 237, 0.3);
+  border-radius: 4px;
+}
+
+.sidebar__nav::-webkit-scrollbar-thumb:hover,
+.dashbox__table-wrap::-webkit-scrollbar-thumb:hover,
+.main__table-wrap::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(47, 128, 237, 0.5);
+}

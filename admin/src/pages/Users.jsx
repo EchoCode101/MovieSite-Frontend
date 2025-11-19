@@ -12,6 +12,11 @@ import TableFilters from "../components/Table/TableFilters";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { toast } from "react-toastify";
 import { deleteMemberById } from "../../services/allRoutes";
+import { getImageWithFallback } from "../utils/imageUtils";
+import { formatDateTime } from "../utils/dateUtils";
+import { getSubscriptionPlanClass } from "../utils/subscriptionUtils";
+import { DEFAULT_PAGE_SIZE } from "../constants/pagination";
+import { getStatusClass } from "../utils/statusUtils";
 const Users = () => {
   const dispatch = useDispatch();
   const {
@@ -39,7 +44,7 @@ const Users = () => {
       dispatch(
         loadPaginatedUsers({
           page: currentPage,
-          limit: 10,
+          limit: DEFAULT_PAGE_SIZE,
           sort: sortBy,
           order,
         })
@@ -53,7 +58,7 @@ const Users = () => {
     dispatch(
       loadPaginatedUsers({
         page: currentPage,
-        limit: 10,
+        limit: DEFAULT_PAGE_SIZE,
         sort: sortBy,
         order,
       })
@@ -66,7 +71,10 @@ const Users = () => {
   };
 
   const columns = [
-    { accessor: "member_id", label: "ID" },
+    {
+      accessor: "rowNumber",
+      label: "ID",
+    },
     {
       accessor: "profile_pic",
       label: "Profile",
@@ -77,12 +85,8 @@ const Users = () => {
             style={{ width: "50px", height: "50px" }}
           >
             <img
-              alt="thumbnail"
-              src={
-                ` https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSLNQ1t4kHMECW1dLM7F3h1l1vWdZzZTHERYJmlg1NC7Ekl7JpWsIDXVw6EKTgiDzhlTA0u9GqgAU0Bl_gTtIy_Q-G0DdRQR4l7GsqKDSrkBA`
-                // ||
-                // `${row.thumbnail_url}`
-              }
+              alt="profile"
+              src={getImageWithFallback(row.profile_pic, "user")}
             />
           </div>
           <div className="sidebar__user-title">
@@ -101,64 +105,57 @@ const Users = () => {
       accessor: "subscription_plan",
       label: "Plan",
       render: (value) => (
-        <span
-          className={`${
-            value === "Free"
-              ? ""
-              : value === "Basic"
-              ? "main__table-text--mint"
-              : value === "Premium"
-              ? "main__table-text--pink"
-              : "main__table-text--golden"
-          }`}
-        >
-          {value}
-        </span>
+        <span className={getSubscriptionPlanClass(value)}>{value}</span>
       ),
     },
     {
       accessor: "commentsCount",
       label: "Comments",
-      render: (value) => (value?.length > 0 ? value.length : "0"),
+      render: (value) => {
+        if (typeof value === "number") {
+          return value.toString();
+        }
+        if (Array.isArray(value)) {
+          return value.length.toString();
+        }
+        return "0";
+      },
     },
     {
       accessor: "reviewsCount",
       label: "Reviews",
-      render: (value) => (value?.length > 0 ? value.length : "0"),
+      render: (value) => {
+        if (typeof value === "number") {
+          return value.toString();
+        }
+        if (Array.isArray(value)) {
+          return value.length.toString();
+        }
+        return "0";
+      },
     },
     {
       accessor: "commentRepliesCount",
       label: "Replies",
-      render: (value) => (value?.length > 0 ? value.length : "0"),
+      render: (value) => {
+        if (typeof value === "number") {
+          return value.toString();
+        }
+        if (Array.isArray(value)) {
+          return value.length.toString();
+        }
+        return "0";
+      },
     },
     {
       accessor: "status",
       label: "Status",
-      render: (value) => (
-        <span
-          className={`${
-            value === "Active"
-              ? "main__table-text--green"
-              : "main__table-text--red"
-          }`}
-        >
-          {value}
-        </span>
-      ),
+      render: (value) => <span className={getStatusClass(value)}>{value}</span>,
     },
     {
       accessor: "createdAt",
       label: "Created Date",
-      render: (value) =>
-        new Date(value).toLocaleString("en-US", {
-          weekday: "short", // e.g., "Monday"
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true, // e.g., "PM"
-        }),
+      render: (value) => formatDateTime(value),
     },
   ];
 
@@ -201,7 +198,7 @@ const Users = () => {
                   searchPlaceholder: "Find user..",
                 }}
                 sortByValues={{
-                  ID: "member_id",
+                  ID: "_id",
                   Date: "createdAt",
                   Plan: "subscription_plan",
                   Status: "status",
@@ -212,7 +209,7 @@ const Users = () => {
                   dispatch(
                     loadPaginatedUsers({
                       page: currentPage,
-                      limit: 10,
+                      limit: DEFAULT_PAGE_SIZE,
                       sort: sortBy,
                       order,
                     })
@@ -223,13 +220,19 @@ const Users = () => {
             </div>
             <div className="col-12">
               {loading ? (
-                <LoadingSpinner r={20} w={20} h={20} pt={0} pl={0} />
+                <LoadingSpinner />
               ) : (
                 <div className="main__table-wrap">
                   <Table
                     columns={columns}
                     buttonData={buttonData}
-                    data={users || []}
+                    data={
+                      users?.map((user, index) => ({
+                        ...user,
+                        rowNumber:
+                          (currentPage - 1) * DEFAULT_PAGE_SIZE + index + 1,
+                      })) || []
+                    }
                     loading={loading}
                   />
                 </div>

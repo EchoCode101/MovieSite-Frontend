@@ -11,13 +11,14 @@ const TableRow = ({
   visibleDivId,
   id,
   status,
+  rowIndex,
 }) => {
   return (
     <tr>
       {columns.map((col, index) => (
         <TableCell key={index} classvalue={col.className}>
           {col.render
-            ? col.render(data[col.accessor], data)
+            ? col.render(data[col.accessor], data, rowIndex)
             : data[col.accessor] || "N/A"}
         </TableCell>
       ))}
@@ -35,6 +36,12 @@ const TableRow = ({
               // Combine row id and button id for a truly unique ID
               // console.log("Rendering FloatingDiv with uniqueId:", uniqueId); // Debugging log
               // console.log("uniqueId: " + uniqueId); // Debugging log
+              // Handle href as function or string
+              const hrefValue =
+                typeof button.href === "function"
+                  ? button.href(id)
+                  : button.href;
+
               return (
                 <FloatingDiv
                   id={String(id)} // Convert memberId to a string
@@ -43,7 +50,7 @@ const TableRow = ({
                   iconPath={button.iconPath}
                   className={`${button.className} ${buttonInactiveClass}`}
                   toggle={button.toggle}
-                  href={button.href}
+                  href={hrefValue || undefined}
                   onToggle={() => onToggle(uniqueId)}
                   onProceed={() => button.onProceed && button.onProceed(id)} // Dynamically call `onProceed`
                   onDeny={() => onDeny(uniqueId)}
@@ -79,6 +86,7 @@ TableRow.propTypes = {
   visibleDivId: PropTypes.string, // Use string instead of number for flexibility
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   status: PropTypes.string,
+  rowIndex: PropTypes.number, // Index for sequential numbering
 };
 
 export default TableRow;

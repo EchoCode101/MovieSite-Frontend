@@ -6,7 +6,7 @@ import Svg from "../components/Svg";
 const IndexTable = ({
   title,
   columns,
-  data,
+  data = [],
   loading,
   onRefresh,
   viewAllLink,
@@ -52,7 +52,12 @@ const IndexTable = ({
           className={`dashbox__table-wrap dashbox__table-wrap--${wraprer_number}`}
           data-scrollbar="true"
           tabIndex="-1"
-          style={{ overflow: "hidden", outline: "none" }}
+          style={{
+            overflowY: "auto",
+            overflowX: "auto",
+            outline: "none",
+            maxHeight: "400px",
+          }}
         >
           <table className="main__table main__table--dash">
             <thead>
@@ -66,7 +71,7 @@ const IndexTable = ({
               <></>
             ) : (
               <tbody>
-                {data.length > 0 ? (
+                {data && Array.isArray(data) && data.length > 0 ? (
                   data.map((row, index) => (
                     <tr key={index}>
                       {columns.map((col) => (
@@ -83,7 +88,7 @@ const IndexTable = ({
                                   : row[col.accessor] || "N/A"}
                               </>
                             ) : typeof col.render === "function" ? (
-                              col.render(row[col.accessor], row)
+                              col.render(row[col.accessor], row, index)
                             ) : (
                               row[col.accessor] || "N/A"
                             )}
@@ -118,7 +123,7 @@ IndexTable.propTypes = {
     })
   ).isRequired,
   classvalue: PropTypes.string,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array,
   loading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
   viewAllLink: PropTypes.string,

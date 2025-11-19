@@ -1,0 +1,306 @@
+/* AddVideo Form Styling */
+.add-video-form {
+  background: #151f30;
+  border-radius: 6px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-video-form .form__section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #131720;
+  border-radius: 12px;
+  /* border: 1px solid #e9ecef; */
+
+}
+
+.add-video-form .form__section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #2f55d4;
+}
+
+.add-video-form .form__group {
+  margin-bottom: 1.5rem;
+}
+
+.add-video-form .form__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #cacaca;
+  font-size: 0.9rem;
+}
+
+.add-video-form .form__input,
+.add-video-form .form__textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #2f80ed;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: #181e30;
+}
+
+.add-video-form .form__input:focus,
+.add-video-form .form__textarea:focus {
+  outline: none;
+  border-color: #2f55d4;
+  box-shadow: 0 0 0 0.2rem rgba(47, 85, 212, 0.25);
+}
+
+.add-video-form .form__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* React Select Styling */
+.add-video-form .react-select-container {
+  width: 100%;
+}
+
+.add-video-form .react-select__control {
+  min-height: 40px;
+  border: 1px solid #2f55d4;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+
+}
+
+.add-video-form .react-select__control:hover {
+  border-color: #2f55d4;
+}
+
+.add-video-form .react-select__control--is-focused {
+  border-color: #2f55d4;
+  box-shadow: 0 0 0 0.2rem rgba(47, 85, 212, 0.25);
+}
+
+.add-video-form .react-select__indicator-separator {
+  background-color: #e0e0e0;
+}
+
+.add-video-form .react-select__dropdown-indicator {
+  color: #666;
+}
+
+.add-video-form .react-select__dropdown-indicator:hover {
+  color: #2f55d4;
+}
+
+.add-video-form .react-select__menu {
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+}
+
+.add-video-form .react-select__option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.add-video-form .react-select__option--is-focused {
+  background-color: #f0f4ff;
+  color: #2f55d4;
+}
+
+.add-video-form .react-select__option--is-selected {
+  background-color: #2f55d4;
+  color: white;
+}
+
+.add-video-form .react-select__multi-value {
+  background-color: #e8ecff;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 2px;
+}
+
+.add-video-form .react-select__multi-value__label {
+  color: #2f55d4;
+  font-size: 0.9rem;
+  padding: 2px 4px;
+}
+
+.add-video-form .react-select__multi-value__remove {
+  color: #2f55d4;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+}
+
+.add-video-form .react-select__multi-value__remove:hover {
+  background-color: #2f55d4;
+  color: white;
+}
+
+.add-video-form .react-select__placeholder {
+  color: #999;
+}
+
+/* Checkbox Styling */
+.add-video-form .form__checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
+  color: #495057;
+}
+
+.add-video-form .form__checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  accent-color: #2f55d4;
+}
+
+.add-video-form .form__checkbox-label span {
+  user-select: none;
+}
+
+/* Info Text */
+.add-video-form .form__info {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #e8ecff;
+  border-radius: 4px;
+  border-left: 4px solid #2f55d4;
+}
+
+.add-video-form .form__info small {
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.add-video-form .form__info strong {
+  color: #2f55d4;
+}
+
+/* Button Styling */
+.add-video-form .form__btn {
+  background: linear-gradient(135deg, #2f55d4 0%, #1e3a8a 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 2rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(47, 85, 212, 0.3);
+}
+
+.add-video-form .form__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(47, 85, 212, 0.4);
+}
+
+.add-video-form .form__btn:active {
+  transform: translateY(0);
+}
+
+/* Thumbnail Upload */
+.add-video-form .form__img {
+  position: relative;
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.add-video-form .form__img:hover {
+  border-color: #2f55d4;
+  background: #cecece;
+}
+
+.add-video-form .form__img label {
+  display: block;
+  margin-bottom: 1rem;
+  color: #495057;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.add-video-form .form__img input[type="file"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-video-form .form__img img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Gallery Upload */
+.add-video-form .form__gallery {
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  /* padding: 1.5rem; */
+  text-align: center;
+  transition: all 0.3s ease;
+      height: auto;
+}
+
+.add-video-form .form__gallery:hover {
+  border-color: #2f55d4;
+  background: #f8f9ff;
+}
+
+.add-video-form .form__gallery label {
+  display: block;
+  margin-bottom: 1rem;
+  color: #495057;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.add-video-form .form__gallery input[type="file"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .add-video-form {
+    padding: 1rem;
+  }
+
+  .add-video-form .form__section {
+    padding: 1rem;
+  }
+
+  .add-video-form .form__section-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* Custom dropdown arrow for native selects (if any remain) */
+.add-video-form select.form__input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.add-video-form select.form__input:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232f55d4' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+}

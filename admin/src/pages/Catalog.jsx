@@ -15,6 +15,12 @@ import {
   fetchVideos,
   fetchVideosWithLikesDislikesMembers,
 } from "../../services/allRoutes";
+import { getImageWithFallback } from "../utils/imageUtils";
+import { formatDateTime } from "../utils/dateUtils";
+import { getSubscriptionPlanClass } from "../utils/subscriptionUtils";
+import { getRatingClass } from "../utils/ratingUtils";
+import { formatNumber, formatFileSize } from "../utils/numberUtils";
+import { DEFAULT_PAGE_SIZE } from "../constants/pagination";
 
 const Catalog = () => {
   const [loadingItems, setLoadingItems] = useState(false);
@@ -30,10 +36,14 @@ const Catalog = () => {
   } = useSelector((state) => state.catalog);
 
   const columns = [
-    { accessor: "video_id", label: "ID" },
+    {
+      accessor: "display_id",
+      label: "ID",
+      render: (value) => value || "N/A",
+    },
     {
       accessor: "title",
-      label: "Title",
+      label: "Thumbnail  / Title",
       render: (value, row) => (
         <div className="sidebar__user p-0" style={{ borderBottom: 0 }}>
           <div
@@ -42,11 +52,7 @@ const Catalog = () => {
           >
             <img
               alt="thumbnail"
-              src={
-                ` https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSLNQ1t4kHMECW1dLM7F3h1l1vWdZzZTHERYJmlg1NC7Ekl7JpWsIDXVw6EKTgiDzhlTA0u9GqgAU0Bl_gTtIy_Q-G0DdRQR4l7GsqKDSrkBA`
-                // ||
-                // `${row.thumbnail_url}`
-              }
+              src={getImageWithFallback(row.thumbnail_url, "thumbnail")}
             />
           </div>
           <div className="sidebar__user-title">
@@ -63,22 +69,10 @@ const Catalog = () => {
 
     { accessor: "category", label: "Category" },
     {
-      label: "Access Level",
+      label: `Access Level`,
       accessor: "access_level",
       render: (value) => (
-        <span
-          className={`${
-            value === "Free"
-              ? ""
-              : value === "Basic"
-              ? "main__table-text--mint"
-              : value === "Premium"
-              ? "main__table-text--pink"
-              : "main__table-text--golden"
-          }`}
-        >
-          {value}
-        </span>
+        <span className={getSubscriptionPlanClass(value)}>{value}</span>
       ),
     },
     {
@@ -86,18 +80,7 @@ const Catalog = () => {
       label: "Rating",
       render: (value) =>
         value !== "N/A" ? (
-          <span
-            className={`${
-              value >= 10
-                ? "main__table-text--green"
-                : value < 2
-                ? "main__table-text--red"
-                : ""
-            }`}
-          >
-            {value.toFixed(1)}
-            {/* {console.log(value)} */}
-          </span>
+          <span className={getRatingClass(value)}>{value.toFixed(1)}</span>
         ) : (
           "N/A"
         ),
@@ -105,20 +88,17 @@ const Catalog = () => {
     {
       accessor: "views_count",
       label: "Views",
-      render: (value) =>
-        `${value > 1000 ? `${(value / 1000).toFixed(1)}k` : value}`,
+      render: (value) => formatNumber(value),
     },
     {
       accessor: "shares_count",
       label: "Shares",
-      render: (value) =>
-        `${value > 1000 ? `${(value / 1000).toFixed(1)}k` : value}`,
+      render: (value) => formatNumber(value),
     },
     {
       label: "File Size",
       accessor: "file_size",
-      render: (value) =>
-        value ? `${(value / 1024 / 1024).toFixed(2)} MB` : "N/A",
+      render: (value) => formatFileSize(value),
     },
     {
       label: "Likes",
@@ -161,16 +141,7 @@ const Catalog = () => {
     {
       accessor: "createdAt",
       label: "Date & Time",
-      render: (value) =>
-        new Date(value).toLocaleString("en-US", {
-          weekday: "short", // e.g., "Monday"
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true, // e.g., "PM"
-        }),
+      render: (value) => formatDateTime(value),
     },
   ];
   const handleSortChange = (sortValue) => {
@@ -212,28 +183,115 @@ const Catalog = () => {
     setLoadingItems(true);
     try {
       // Fetch data concurrently
+      // Calculate date range dynamically (last 2 years)
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setFullYear(endDate.getFullYear() - 2);
+      const startDateStr = startDate.toISOString().split("T")[0];
+      const endDateStr = endDate.toISOString().split("T")[0];
+
       const [
-        { data: videoList },
-        { data: reviews },
-        { data: metrics },
-        { data: videoLikesDislikes },
+        videoResponse,
+        reviewsResponse,
+        metricsResponse,
+        videoLikesDislikesResponse,
       ] = await Promise.all([
         fetchVideos(), // Fetch video details
-        fetchReviews({ startDate: "2024-01-01", endDate: "2024-12-31" }),
+        fetchReviews({ startDate: startDateStr, endDate: endDateStr }),
         fetchVideoMetrics(),
         fetchVideosWithLikesDislikesMembers(), // Fetch likes/dislikes with members
       ]);
 
+      // Extract data from responses - handle both direct arrays and wrapped objects
+      const videoList = Array.isArray(videoResponse)
+        ? videoResponse
+        : videoResponse?.data || [];
+      const reviews = Array.isArray(reviewsResponse)
+        ? reviewsResponse
+        : reviewsResponse?.data || [];
+      const metrics = Array.isArray(metricsResponse)
+        ? metricsResponse
+        : metricsResponse?.data || [];
+      const videoLikesDislikes = Array.isArray(videoLikesDislikesResponse)
+        ? videoLikesDislikesResponse
+        : videoLikesDislikesResponse?.data || [];
+
       // Enrich video data with reviews, metrics, and likes/dislikes
       const enrichedData = videoList.map((video) => {
-        const review = reviews.find((rev) => rev.video_id === video.video_id);
-        const metric = metrics.find((m) => m.video_id === video.video_id);
-        const videoLikesDislikesEntry = videoLikesDislikes.find(
-          (ld) => ld.video_id === video.video_id
-        );
+        // Normalize _id to video_id for consistency (MongoDB uses _id)
+        // Convert ObjectId to string if needed
+        const videoId = video._id
+          ? typeof video._id === "object" && video._id.toString
+            ? video._id.toString()
+            : String(video._id)
+          : video.video_id
+          ? String(video.video_id)
+          : null;
+
+        const review = reviews.find((rev) => {
+          // Handle populated video_id object (has _id property) or direct video_id string/ObjectId
+          let revVideoId = null;
+          if (rev.video_id) {
+            if (typeof rev.video_id === "object") {
+              // If video_id is populated object, get its _id
+              if (rev.video_id._id) {
+                revVideoId =
+                  typeof rev.video_id._id === "object" &&
+                  rev.video_id._id.toString
+                    ? rev.video_id._id.toString()
+                    : String(rev.video_id._id);
+              } else {
+                // If it's an ObjectId object directly
+                revVideoId = rev.video_id.toString
+                  ? rev.video_id.toString()
+                  : String(rev.video_id);
+              }
+            } else {
+              // If video_id is a string or primitive
+              revVideoId = String(rev.video_id);
+            }
+          }
+          return revVideoId === videoId;
+        });
+        const metric = metrics.find((m) => {
+          // Handle populated video_id object (has _id property) or direct video_id string/ObjectId
+          let mVideoId = null;
+          if (m.video_id) {
+            if (typeof m.video_id === "object") {
+              // If video_id is populated object, get its _id
+              if (m.video_id._id) {
+                mVideoId =
+                  typeof m.video_id._id === "object" && m.video_id._id.toString
+                    ? m.video_id._id.toString()
+                    : String(m.video_id._id);
+              } else {
+                // If it's an ObjectId object directly
+                mVideoId = m.video_id.toString
+                  ? m.video_id.toString()
+                  : String(m.video_id);
+              }
+            } else {
+              // If video_id is a string or primitive
+              mVideoId = String(m.video_id);
+            }
+          }
+          return mVideoId === videoId;
+        });
+        const videoLikesDislikesEntry = videoLikesDislikes.find((ld) => {
+          // Handle both _id and video_id fields
+          const ldId = ld.video_id
+            ? String(ld.video_id)
+            : ld._id
+            ? typeof ld._id === "object" && ld._id.toString
+              ? ld._id.toString()
+              : String(ld._id)
+            : null;
+          return ldId === videoId;
+        });
 
         return {
           ...video,
+          video_id: videoId, // Ensure video_id is always present as string (for edit links)
           rating: review?.rating || "N/A",
           views_count: metric?.views_count || 0,
           shares_count: metric?.shares_count || 0,
@@ -241,12 +299,12 @@ const Catalog = () => {
           report_count: metric?.report_count || 0,
           likes:
             videoLikesDislikesEntry?.likesDislikes
-              .filter((ld) => ld.is_like)
-              .map((ld) => ld.user) || [],
+              ?.filter((ld) => ld.is_like)
+              ?.map((ld) => ld.user) || [],
           dislikes:
             videoLikesDislikesEntry?.likesDislikes
-              .filter((ld) => !ld.is_like)
-              .map((ld) => ld.user) || [],
+              ?.filter((ld) => !ld.is_like)
+              ?.map((ld) => ld.user) || [],
         };
       });
       // Sort enriched data
@@ -266,11 +324,16 @@ const Catalog = () => {
         if (order === "ASC") return keyA > keyB ? 1 : -1;
         return keyA < keyB ? 1 : -1;
       });
-      // console.log(JSON.stringify(enrichedData, null, 2));
-      // console.log(JSON.stringify(sortedData, null, 2));
-      setVideoData(sortedData);
+
+      // Add sequential display_id after sorting to reflect final order
+      const dataWithDisplayId = sortedData.map((item, index) => ({
+        ...item,
+        display_id: index + 1, // Sequential numbering (1, 2, 3...)
+      }));
+
+      setVideoData(dataWithDisplayId);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // Error handling is done by the API layer
     } finally {
       setLoadingItems(false);
     }
@@ -281,7 +344,7 @@ const Catalog = () => {
     dispatch(
       loadPaginatedVideos({
         page: currentPage,
-        limit: 10,
+        limit: DEFAULT_PAGE_SIZE,
         sort: sortBy,
         order: order,
       })
@@ -315,7 +378,7 @@ const Catalog = () => {
             </div>
             <div className="col-12">
               {loadingItems ? (
-                <LoadingSpinner r={20} w={20} h={20} pt={0} pl={0} />
+                <LoadingSpinner />
               ) : (
                 <div className="main__table-wrap">
                   <Table

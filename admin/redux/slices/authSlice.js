@@ -1,52 +1,38 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import config from "../../src/utils/js/config.js";
-const apiUrl = config.apiUrl;
+import API from "../../services/api.js";
 
 // Async thunk for token validation
+// Uses API instance so it goes through the interceptor and benefits from automatic token refresh
 export const validateToken = createAsyncThunk(
   "auth/validateToken",
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState();
-    const encryptedToken = state.auth.token;
-
-    if (!encryptedToken) return rejectWithValue("No token found");
-
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `${apiUrl}/token/validate`,
-        {},
-        {
-          headers: { authorization: `Bearer ${encryptedToken}` },
-        }
-      );
+      // API instance automatically adds token from localStorage via request interceptor
+      // If token is expired, the response interceptor will handle refresh automatically
+      const response = await API.post("/token/validate", {});
       return response.data;
     } catch (err) {
-      return rejectWithValue("Invalid or expired token" + err);
+      return rejectWithValue("Invalid or expired token: " + (err.message || "Unknown error"));
     }
   }
 );
 
 export const sendRefreshToken = createAsyncThunk(
   "auth/refreshToken",
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState();
-    const encryptedRefreshToken = state.auth.refreshToken;
-
-    if (!encryptedRefreshToken)
-      return rejectWithValue("No refresh token found");
-
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `${apiUrl}/token/refresh`,
+      // Refresh token is sent via cookie (httpOnly), not in header
+      // Use API instance to ensure withCredentials is set and interceptors work
+      const response = await API.post(
+        "/token/refresh",
         {},
         {
-          headers: { authorization: `Bearer ${encryptedRefreshToken}` },
+          withCredentials: true, // Send cookies
         }
       );
       return response.data.token;
     } catch (err) {
-      return rejectWithValue("Failed to refresh token: " + err.message);
+      return rejectWithValue("Failed to refresh token: " + (err.message || "Unknown error"));
     }
   }
 );
@@ -107,6 +93,7 @@ const authSlice = createSlice({
       })
       .addCase(sendRefreshToken.fulfilled, (state, action) => {
         state.token = action.payload;
+        state.isAuthenticated = true; // Set authenticated after successful refresh
         state.loading = false;
         localStorage.setItem("token", action.payload);
       })

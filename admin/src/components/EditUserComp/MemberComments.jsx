@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import Table from "../Table/Table";
+import { formatDate } from "../../utils/dateUtils";
 
 const MemberComments = ({ comments }) => {
   const buttonData = [
@@ -15,7 +16,7 @@ const MemberComments = ({ comments }) => {
       iconPath:
         "M22,7.24a1,1,0,0,0-.29-.71L17.47,2.29A1,1,0,0,0,16.76,2a1,1,0,0,0-.71.29L13.22,5.12h0L2.29,16.05a1,1,0,0,0-.29.71V21a1,1,0,0,0,1,1H7.24A1,1,0,0,0,8,21.71L18.87,10.78h0L21.71,8a1,1,0,0,0,.22-.33,1,1,0,0,0,0-.24.7.7,0,0,0,0-.14ZM6.83,20H4V17.17l9.93-9.93,2.83,2.83ZM18.17,8.66,15.34,5.83l1.42-1.41,2.82,2.82Z",
       toggle: false,
-      href: "/edit-comment",
+      href: "/edit-comment", // Base path, FloatingDiv will append /${id}
       className: "main__table-btn--edit",
     },
     {
@@ -28,19 +29,44 @@ const MemberComments = ({ comments }) => {
   ];
 
   const columns = [
-    { label: "Comment ID", accessor: "comment_id" },
+    {
+      label: "Comment ID",
+      accessor: "_id",
+      render: (value, row, index) => {
+        // Return sequential number (1, 2, 3, ...)
+        return index + 1;
+      },
+    },
     { label: "Content", accessor: "content" },
     {
       label: "Video Title",
-      accessor: "video",
-      render: (value) => (value?.title ? value.title : "N/A"),
+      accessor: "video_id",
+      render: (value, row) => {
+        // Handle populated video_id object or direct value
+        // video_id is populated from backend, so it's an object with _id and title
+        if (value && typeof value === "object") {
+          if (value.title) return value.title;
+          if (value._id) return `Video ${String(value._id).slice(-8)}`;
+        }
+        // Fallback to check row.video
+        if (row.video?.title) return row.video.title;
+        return "N/A";
+      },
     },
-    { label: "Likes", accessor: "likes" },
-    { label: "Dislikes", accessor: "dislikes" },
+    {
+      label: "Likes",
+      accessor: "likes",
+      render: (value) => value ?? 0,
+    },
+    {
+      label: "Dislikes",
+      accessor: "dislikes",
+      render: (value) => value ?? 0,
+    },
     {
       label: "Created At",
       accessor: "createdAt",
-      render: (value) => new Date(value).toLocaleDateString(), // Format the date
+      render: (value) => formatDate(value),
     },
   ];
 
@@ -54,13 +80,18 @@ const MemberComments = ({ comments }) => {
 MemberComments.propTypes = {
   comments: PropTypes.arrayOf(
     PropTypes.shape({
-      comment_id: PropTypes.number,
+      _id: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+      comment_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       content: PropTypes.string,
-      createdAt: PropTypes.string,
-      likes: PropTypes.string,
-      dislikes: PropTypes.string,
+      createdAt: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+      ]),
+      likes: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      dislikes: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       video: PropTypes.shape({
-        video_id: PropTypes.number,
+        _id: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+        video_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         title: PropTypes.string,
       }),
     })

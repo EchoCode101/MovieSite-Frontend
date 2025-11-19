@@ -1,76 +1,182 @@
 import { useState } from "react";
+import Select from "react-select";
 import { toastPromise } from "../utils/js/toastUtils";
 import { createVideo } from "../../services/allRoutes";
 import { toast } from "react-toastify";
-import CloudinaryUploader from "../components/CloudinaryUploader";
+import { COUNTRIES } from "../constants/countries";
+import "./AddVideo.css";
 
 const AddVideo = () => {
   const availableTags = [
-    { id: 1, name: "Action" },
-    { id: 2, name: "Drama" },
+    { value: 1, label: "Action" },
+    { value: 2, label: "Drama" },
   ];
+
   const resolutions = [
-    { id: "FullHD", name: "FullHD" },
-    { id: "HD", name: "HD" },
+    { value: "SD", label: "SD (480p)" },
+    { value: "HD", label: "HD (720p)" },
+    { value: "FullHD", label: "FullHD (1080p)" },
+    { value: "4K", label: "4K (2160p)" },
   ];
+
   const video_format = [
-    { id: "MP4", name: "MP4" },
-    { id: "AVI", name: "AVI" },
-    { id: "MKV", name: "MKV" },
+    { value: "MP4", label: "MP4" },
+    { value: "AVI", label: "AVI" },
+    { value: "MKV", label: "MKV" },
   ];
+
   const license_type = [
-    { id: "Standard", name: "Standard" },
-    { id: "Creative Commons", name: "Creative Commons" },
-    { id: "Royalty-Free", name: "Royalty-Free" },
+    { value: "Standard", label: "Standard" },
+    { value: "Creative Commons", label: "Creative Commons" },
+    { value: "Royalty-Free", label: "Royalty-Free" },
   ];
+
+  const access_levels = [
+    { value: "Free", label: "Free" },
+    { value: "Paid", label: "Paid" },
+  ];
+
+  const age_restriction_options = [
+    { value: false, label: "No" },
+    { value: true, label: "Yes" },
+  ];
+
+  // Convert COUNTRIES array to react-select format
+  const countryOptions = COUNTRIES.map((country) => ({
+    value: country,
+    label: country,
+  }));
+
   const [formData, setFormData] = useState({
-    title: "", // Required
-    description: "", // Optional
-    video_url: "", // URL or file upload
-    thumbnail_url: "", // URL or file upload
-    duration: "", // Optional
-    resolution: "FullHD", // Default value
-    file_size: "", // Optional
-    category: "", // Optional
-    language: "", // Optional
-    age_restriction: false, // Boolean, default false
-    published: true, // Boolean, default true
-    seo_title: "", // Optional
-    seo_description: "", // Optional
-    license_type: "", // Optional
-    access_level: "Free", // Default value
-    video_format: "", // Optional
-    tags: [], // Will hold selected tag IDs
-    custom_metadata: {}, // Optional for flexibility
+    title: "",
+    description: "",
+    video_url: "", // Primary video URL (will use selected resolution)
+    thumbnail_url: "",
+    duration: "",
+    resolution: "FullHD", // Default resolution
+    file_size: "",
+    category: "",
+    language: "",
+    age_restriction: false,
+    published: true,
+    seo_title: "",
+    seo_description: "",
+    license_type: "",
+    access_level: "Free",
+    video_format: "",
+    tags: [],
+    gallery: [],
+    countries: [],
+    // Resolution-specific URLs
+    video_urls: {
+      SD: "",
+      HD: "",
+      FullHD: "",
+      "4K": "",
+    },
   });
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    if (type === "number") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value === "" ? "" : Number(value),
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
-  const handleUpload = async (file) => {
-    const formData = new FormData();
-    formData.append("video", file); // Match backend's multer field name
 
-    const response = await fetch("http://localhost:7100/api/upload-video", {
-      method: "POST",
-      body: formData,
+  const handleResolutionUrlChange = (resolution, url) => {
+    setFormData((prev) => ({
+      ...prev,
+      video_urls: {
+        ...prev.video_urls,
+        [resolution]: url,
+      },
+      // Update primary video_url if this is the selected resolution
+      video_url: prev.resolution === resolution ? url : prev.video_url,
+    }));
+  };
+
+  const handleResolutionChange = (selectedOption) => {
+    const newResolution = selectedOption.value;
+    setFormData((prev) => ({
+      ...prev,
+      resolution: newResolution,
+      // Update primary video_url to match the selected resolution
+      video_url: prev.video_urls[newResolution] || "",
+    }));
+  };
+
+  const handleThumbnailUpload = async (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const previewUrl = e.target.result;
+      setFormData((prev) => ({ ...prev, thumbnail_url: previewUrl }));
+      const imgElement = document.getElementById("form__img");
+      if (imgElement) {
+        imgElement.src = previewUrl;
+      }
+    };
+    reader.readAsDataURL(file);
+    // TODO: Upload to Cloudinary and set thumbnail_url to the returned URL
+  };
+
+  const handleGalleryUpload = (files) => {
+    const fileArray = Array.from(files);
+    const galleryUrls = [];
+    let loadedCount = 0;
+
+    if (fileArray.length === 0) {
+      setFormData((prev) => ({ ...prev, gallery: [] }));
+      return;
+    }
+
+    fileArray.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        galleryUrls.push(e.target.result);
+        loadedCount++;
+        if (loadedCount === fileArray.length) {
+          setFormData((prev) => ({ ...prev, gallery: galleryUrls }));
+        }
+      };
+      reader.readAsDataURL(file);
     });
 
-    const data = await response.json();
-    // setVideoUrl(data.videoUrl);
-    console.log("Uploaded Video URL:", data.videoUrl);
+    const galleryLabel = document.getElementById("gallery1");
+    if (galleryLabel) {
+      if (fileArray.length > 1) {
+        galleryLabel.textContent = `${fileArray.length} files selected`;
+      } else {
+        galleryLabel.textContent = fileArray[0].name;
+      }
+    }
+    // TODO: Upload to Cloudinary and set gallery to array of URLs
   };
 
   const handleFileChange = async (e) => {
     const { name, files } = e.target;
-    const fileUrl = await handleUpload(files[0]);
-    setFormData((prev) => ({ ...prev, [name]: fileUrl }));
+    if (name === "form__img-upload" && files && files[0]) {
+      await handleThumbnailUpload(files[0]);
+    } else if (name === "gallery" && files && files.length > 0) {
+      handleGalleryUpload(files);
+    }
   };
 
   const validateForm = () => {
-    if (!formData.title || !formData.video_url) {
-      toast.error("Title and video URL are required!");
+    if (!formData.title) {
+      toast.error("Title is required!");
+      return false;
+    }
+    // Check if at least one resolution URL is provided
+    const hasVideoUrl = Object.values(formData.video_urls).some(
+      (url) => url && url.trim() !== ""
+    );
+    if (!hasVideoUrl && !formData.video_url) {
+      toast.error("At least one video URL is required!");
       return false;
     }
     return true;
@@ -81,16 +187,129 @@ const AddVideo = () => {
     if (!validateForm()) return;
 
     try {
+      // Prepare data for API
+      // Use the selected resolution URL as primary, or first available URL
+      const primaryVideoUrl =
+        formData.video_url ||
+        Object.values(formData.video_urls).find(
+          (url) => url && url.trim() !== ""
+        ) ||
+        "";
+
+      const submitData = {
+        title: formData.title,
+        description: formData.description || undefined,
+        video_url: primaryVideoUrl,
+        thumbnail_url: formData.thumbnail_url || undefined,
+        duration: formData.duration ? Number(formData.duration) : undefined,
+        resolution: formData.resolution || "FullHD",
+        file_size: formData.file_size ? Number(formData.file_size) : undefined,
+        category: formData.category || undefined,
+        language: formData.language || undefined,
+        age_restriction: formData.age_restriction,
+        published: formData.published,
+        seo_title: formData.seo_title || undefined,
+        seo_description: formData.seo_description || undefined,
+        license_type: formData.license_type || undefined,
+        access_level: formData.access_level || "Free",
+        video_format: formData.video_format || undefined,
+        tags:
+          formData.tags.length > 0
+            ? formData.tags.map((tag) => tag.value)
+            : undefined,
+        gallery: formData.gallery.length > 0 ? formData.gallery : undefined,
+        // Store all resolution URLs and countries in custom_metadata
+        custom_metadata: {
+          video_urls: formData.video_urls,
+          countries:
+            formData.countries.length > 0
+              ? formData.countries.map((country) => country.value)
+              : undefined,
+        },
+      };
+
       const newVideo = await toastPromise(
-        createVideo(formData),
+        createVideo(submitData),
         "Creating video...",
         "Video created successfully!",
         "Failed to create video. Please try again."
       );
       console.log("New Video:", newVideo);
+
+      // Reset form after successful submission
+      setFormData({
+        title: "",
+        description: "",
+        video_url: "",
+        thumbnail_url: "",
+        duration: "",
+        resolution: "FullHD",
+        file_size: "",
+        category: "",
+        language: "",
+        age_restriction: false,
+        published: true,
+        seo_title: "",
+        seo_description: "",
+        license_type: "",
+        access_level: "Free",
+        video_format: "",
+        tags: [],
+        gallery: [],
+        countries: [],
+        video_urls: {
+          SD: "",
+          HD: "",
+          FullHD: "",
+          "4K": "",
+        },
+      });
     } catch (error) {
       console.error("Error creating video:", error);
     }
+  };
+
+  // Custom styles for react-select
+  const selectStyles = {
+    control: (base, state) => ({
+      ...base,
+      minHeight: "40px",
+      borderColor: state.isFocused ? "#2f55d4" : "#e0e0e0",
+      boxShadow: state.isFocused
+        ? "0 0 0 0.2rem rgba(47, 85, 212, 0.25)"
+        : "none",
+      "&:hover": {
+        borderColor: "#2f55d4",
+      },
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? "#2f55d4"
+        : state.isFocused
+        ? "#f0f4ff"
+        : "white",
+      color: state.isSelected ? "white" : "#333",
+      "&:active": {
+        backgroundColor: "#2f55d4",
+      },
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: "#e8ecff",
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: "#2f55d4",
+    }),
+    multiValueRemove: (base) => ({
+      ...base,
+      color: "#2f55d4",
+      "&:hover": {
+        backgroundColor: "#2f55d4",
+        color: "white",
+      },
+    }),
   };
 
   return (
@@ -105,8 +324,9 @@ const AddVideo = () => {
             </div>
 
             <div className="col-12">
-              <form onSubmit={handleSubmit} className="form">
+              <form onSubmit={handleSubmit} className="form add-video-form">
                 <div className="row">
+                  {/* Thumbnail Upload Section */}
                   <div className="col-12 col-md-5 form__cover">
                     <div className="row">
                       <div className="col-12 col-sm-6 col-md-12">
@@ -119,459 +339,23 @@ const AddVideo = () => {
                             name="form__img-upload"
                             type="file"
                             accept=".png, .jpg, .jpeg"
-                            value={formData.thumbnail_url}
                             onChange={handleFileChange}
                           />
-                          <img id="form__img" src="#" alt=" " />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-12 col-md-7 form__content">
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="form__group">
-                          <input
-                            type="text"
-                            className="form__input"
-                            required
-                            placeholder="Enter video title"
-                            value={formData.title}
-                            onChange={handleInputChange}
+                          <img
+                            id="form__img"
+                            src={formData.thumbnail_url || "#"}
+                            alt="Thumbnail preview"
+                            style={{
+                              display: formData.thumbnail_url
+                                ? "block"
+                                : "none",
+                            }}
                           />
                         </div>
                       </div>
-
-                      <div className="col-12">
-                        <div className="form__group">
-                          <textarea
-                            id="text"
-                            name="description"
-                            className="form__textarea"
-                            placeholder="Description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                          ></textarea>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-sm-6 col-lg-3">
-                        <div className="form__group">
-                          <input
-                            type="text"
-                            className="form__input"
-                            placeholder="Release year"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-sm-6 col-lg-3">
-                        <div className="form__group">
-                          <input
-                            type="text"
-                            className="form__input"
-                            placeholder="Running timed in minutes"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-sm-6 col-lg-3">
-                        <div className="form__group">
-                          <select
-                            className="js-example-basic-single"
-                            id="quality"
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                resolution: Array.from(
-                                  e.target.selectedOptions
-                                ).map((option) => option.value),
-                              })
-                            }
-                          >
-                            {resolutions.map((tag) => (
-                              <option key={tag.id} value={tag.id}>
-                                {tag.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6 col-lg-3">
-                        <div className="form__group">
-                          <select
-                            className="js-example-basic-single"
-                            id="video_format"
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                resolution: Array.from(
-                                  e.target.selectedOptions
-                                ).map((option) => option.value),
-                              })
-                            }
-                          >
-                            {video_format.map((tag) => (
-                              <option key={tag.id} value={tag.id}>
-                                {tag.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-6 col-lg-3">
-                        <div className="form__group">
-                          <select
-                            className="js-example-basic-single"
-                            id="license_type"
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                resolution: Array.from(
-                                  e.target.selectedOptions
-                                ).map((option) => option.value),
-                              })
-                            }
-                          >
-                            {license_type.map((tag) => (
-                              <option key={tag.id} value={tag.id}>
-                                {tag.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-sm-6 col-lg-3">
-                        <div className="form__group">
-                          <select
-                            className="js-example-basic-multiple"
-                            id="age_restriction"
-                            value={formData.age_restriction}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                age_restriction: e.target.value === "true",
-                              })
-                            }
-                          >
-                            <option value="false">No</option>
-                            <option value="true">Yes</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-lg-6">
-                        <div className="form__group">
-                          <select
-                            className="js-example-basic-multiple"
-                            id="country"
-                            multiple="multiple"
-                          >
-                            <option value="Afghanistan">Afghanistan</option>
-                            <option value="Åland Islands">Åland Islands</option>
-                            <option value="Albania">Albania</option>
-                            <option value="Algeria">Algeria</option>
-                            <option value="American Samoa">
-                              American Samoa
-                            </option>
-                            <option value="Andorra">Andorra</option>
-                            <option value="Angola">Angola</option>
-                            <option value="Anguilla">Anguilla</option>
-                            <option value="Antarctica">Antarctica</option>
-                            <option value="Antigua and Barbuda">
-                              Antigua and Barbuda
-                            </option>
-                            <option value="Argentina">Argentina</option>
-                            <option value="Armenia">Armenia</option>
-                            <option value="Aruba">Aruba</option>
-                            <option value="Australia">Australia</option>
-                            <option value="Austria">Austria</option>
-                            <option value="Azerbaijan">Azerbaijan</option>
-                            <option value="Bahamas">Bahamas</option>
-                            <option value="Bahrain">Bahrain</option>
-                            <option value="Bangladesh">Bangladesh</option>
-                            <option value="Barbados">Barbados</option>
-                            <option value="Belarus">Belarus</option>
-                            <option value="Belgium">Belgium</option>
-                            <option value="Belize">Belize</option>
-                            <option value="Benin">Benin</option>
-                            <option value="Bermuda">Bermuda</option>
-                            <option value="Bhutan">Bhutan</option>
-                            <option value="Bolivia">Bolivia</option>
-                            <option value="Bosnia and Herzegovina">
-                              Bosnia and Herzegovina
-                            </option>
-                            <option value="Botswana">Botswana</option>
-                            <option value="Bouvet Island">Bouvet Island</option>
-                            <option value="Brazil">Brazil</option>
-                            <option value="Brunei Darussalam">
-                              Brunei Darussalam
-                            </option>
-                            <option value="Bulgaria">Bulgaria</option>
-                            <option value="Burkina Faso">Burkina Faso</option>
-                            <option value="Burundi">Burundi</option>
-                            <option value="Cambodia">Cambodia</option>
-                            <option value="Cameroon">Cameroon</option>
-                            <option value="Canada">Canada</option>
-                            <option value="Cape Verde">Cape Verde</option>
-                            <option value="Cayman Islands">
-                              Cayman Islands
-                            </option>
-                            <option value="Central African Republic">
-                              Central African Republic
-                            </option>
-                            <option value="Chad">Chad</option>
-                            <option value="Chile">Chile</option>
-                            <option value="China">China</option>
-                            <option value="Colombia">Colombia</option>
-                            <option value="Comoros">Comoros</option>
-                            <option value="Congo">Congo</option>
-                            <option value="Congo">Congo</option>
-                            <option value="Cook Islands">Cook Islands</option>
-                            <option value="Costa Rica">Costa Rica</option>
-                            <option value="Cote D'ivoire">
-                              Cote D&apos;ivoire
-                            </option>
-                            <option value="Croatia">Croatia</option>
-                            <option value="Cuba">Cuba</option>
-                            <option value="Cyprus">Cyprus</option>
-                            <option value="Czech Republic">
-                              Czech Republic
-                            </option>
-                            <option value="Denmark">Denmark</option>
-                            <option value="Djibouti">Djibouti</option>
-                            <option value="Dominica">Dominica</option>
-                            <option value="Dominican Republic">
-                              Dominican Republic
-                            </option>
-                            <option value="Ecuador">Ecuador</option>
-                            <option value="Egypt">Egypt</option>
-                            <option value="El Salvador">El Salvador</option>
-                            <option value="Equatorial Guinea">
-                              Equatorial Guinea
-                            </option>
-                            <option value="Eritrea">Eritrea</option>
-                            <option value="Estonia">Estonia</option>
-                            <option value="Ethiopia">Ethiopia</option>
-                            <option value="Faroe Islands">Faroe Islands</option>
-                            <option value="Fiji">Fiji</option>
-                            <option value="Finland">Finland</option>
-                            <option value="France">France</option>
-                            <option value="Gabon">Gabon</option>
-                            <option value="Gambia">Gambia</option>
-                            <option value="Georgia">Georgia</option>
-                            <option value="Germany">Germany</option>
-                            <option value="Ghana">Ghana</option>
-                            <option value="Gibraltar">Gibraltar</option>
-                            <option value="Greece">Greece</option>
-                            <option value="Greenland">Greenland</option>
-                            <option value="Grenada">Grenada</option>
-                            <option value="Guadeloupe">Guadeloupe</option>
-                            <option value="Guam">Guam</option>
-                            <option value="Guatemala">Guatemala</option>
-                            <option value="Guernsey">Guernsey</option>
-                            <option value="Guinea">Guinea</option>
-                            <option value="Guinea-bissau">Guinea-bissau</option>
-                            <option value="Guyana">Guyana</option>
-                            <option value="Haiti">Haiti</option>
-                            <option value="Honduras">Honduras</option>
-                            <option value="Hong Kong">Hong Kong</option>
-                            <option value="Hungary">Hungary</option>
-                            <option value="Iceland">Iceland</option>
-                            <option value="India">India</option>
-                            <option value="Indonesia">Indonesia</option>
-                            <option value="Iran">Iran</option>
-                            <option value="Iraq">Iraq</option>
-                            <option value="Ireland">Ireland</option>
-                            <option value="Isle of Man">Isle of Man</option>
-                            <option value="Israel">Israel</option>
-                            <option value="Italy">Italy</option>
-                            <option value="Jamaica">Jamaica</option>
-                            <option value="Japan">Japan</option>
-                            <option value="Jersey">Jersey</option>
-                            <option value="Jordan">Jordan</option>
-                            <option value="Kazakhstan">Kazakhstan</option>
-                            <option value="Kenya">Kenya</option>
-                            <option value="Kiribati">Kiribati</option>
-                            <option value="Korea">Korea</option>
-                            <option value="Kuwait">Kuwait</option>
-                            <option value="Kyrgyzstan">Kyrgyzstan</option>
-                            <option value="Lao People's Democratic Republic">
-                              Lao People&apos;s Democratic Republic
-                            </option>
-                            <option value="Latvia">Latvia</option>
-                            <option value="Lebanon">Lebanon</option>
-                            <option value="Lesotho">Lesotho</option>
-                            <option value="Liberia">Liberia</option>
-                            <option value="Libyan Arab Jamahiriya">
-                              Libyan Arab Jamahiriya
-                            </option>
-                            <option value="Liechtenstein">Liechtenstein</option>
-                            <option value="Lithuania">Lithuania</option>
-                            <option value="Luxembourg">Luxembourg</option>
-                            <option value="Macao">Macao</option>
-                            <option value="Macedonia">Macedonia</option>
-                            <option value="Madagascar">Madagascar</option>
-                            <option value="Malawi">Malawi</option>
-                            <option value="Malaysia">Malaysia</option>
-                            <option value="Maldives">Maldives</option>
-                            <option value="Mali">Mali</option>
-                            <option value="Malta">Malta</option>
-                            <option value="Marshall Islands">
-                              Marshall Islands
-                            </option>
-                            <option value="Martinique">Martinique</option>
-                            <option value="Mauritania">Mauritania</option>
-                            <option value="Mauritius">Mauritius</option>
-                            <option value="Mayotte">Mayotte</option>
-                            <option value="Mexico">Mexico</option>
-                            <option value="Moldova">Moldova</option>
-                            <option value="Monaco">Monaco</option>
-                            <option value="Mongolia">Mongolia</option>
-                            <option value="Montenegro">Montenegro</option>
-                            <option value="Montserrat">Montserrat</option>
-                            <option value="Morocco">Morocco</option>
-                            <option value="Mozambique">Mozambique</option>
-                            <option value="Myanmar">Myanmar</option>
-                            <option value="Namibia">Namibia</option>
-                            <option value="Nauru">Nauru</option>
-                            <option value="Nepal">Nepal</option>
-                            <option value="Netherlands">Netherlands</option>
-                            <option value="Netherlands Antilles">
-                              Netherlands Antilles
-                            </option>
-                            <option value="New Caledonia">New Caledonia</option>
-                            <option value="New Zealand">New Zealand</option>
-                            <option value="Nicaragua">Nicaragua</option>
-                            <option value="Niger">Niger</option>
-                            <option value="Nigeria">Nigeria</option>
-                            <option value="Niue">Niue</option>
-                            <option value="Norfolk Island">
-                              Norfolk Island
-                            </option>
-                            <option value="Northern Mariana Islands">
-                              Northern Mariana Islands
-                            </option>
-                            <option value="Norway">Norway</option>
-                            <option value="Oman">Oman</option>
-                            <option value="Pakistan">Pakistan</option>
-                            <option value="Palau">Palau</option>
-                            <option value="Panama">Panama</option>
-                            <option value="Papua New Guinea">
-                              Papua New Guinea
-                            </option>
-                            <option value="Paraguay">Paraguay</option>
-                            <option value="Peru">Peru</option>
-                            <option value="Philippines">Philippines</option>
-                            <option value="Pitcairn">Pitcairn</option>
-                            <option value="Poland">Poland</option>
-                            <option value="Portugal">Portugal</option>
-                            <option value="Puerto Rico">Puerto Rico</option>
-                            <option value="Qatar">Qatar</option>
-                            <option value="Reunion">Reunion</option>
-                            <option value="Romania">Romania</option>
-                            <option value="Russian Federation">
-                              Russian Federation
-                            </option>
-                            <option value="Rwanda">Rwanda</option>
-                            <option value="Samoa">Samoa</option>
-                            <option value="San Marino">San Marino</option>
-                            <option value="Sao Tome and Principe">
-                              Sao Tome and Principe
-                            </option>
-                            <option value="Saudi Arabia">Saudi Arabia</option>
-                            <option value="Senegal">Senegal</option>
-                            <option value="Serbia">Serbia</option>
-                            <option value="Seychelles">Seychelles</option>
-                            <option value="Sierra Leone">Sierra Leone</option>
-                            <option value="Singapore">Singapore</option>
-                            <option value="Slovakia">Slovakia</option>
-                            <option value="Slovenia">Slovenia</option>
-                            <option value="Solomon Islands">
-                              Solomon Islands
-                            </option>
-                            <option value="Somalia">Somalia</option>
-                            <option value="South Africa">South Africa</option>
-                            <option value="Spain">Spain</option>
-                            <option value="Sri Lanka">Sri Lanka</option>
-                            <option value="Sudan">Sudan</option>
-                            <option value="Suriname">Suriname</option>
-                            <option value="Swaziland">Swaziland</option>
-                            <option value="Sweden">Sweden</option>
-                            <option value="Switzerland">Switzerland</option>
-                            <option value="Syrian Arab Republic">
-                              Syrian Arab Republic
-                            </option>
-                            <option value="Taiwan">Taiwan</option>
-                            <option value="Tajikistan">Tajikistan</option>
-                            <option value="Tanzania">Tanzania</option>
-                            <option value="Thailand">Thailand</option>
-                            <option value="Timor-leste">Timor-leste</option>
-                            <option value="Togo">Togo</option>
-                            <option value="Tokelau">Tokelau</option>
-                            <option value="Tonga">Tonga</option>
-                            <option value="Trinidad and Tobago">
-                              Trinidad and Tobago
-                            </option>
-                            <option value="Tunisia">Tunisia</option>
-                            <option value="Turkey">Turkey</option>
-                            <option value="Turkmenistan">Turkmenistan</option>
-                            <option value="Turks and Caicos Islands">
-                              Turks and Caicos Islands
-                            </option>
-                            <option value="Tuvalu">Tuvalu</option>
-                            <option value="Uganda">Uganda</option>
-                            <option value="Ukraine">Ukraine</option>
-                            <option value="United Arab Emirates">
-                              United Arab Emirates
-                            </option>
-                            <option value="United Kingdom">
-                              United Kingdom
-                            </option>
-                            <option value="United States">United States</option>
-                            <option value="Uruguay">Uruguay</option>
-                            <option value="Uzbekistan">Uzbekistan</option>
-                            <option value="Vanuatu">Vanuatu</option>
-                            <option value="Venezuela">Venezuela</option>
-                            <option value="Viet Nam">Viet Nam</option>
-                            <option value="Western Sahara">
-                              Western Sahara
-                            </option>
-                            <option value="Yemen">Yemen</option>
-                            <option value="Zambia">Zambia</option>
-                            <option value="Zimbabwe">Zimbabwe</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-lg-6">
-                        <div className="form__group">
-                          <select
-                            className="js-example-basic-multiple"
-                            id="tags"
-                            multiple="multiple"
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                tags: Array.from(e.target.selectedOptions).map(
-                                  (option) => option.value
-                                ),
-                              }))
-                            }
-                          >
-                            {availableTags.map((tag) => (
-                              <option key={tag.id} value={tag.id}>
-                                {tag.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="col-12">
-                        <div className="form__gallery">
+                      {/* Gallery Upload */}
+                      <div className="col-12 col-sm-6 col-md-12">
+                        <div className="form__img">
                           <label id="gallery1" htmlFor="form__gallery-upload">
                             Upload photos
                           </label>
@@ -583,30 +367,172 @@ const AddVideo = () => {
                             type="file"
                             accept=".png, .jpg, .jpeg"
                             multiple
+                            onChange={handleFileChange}
                           />
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="col-12">
-                    <ul className="form__radio">
-                      <li>
-                        <span>Item type:</span>
-                      </li>
-                      <li>
-                        <input id="type1" type="radio" name="type" checked="" />
-                        <label htmlFor="type1">Movie</label>
-                      </li>
-                      <li>
-                        <input id="type2" type="radio" name="type" />
-                        <label htmlFor="type2">TV Show</label>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="col-12">
+                  {/* Main Form Content */}
+                  <div className="col-12 col-md-7 form__content">
                     <div className="row">
+                      {/* Title */}
+                      <div className="col-12">
+                        <div className="form__group">
+                          <input
+                            type="text"
+                            name="title"
+                            className="form__input"
+                            required
+                            placeholder="Enter video title"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <div className="col-12">
+                        <div className="form__group">
+                          <textarea
+                            name="description"
+                            className="form__textarea"
+                            placeholder="Description"
+                            value={formData.description}
+                            onChange={handleInputChange}
+                            rows="4"
+                          ></textarea>
+                        </div>
+                      </div>
+
+                      {/* Duration & File Size */}
+                      <div className="col-12 col-sm-6 col-lg-3">
+                        <div className="form__group">
+                          <input
+                            type="number"
+                            name="duration"
+                            className="form__input"
+                            placeholder="Duration (minutes)"
+                            value={formData.duration}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-12 col-sm-6 col-lg-3">
+                        <div className="form__group">
+                          <input
+                            type="number"
+                            name="file_size"
+                            className="form__input"
+                            placeholder="File size (MB)"
+                            value={formData.file_size}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Resolution Select */}
+                      <div className="col-12 col-sm-6 col-lg-3">
+                        <div className="form__group">
+                          <Select
+                            options={resolutions}
+                            value={resolutions.find(
+                              (r) => r.value === formData.resolution
+                            )}
+                            onChange={handleResolutionChange}
+                            styles={selectStyles}
+                            className="react-select-container"
+                            classNamePrefix="react-select"
+                            placeholder="Select resolution"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Video Format */}
+                      <div className="col-12 col-sm-6 col-lg-3">
+                        <div className="form__group">
+                          <Select
+                            options={video_format}
+                            value={video_format.find(
+                              (f) => f.value === formData.video_format
+                            )}
+                            onChange={(option) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                video_format: option ? option.value : "",
+                              }))
+                            }
+                            styles={selectStyles}
+                            isClearable
+                            placeholder="Select format"
+                          />
+                        </div>
+                      </div>
+
+                      {/* License Type */}
+                      <div className="col-12 col-sm-6 col-lg-3">
+                        <div className="form__group">
+                          <Select
+                            options={license_type}
+                            value={license_type.find(
+                              (l) => l.value === formData.license_type
+                            )}
+                            onChange={(option) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                license_type: option ? option.value : "",
+                              }))
+                            }
+                            styles={selectStyles}
+                            isClearable
+                            placeholder="Select license"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Access Level */}
+                      <div className="col-12 col-sm-6 col-lg-3">
+                        <div className="form__group">
+                          <Select
+                            options={access_levels}
+                            value={access_levels.find(
+                              (a) => a.value === formData.access_level
+                            )}
+                            onChange={(option) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                access_level: option ? option.value : "Free",
+                              }))
+                            }
+                            styles={selectStyles}
+                            placeholder="Access level"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Age Restriction */}
+                      <div className="col-12 col-sm-6 col-lg-3">
+                        <div className="form__group">
+                          <Select
+                            options={age_restriction_options}
+                            value={age_restriction_options.find(
+                              (a) => a.value === formData.age_restriction
+                            )}
+                            onChange={(option) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                age_restriction: option ? option.value : false,
+                              }))
+                            }
+                            styles={selectStyles}
+                            placeholder="Age restriction"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Category & Language */}
                       <div className="col-12 col-sm-6 col-lg-3">
                         <div className="form__group">
                           <input
@@ -619,6 +545,7 @@ const AddVideo = () => {
                           />
                         </div>
                       </div>
+
                       <div className="col-12 col-sm-6 col-lg-3">
                         <div className="form__group">
                           <input
@@ -631,54 +558,149 @@ const AddVideo = () => {
                           />
                         </div>
                       </div>
+
+                      {/* Tags Multi-Select */}
                       <div className="col-12 col-lg-3">
-                        <div className="form__video">
-                          <label id="movie1" htmlFor="form__video-upload">
-                            Upload video
-                          </label>
-                          <CloudinaryUploader />
-                          {/* <input
-                            data-name="#movie1"
-                            id="form__video-upload"
-                            name="movie"
-                            className="form__video-upload"
-                            type="file"
-                            accept="video/mp4,video/x-m4v,video/*"
-                            onChange={handleFileChange}
-                          /> */}
-                        </div>
-                      </div>
-                      <div className="col-12 col-lg-3">
-                        <div className="form__group form__group--link">
-                          <input
-                            type="text"
-                            className="form__input"
-                            placeholder="or add a link"
+                        <div className="form__group">
+                          {/* <label className="form__label">Tags</label> */}
+                          <Select
+                            isMulti
+                            options={availableTags}
+                            value={formData.tags}
+                            onChange={(selected) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                tags: selected || [],
+                              }))
+                            }
+                            styles={selectStyles}
+                            className="react-select-container"
+                            classNamePrefix="react-select"
+                            placeholder="Select tags..."
                           />
                         </div>
                       </div>
-                      <div className="col-12 col-lg-3">
+
+                      {/* Countries Multi-Select */}
+                      <div className="col-12 col-lg-6">
                         <div className="form__group">
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={formData.published}
-                              onChange={(e) =>
-                                setFormData((prev) => ({
-                                  ...prev,
-                                  published: e.target.checked,
-                                }))
-                              }
-                            />
-                            Published
-                          </label>
+                          {/* <label className="form__label">Countries</label> */}
+                          <Select
+                            isMulti
+                            options={countryOptions}
+                            value={formData.countries}
+                            onChange={(selected) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                countries: selected || [],
+                              }))
+                            }
+                            styles={selectStyles}
+                            className="react-select-container"
+                            classNamePrefix="react-select"
+                            placeholder="Select countries..."
+                            isSearchable
+                          />
                         </div>
                       </div>
+                    </div>
+                  </div>
 
-                      <div className="col-12">
-                        <button type="submit" className="form__btn">
-                          publish
-                        </button>
+                  {/* Resolution-Specific Video URLs */}
+                  <div className="col-12">
+                    <div className="form__section">
+                      <h3 className="form__section-title">
+                        Video URLs by Resolution
+                      </h3>
+                      <div className="row">
+                        {resolutions.map((res) => (
+                          <div
+                            key={res.value}
+                            className="col-12 col-md-6 col-lg-3"
+                          >
+                            <div className="form__group">
+                              <label className="form__label">{res.label}</label>
+                              <input
+                                type="url"
+                                className="form__input"
+                                placeholder={`Enter ${res.label} URL`}
+                                value={formData.video_urls[res.value]}
+                                onChange={(e) =>
+                                  handleResolutionUrlChange(
+                                    res.value,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="form__info">
+                        <small>
+                          Primary URL (for {formData.resolution}):{" "}
+                          <strong>{formData.video_url || "Not set"}</strong>
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SEO Fields */}
+                  <div className="col-12">
+                    <div className="form__section">
+                      <h3 className="form__section-title">SEO Settings</h3>
+                      <div className="row">
+                        <div className="col-12 col-lg-6">
+                          <div className="form__group">
+                            <input
+                              type="text"
+                              name="seo_title"
+                              className="form__input"
+                              placeholder="SEO Title"
+                              value={formData.seo_title}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-12 col-lg-6">
+                          <div className="form__group">
+                            <textarea
+                              name="seo_description"
+                              className="form__textarea"
+                              placeholder="SEO Description"
+                              value={formData.seo_description}
+                              onChange={handleInputChange}
+                              rows="3"
+                            ></textarea>
+                          </div>
+                        </div>
+                        {/* Published Checkbox */}
+                        <div className="col-12">
+                          <div className="form__group">
+                            <label className="form__checkbox-label">
+                              <input
+                                type="checkbox"
+                                checked={formData.published}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    published: e.target.checked,
+                                  }))
+                                }
+                              />
+                              <span style={{ color: "#ffffff" }}>
+                                Published
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="col-12">
+                          <button type="submit" className="form__btn">
+                            Publish Video
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -692,4 +714,4 @@ const AddVideo = () => {
   );
 };
 
-export default AddVideo; // Use default export
+export default AddVideo;

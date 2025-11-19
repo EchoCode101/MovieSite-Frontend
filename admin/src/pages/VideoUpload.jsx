@@ -1,5 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
+import { uploadVideoToCloudinary } from "../../services/allRoutes";
+import { toast } from "react-toastify";
 
 const VideoUpload = () => {
   const [videoFile, setVideoFile] = useState(null);
@@ -12,41 +13,29 @@ const VideoUpload = () => {
 
   const handleUpload = async () => {
     if (!videoFile) {
-      alert("Please select a video file.");
+      toast.error("Please select a video file.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("video", videoFile);
-    formData.append("title", "Sample Video"); // Add required metadata
-    formData.append("description", "This is a sample video."); // Add required metadata
-
     try {
-      const response = await axios.post(
-        "http://localhost:7100/api/videos/uploadVideoToCloudinary",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const percent = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setProgress(percent);
-          },
-        }
-      );
+      setProgress(0);
+      // Note: Progress tracking would need to be implemented in the API client
+      // For now, we'll use the standardized upload function
+      const data = await uploadVideoToCloudinary(videoFile);
 
-      if (response.data.success) {
-        setVideoUrl(response.data.videoUrl);
-        alert("Video uploaded successfully!");
+      if (data.success && data.videoUrl) {
+        setVideoUrl(data.videoUrl);
+        setProgress(100);
+        toast.success(data.message || "Video uploaded successfully!");
       } else {
-        alert(response.data.message || "Video upload failed.");
+        toast.error(data.message || "Video upload failed.");
       }
     } catch (error) {
       console.error("Upload error:", error);
-      alert("An error occurred while uploading the video.");
+      toast.error(
+        error.message || "An error occurred while uploading the video."
+      );
+      setProgress(0);
     }
   };
 

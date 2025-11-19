@@ -1,5 +1,13 @@
 import PropTypes from "prop-types";
-const LoadingSpinner = ({ customClass, r, h, w, pt, pl }) => (
+
+const LoadingSpinner = ({
+  customClass,
+  r = 20,
+  h = 20,
+  w = 20,
+  pt = 0,
+  pl = 0,
+}) => (
   <div id="wrapper">
     <div
       className="profile-main-loader"
@@ -21,6 +29,7 @@ const LoadingSpinner = ({ customClass, r, h, w, pt, pl }) => (
     </div>
   </div>
 );
+
 LoadingSpinner.propTypes = {
   r: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   h: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

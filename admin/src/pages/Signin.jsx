@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/slices/authSlice.js";
-import config from "../utils/js/config.js";
-// import { useNavigate } from "react-router-dom";
+import { adminLogin } from "../../services/allRoutes";
+import { toast } from "react-toastify";
 const Signin = () => {
   const Home = "/dashboard";
   const [email, setEmail] = useState("");
@@ -12,35 +11,27 @@ const Signin = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const apiUrl = config.apiUrl;
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form submission from refreshing the page
     setErrorMessage(""); // Reset error message on submit
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `${apiUrl}/admin/login`,
-        { email, password },
-        {
-          withCredentials: true, // To handle the cookie securely
-        }
-      );
-      const { token, refreshToken } = response.data;
-      dispatch(loginSuccess({ token, refreshToken }));
-      // localStorage.setItem("token", token);
-      // localStorage.setItem("refreshToken", refreshToken);
-      window.location.href = Home;
-
-      // navigate(Home);
+      const data = await adminLogin(email, password);
+      const { token, refreshToken, admin } = data;
+      dispatch(loginSuccess({ token, refreshToken, user: admin }));
+      toast.success("Login successful!");
+      // Use navigate instead of window.location.href to allow toast to display
+      setTimeout(() => {
+        navigate(Home, { replace: true });
+      }, 500);
     } catch (error) {
       setLoading(false);
-      if (error.response && error.response.data) {
-        setErrorMessage(error.response.data.message || "Signin failed");
-      } else {
-        setErrorMessage("An error occurred. Please try again.");
-      }
+      const errorMsg = error.message || "An error occurred. Please try again.";
+      setErrorMessage(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

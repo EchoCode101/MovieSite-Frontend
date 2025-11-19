@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import config from "../utils/js/config.js";
+import { adminResetPassword } from "../../services/allRoutes";
+import { toast } from "react-toastify";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -9,7 +9,6 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const { token } = useParams(); // Extract token from URL
   const navigate = useNavigate();
-  const apiUrl = config.apiUrl;
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -23,41 +22,15 @@ const ResetPassword = () => {
     }
 
     try {
-      setLoading(true);
-      const response = await axios.post(
-        `${apiUrl}/admin/forgotPassword/reset/${token}`,
-        { password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Check if status is in the success range (200-299)
-      if (response.status >= 200 && response.status < 299) {
-        setSuccess(
-          response.data.message || "Password has been successfully reset."
-        );
-        setTimeout(() => navigate("/signin"), 3000); // Redirect to sign-in page after 3 seconds
-      } else {
-        setError(
-          response.data.message || "Something went wrong. Please try again."
-        );
-        setLoading(false);
-      }
+      const data = await adminResetPassword(token, password);
+      setSuccess(data.message || "Password has been successfully reset.");
+      toast.success(data.message || "Password reset successfully!");
+      setTimeout(() => navigate("/signin"), 3000); // Redirect to sign-in page after 3 seconds
     } catch (err) {
-      // Handle Axios errors and display error message
-      if (err.response) {
-        // If there is a response object, handle the error based on the response
-        setError(
-          err.response.data.message || "Something went wrong. Please try again."
-        );
-      } else {
-        // If there is no response object, it's a network error
-        setError("Network error. Please try again. " + err.message);
-      }
-      setLoading(false);
+      const errorMessage =
+        err.message || "Something went wrong. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

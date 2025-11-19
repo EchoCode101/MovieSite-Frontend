@@ -1,14 +1,13 @@
 import { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
-import config from "../utils/js/config.js";
+import { adminForgotPassword } from "../../services/allRoutes";
+import { toast } from "react-toastify";
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const apiUrl = config.apiUrl;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,41 +22,17 @@ const Forgot = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${apiUrl}/admin/forgotPassword`,
-        { email },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const data = await adminForgotPassword(email);
+      setSuccess(
+        data.message ||
+          "Please check your inbox, a password reset link has been sent!"
       );
-
-      if (response.status >= 200 && response.status < 299) {
-        setSuccess(
-          response.data.message ||
-            "Please check your inbox, a password reset link has been sent!"
-        );
-      } else {
-        setError(
-          response.data.message || "Something went wrong. Please try again."
-        );
-      }
+      toast.success(data.message || "Password reset link sent!");
     } catch (err) {
-      if (err.response) {
-        // Server responded with an error status code
-        if (err.response.status === 404) {
-          setError("Email not found. Please try again.");
-        } else {
-          setError(
-            err.response.data.message ||
-              "Something went wrong. Please try again."
-          );
-        }
-      } else {
-        // No response from server or network error
-        setError("Network error. Please try again.");
-      }
+      const errorMessage =
+        err.message || "Something went wrong. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

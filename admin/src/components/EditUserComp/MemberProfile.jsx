@@ -1,13 +1,98 @@
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import Svg from "../Svg";
 import LoadingSpinner from "../LoadingSpinner";
+import { getImageWithFallback } from "../../utils/imageUtils";
+import { updateMemberById, deleteMemberById } from "../../../services/allRoutes";
+import { toastPromise, showWarningToast } from "../../utils/js/toastUtils";
+import { useNavigate } from "react-router-dom";
 
-const MemberProfile = ({ data, status, onRefresh }) => {
+const MemberProfile = ({ data, status, onRefresh, activeTab, onTabChange }) => {
+  const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileTabsRef = useRef(null);
+
+  const tabs = ["Profile", "Comments", "Reviews"];
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        mobileTabsRef.current &&
+        !mobileTabsRef.current.contains(event.target)
+      ) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleTabClick = (tabName) => {
+    if (onTabChange) {
+      onTabChange(tabName);
+    }
+    setMobileMenuOpen(false);
+  };
+
+  const handleToggleStatus = async () => {
+    const newStatus = data.status === "Active" ? "Inactive" : "Active";
+    const memberId = data._id || data.member_id;
+    
+    if (!memberId) {
+      showWarningToast("Member ID not found. Cannot update status.");
+      return;
+    }
+
+    try {
+      await toastPromise(
+        updateMemberById(memberId, { status: newStatus }),
+        "Updating status...",
+        `User status updated to ${newStatus}!`,
+        "Failed to update status. Please try again."
+      );
+      onRefresh();
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    const memberId = data._id || data.member_id;
+    
+    if (!memberId) {
+      showWarningToast("Member ID not found. Cannot delete.");
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete user "${data.username}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await toastPromise(
+        deleteMemberById(memberId),
+        "Deleting user...",
+        "User deleted successfully!",
+        "Failed to delete user. Please try again."
+      );
+      navigate("/users");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
   return (
     <div className="profile__content">
       <div className="profile__user">
         <div className="profile__avatar">
-          <img src="/src/assets/img/user.svg" alt="" />
+          <img
+            src={getImageWithFallback(data.profile_pic, "user")}
+            alt={data.username || "User"}
+          />
         </div>
         <div
           className={
@@ -19,7 +104,7 @@ const MemberProfile = ({ data, status, onRefresh }) => {
           <h3>
             {data.username} <span>({data.status})</span>
           </h3>
-          <span> Punjabi Dub ID: {data.member_id}</span>
+          <span> Punjabi Dub ID: {data._id || data.member_id || "N/A"}</span>
         </div>
       </div>
 
@@ -28,105 +113,64 @@ const MemberProfile = ({ data, status, onRefresh }) => {
         id="profile__tabs"
         role="tablist"
       >
-        <li className="nav-item">
-          <button
-            className="a-tag nav-link active"
-            data-toggle="tab"
-            href="#tab-1"
-            role="tab"
-            aria-controls="tab-1"
-            aria-selected="true"
-          >
-            Profile
-          </button>
-        </li>
-
-        <li className="nav-item">
-          <button
-            className="a-tag nav-link"
-            data-toggle="tab"
-            href="#tab-2"
-            role="tab"
-            aria-controls="tab-2"
-            aria-selected="false"
-          >
-            Comments
-          </button>
-        </li>
-
-        <li className="nav-item">
-          <button
-            className="a-tag nav-link"
-            data-toggle="tab"
-            href="#tab-3"
-            role="tab"
-            aria-controls="tab-3"
-            aria-selected="false"
-          >
-            Reviews
-          </button>
-        </li>
+        {tabs.map((tab) => (
+          <li key={tab} className="nav-item">
+            <button
+              className={`a-tag nav-link ${(activeTab || "Profile") === tab ? "active" : ""}`}
+              onClick={() => handleTabClick(tab)}
+              role="tab"
+              aria-controls={`tab-${tabs.indexOf(tab) + 1}`}
+              aria-selected={(activeTab || "Profile") === tab}
+            >
+              {tab}
+            </button>
+          </li>
+        ))}
       </ul>
 
-      <div className="profile__mobile-tabs" id="profile__mobile-tabs">
+      <div
+        className="profile__mobile-tabs"
+        id="profile__mobile-tabs"
+        ref={mobileTabsRef}
+      >
         <div
-          className="profile__mobile-tabs-btn dropdown-toggle"
+          className={`profile__mobile-tabs-btn dropdown-toggle ${
+            mobileMenuOpen ? "show" : ""
+          }`}
           role="navigation"
           id="mobile-tabs"
-          data-toggle="dropdown"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-haspopup="true"
-          aria-expanded="false"
+          aria-expanded={mobileMenuOpen}
         >
-          <input type="button" value="Profile" />
+          <input type="button" value={activeTab || "Profile"} readOnly />
           <span></span>
         </div>
 
         <div
-          className="profile__mobile-tabs-menu dropdown-menu"
+          className={`profile__mobile-tabs-menu dropdown-menu ${
+            mobileMenuOpen ? "show" : ""
+          }`}
           aria-labelledby="mobile-tabs"
         >
           <ul className="nav nav-tabs" role="tablist">
-            <li className="nav-item">
-              <button
-                className="a-tag nav-link active"
-                id="1-tab"
-                data-toggle="tab"
-                href="#tab-1"
-                role="tab"
-                aria-controls="tab-1"
-                aria-selected="true"
-              >
-                Profile
-              </button>
-            </li>
-
-            <li className="nav-item">
-              <button
-                className="a-tag nav-link"
-                id="2-tab"
-                data-toggle="tab"
-                href="#tab-2"
-                role="tab"
-                aria-controls="tab-2"
-                aria-selected="false"
-              >
-                Comments
-              </button>
-            </li>
-
-            <li className="nav-item">
-              <button
-                className="a-tag nav-link"
-                id="3-tab"
-                data-toggle="tab"
-                href="#tab-3"
-                role="tab"
-                aria-controls="tab-3"
-                aria-selected="false"
-              >
-                Reviews
-              </button>
-            </li>
+            {tabs.map((tab) => (
+              <li key={tab} className="nav-item">
+                <button
+                  className={`a-tag nav-link ${
+                    (activeTab || "Profile") === tab ? "active" : ""
+                  }`}
+                  id={`${tabs.indexOf(tab) + 1}-tab`}
+                  onClick={() => handleTabClick(tab)}
+                  role="tab"
+                  aria-controls={`tab-${tabs.indexOf(tab) + 1}`}
+                  aria-selected={(activeTab || "Profile") === tab}
+                  data-value={tab.toLowerCase()}
+                >
+                  {tab}
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -150,12 +194,14 @@ const MemberProfile = ({ data, status, onRefresh }) => {
               </button>
             )}
             <button
-              href="#modala-tag -status3"
+              type="button"
+              onClick={handleToggleStatus}
               className={
                 data.status === "Inactive"
                   ? " profile__action profile__action_inactive--banned"
                   : " profile__action profile__action--banned"
               }
+              title={data.status === "Active" ? "Ban User" : "Activate User"}
             >
               <Svg
                 path={
@@ -164,8 +210,10 @@ const MemberProfile = ({ data, status, onRefresh }) => {
               />
             </button>
             <button
-              href="#modala-tag -delete3"
+              type="button"
+              onClick={handleDelete}
               className="profile__action profile__action--delete open-modal"
+              title="Delete User"
             >
               <Svg
                 path={
@@ -183,6 +231,8 @@ const MemberProfile = ({ data, status, onRefresh }) => {
 MemberProfile.propTypes = {
   onRefresh: PropTypes.func,
   status: PropTypes.string,
+  activeTab: PropTypes.string,
+  onTabChange: PropTypes.func,
   data: PropTypes.shape({
     profile_pic: PropTypes.string,
     username: PropTypes.string,

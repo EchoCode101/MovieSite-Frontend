@@ -9,6 +9,11 @@ import {
   setCurrentPage,
 } from "../../redux/slices/reviewsSlice";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { getImageWithFallback } from "../utils/imageUtils";
+import { formatDateTime } from "../utils/dateUtils";
+import { getRatingClass } from "../utils/ratingUtils";
+import LikeDislikeCount from "../components/LikeDislikeCount";
+import { DEFAULT_PAGE_SIZE } from "../constants/pagination";
 
 const Reviews = () => {
   const dispatch = useDispatch();
@@ -25,7 +30,7 @@ const Reviews = () => {
     dispatch(
       loadPaginatedReviews({
         page: currentPage,
-        limit: 10,
+        limit: DEFAULT_PAGE_SIZE,
         sort: sortBy,
         order,
       })
@@ -54,10 +59,10 @@ const Reviews = () => {
     },
   ];
   const columns = [
-    { accessor: "review_id", label: "ID" },
+    { accessor: "rowNumber", label: "ID" },
     {
       accessor: "video",
-      label: "Video Title",
+      label: "Thumbnail / Video Title",
       render: (value) => (
         <div className="sidebar__user p-0" style={{ borderBottom: 0 }}>
           <div
@@ -66,11 +71,7 @@ const Reviews = () => {
           >
             <img
               alt="thumbnail"
-              src={
-                ` https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSLNQ1t4kHMECW1dLM7F3h1l1vWdZzZTHERYJmlg1NC7Ekl7JpWsIDXVw6EKTgiDzhlTA0u9GqgAU0Bl_gTtIy_Q-G0DdRQR4l7GsqKDSrkBA`
-                // ||
-                // `${value.thumbnail_url || "N/A"}`
-              }
+              src={getImageWithFallback(value?.thumbnail_url, "thumbnail")}
             />
           </div>
           <div className="sidebar__user-title">
@@ -98,17 +99,7 @@ const Reviews = () => {
       label: "Rating",
       render: (value) =>
         value !== "N/A" ? (
-          <span
-            className={`${
-              value >= 10
-                ? "main__table-text--green"
-                : value < 2
-                ? "main__table-text--red"
-                : ""
-            }`}
-          >
-            {value.toFixed(1)}
-          </span>
+          <span className={getRatingClass(value)}>{value.toFixed(1)}</span>
         ) : (
           "N/A"
         ),
@@ -117,41 +108,16 @@ const Reviews = () => {
       label: "Like / Dislike",
       accessor: "likeCount",
       render: (value, row) => (
-        <>
-          <span
-            className={
-              row.likeCount > 0
-                ? "main__table-text--green"
-                : "main__table-text--grey"
-            }
-          >
-            {row.likeCount || 0}
-          </span>
-          &nbsp;/&nbsp;
-          <span
-            className={
-              row.dislikeCount > 0
-                ? "main__table-text--red"
-                : "main__table-text--grey"
-            }
-          >
-            {row.dislikeCount || 0}
-          </span>
-        </>
+        <LikeDislikeCount
+          likeCount={row.likeCount}
+          dislikeCount={row.dislikeCount}
+        />
       ),
     },
     {
       accessor: "createdAt",
       label: "Created Date",
-      render: (value) =>
-        new Date(value).toLocaleString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          hour12: true, // e.g., "PM"
-          minute: "2-digit",
-        }),
+      render: (value) => formatDateTime(value),
     },
   ];
 
@@ -181,7 +147,7 @@ const Reviews = () => {
                   dispatch(
                     loadPaginatedReviews({
                       page: currentPage,
-                      limit: 10,
+                      limit: DEFAULT_PAGE_SIZE,
                       sort: sortBy,
                       order,
                     })
@@ -191,12 +157,18 @@ const Reviews = () => {
             </div>
             <div className="col-12">
               {loading ? (
-                <LoadingSpinner r={20} w={20} h={20} pt={0} pl={0} />
+                <LoadingSpinner />
               ) : (
                 <div className="main__table-wrap">
                   <Table
                     columns={columns}
-                    data={reviews || []}
+                    data={
+                      reviews?.map((review, index) => ({
+                        ...review,
+                        rowNumber:
+                          (currentPage - 1) * DEFAULT_PAGE_SIZE + index + 1,
+                      })) || []
+                    }
                     loading={loading}
                     buttonData={buttonData}
                   />
@@ -218,28 +190,3 @@ const Reviews = () => {
 };
 
 export default Reviews;
-
-{
-  /* <ReusableModal
-        modalId="modal-delete"
-        title="Item delete"
-        content={[
-          {
-            type: "text",
-            text: "Are you sure to permanently delete this item?",
-          },
-        ]}
-        buttons={[
-          {
-            className: "modal__btn--apply",
-            text: "Delete",
-            onClick: () => console.log("Delete"),
-          },
-          {
-            className: "modal__btn--dismiss",
-            text: "Dismiss",
-            onClick: () => console.log("Dismiss"),
-          },
-        ]}
-      /> */
-}

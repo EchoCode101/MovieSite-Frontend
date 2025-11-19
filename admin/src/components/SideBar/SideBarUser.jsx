@@ -1,18 +1,39 @@
 import userSvg from "../../assets/img/user.svg";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { logout, setLogoutLoading } from "../../../redux/slices/authSlice";
+import { adminLogout } from "../../../services/allRoutes";
+import { toast } from "react-toastify";
 import LoadingSpinner from "../LoadingSpinner";
 
 const SidebarUser = () => {
-  const logoutLoading = useSelector((state) => state.auth.logoutLoading);
-  const handleLogout = () => {
-    dispatch(setLogoutLoading(true)); // Start loading
-    setTimeout(() => {
-      dispatch(logout());
-    }, 1500);
-  };
-  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const logoutLoading = useSelector((state) => state.auth.logoutLoading);
+  const { user } = useSelector((state) => state.auth);
+
+  const handleLogout = async () => {
+    dispatch(setLogoutLoading(true)); // Start loading
+    try {
+      await adminLogout();
+      dispatch(logout());
+      toast.success("Logged out successfully!");
+      setTimeout(() => {
+        navigate("/signin", { replace: true });
+      }, 500);
+    } catch (error) {
+      // Even if API call fails, clear local state
+      dispatch(logout());
+      toast.error(
+        error.message || "Logout failed, but session cleared locally"
+      );
+      setTimeout(() => {
+        navigate("/signin", { replace: true });
+      }, 500);
+    } finally {
+      dispatch(setLogoutLoading(false));
+    }
+  };
   return (
     <div className="sidebar__user">
       <div className="sidebar__user-img">
@@ -21,12 +42,20 @@ const SidebarUser = () => {
 
       <div className="sidebar__user-title">
         <span>
-          {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+          {user?.role
+            ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+            : "Admin"}
         </span>
         <p>
-          {user?.first_name?.charAt(0).toUpperCase() +
-            user?.first_name?.slice(1)}{" "}
-          {user?.last_name?.charAt(0).toUpperCase() + user?.last_name?.slice(1)}
+          {user?.first_name
+            ? user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)
+            : ""}{" "}
+          {user?.last_name
+            ? user.last_name.charAt(0).toUpperCase() + user.last_name.slice(1)
+            : ""}
+          {!user?.first_name && !user?.last_name && user?.username
+            ? user.username
+            : ""}
         </p>
       </div>
       <button

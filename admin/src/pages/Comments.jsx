@@ -10,6 +10,10 @@ import Table from "../components/Table/Table";
 import Paginator from "../components/Paginator";
 import TableFilters from "../components/Table/TableFilters";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { getImageWithFallback } from "../utils/imageUtils";
+import { formatDateTime } from "../utils/dateUtils";
+import LikeDislikeCount from "../components/LikeDislikeCount";
+import { DEFAULT_PAGE_SIZE } from "../constants/pagination";
 
 const Comments = () => {
   const dispatch = useDispatch();
@@ -26,7 +30,7 @@ const Comments = () => {
     dispatch(
       loadPaginatedComments({
         page: currentPage,
-        limit: 10,
+        limit: DEFAULT_PAGE_SIZE,
         sort: sortBy,
         order,
       })
@@ -39,10 +43,10 @@ const Comments = () => {
   };
 
   const columns = [
-    { accessor: "comment_id", label: "ID" },
+    { accessor: "rowNumber", label: "ID" },
     {
       accessor: "video",
-      label: "Video Title",
+      label: "Thumbnail / Video Title",
       render: (value) => (
         <div className="sidebar__user p-0" style={{ borderBottom: 0 }}>
           <div
@@ -51,11 +55,7 @@ const Comments = () => {
           >
             <img
               alt="thumbnail"
-              src={
-                ` https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSLNQ1t4kHMECW1dLM7F3h1l1vWdZzZTHERYJmlg1NC7Ekl7JpWsIDXVw6EKTgiDzhlTA0u9GqgAU0Bl_gTtIy_Q-G0DdRQR4l7GsqKDSrkBA`
-                // ||
-                // `${value.thumbnail_url || "N/A"}`
-              }
+              src={getImageWithFallback(value?.thumbnail_url, "thumbnail")}
             />
           </div>
           <div className="sidebar__user-title">
@@ -82,42 +82,16 @@ const Comments = () => {
       label: "Like / Dislike",
       accessor: "likeCount",
       render: (value, row) => (
-        <>
-          <span
-            className={
-              row.likeCount > 0
-                ? "main__table-text--green"
-                : "main__table-text--grey"
-            }
-          >
-            {row.likeCount || 0}
-          </span>
-          &nbsp;/&nbsp;
-          <span
-            className={
-              row.dislikeCount > 0
-                ? "main__table-text--red"
-                : "main__table-text--grey"
-            }
-          >
-            {row.dislikeCount || 0}
-          </span>
-        </>
+        <LikeDislikeCount
+          likeCount={row.likeCount}
+          dislikeCount={row.dislikeCount}
+        />
       ),
     },
     {
       accessor: "createdAt",
       label: "Created Date",
-      render: (value) =>
-        new Date(value).toLocaleString("en-US", {
-          weekday: "short", // e.g., "Monday"
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          hour12: true, // e.g., "PM"
-          minute: "2-digit",
-        }),
+      render: (value) => formatDateTime(value),
     },
   ];
   const buttonData = [
@@ -162,7 +136,7 @@ const Comments = () => {
                   dispatch(
                     loadPaginatedComments({
                       page: currentPage,
-                      limit: 10,
+                      limit: DEFAULT_PAGE_SIZE,
                       sort: sortBy,
                       order,
                     })
@@ -173,13 +147,19 @@ const Comments = () => {
             </div>
             <div className="col-12">
               {loading ? (
-                <LoadingSpinner r={20} w={20} h={20} pt={0} pl={0} />
+                <LoadingSpinner />
               ) : (
                 <div className="main__table-wrap">
                   <Table
                     columns={columns}
                     buttonData={buttonData}
-                    data={comments || []}
+                    data={
+                      comments?.map((comment, index) => ({
+                        ...comment,
+                        rowNumber:
+                          (currentPage - 1) * DEFAULT_PAGE_SIZE + index + 1,
+                      })) || []
+                    }
                     loading={loading}
                   />
                 </div>
@@ -201,105 +181,3 @@ const Comments = () => {
 };
 
 export default Comments;
-{
-  /* <div
-        id="modal-view"
-        className="zoom-anim-dialog mfp-hide modal modal--view"
-      >
-        <div className="comments__autor">
-          <img
-            className="comments__avatar"
-            src="/src/assets/img/user.svg"
-            alt=""
-          />
-          <span className="comments__name">John Doe</span>
-          <span className="comments__time">30.08.2018, 17:53</span>
-        </div>
-        <p className="comments__text">
-          There are many variations of passages of Lorem Ipsum available, but
-          the majority have suffered alteration in some form, by injected
-          humour, or randomised words which don&apos;t look even slightly
-          believable. If you are going to use a passage of Lorem Ipsum, you need
-          to be sure there isn&apos;t anything embarrassing hidden in the middle
-          of text.
-        </p>
-        <div className="comments__actions">
-          <div className="comments__rate">
-            <span>
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11 7.3273V14.6537"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M14.6667 10.9905H7.33333"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              12
-            </span>
-
-            <span>
-              7
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M14.6667 10.9905H7.33333"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M15.6857 1H6.31429C3.04762 1 1 3.31208 1 6.58516V15.4148C1 18.6879 3.0381 21 6.31429 21H15.6857C18.9619 21 21 18.6879 21 15.4148V6.58516C21 3.31208 18.9619 1 15.6857 1Z"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div id="modal-delete" className="zoom-anim-dialog mfp-hide modal">
-        <h6 className="modal__title">Comment delete</h6>
-
-        <p className="modal__text">
-          Are you sure to permanently delete this comment?
-        </p>
-
-        <div className="modal__btns">
-          <button className="modal__btn modal__btn--apply" type="button">
-            Delete
-          </button>
-          <button className="modal__btn modal__btn--dismiss" type="button">
-            Dismiss
-          </button>
-        </div>
-      </div> */
-}

@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import InputField from "../../components/EditUserComp/InputField";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { updateMemberById } from "../../../services/allRoutes";
 import { showWarningToast, toastPromise } from "../../utils/js/toastUtils";
+import { getImageWithFallback } from "../../utils/imageUtils";
 
 const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
   const [formData, setFormData] = useState({
@@ -12,19 +13,51 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
     last_name: profileData.last_name || "",
     subscription_plan: profileData.subscription_plan || "Free",
     status: profileData.status || "Active",
+    profile_pic: profileData.profile_pic || "",
   });
+
+  // Update formData when profileData changes
+  useEffect(() => {
+    setFormData({
+      username: profileData.username || "",
+      email: profileData.email || "",
+      first_name: profileData.first_name || "",
+      last_name: profileData.last_name || "",
+      subscription_plan: profileData.subscription_plan || "Free",
+      status: profileData.status || "Active",
+      profile_pic: profileData.profile_pic || "",
+    });
+  }, [profileData]);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    $("#subscription, #status").on("change", function () {
-      const name = $(this).attr("name");
-      const value = $(this).val();
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    });
-  }, []);
+  const handleProfilePicUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      showWarningToast("Please select a valid image file.");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showWarningToast("Image size should be less than 5MB.");
+      return;
+    }
+
+    // Create preview URL
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const previewUrl = event.target.result;
+      setFormData((prev) => ({ ...prev, profile_pic: previewUrl }));
+    };
+    reader.readAsDataURL(file);
+    // TODO: Upload to Cloudinary and set profile_pic to the returned URL
+  };
 
   const handleSave = async () => {
     console.log("Saving data:", formData); // Debugging log
@@ -38,8 +71,14 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
 
     if (Object.keys(updatedFields).length > 0) {
       try {
+        // Use _id from profileData or fallback to member_id
+        const memberId = profileData._id || profileData.member_id;
+        if (!memberId) {
+          showWarningToast("Member ID not found. Cannot update.");
+          return;
+        }
         const updatedMember = await toastPromise(
-          updateMemberById(profileData.member_id, updatedFields), // Pass the promise directly
+          updateMemberById(memberId, updatedFields), // Pass the promise directly
           "Updating user...", // Pending message
           "User updated successfully!", // Success message
           "Failed to update user. Please try again.", // Error message // Error message
@@ -62,7 +101,9 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
         );
 
         console.log("Updated Member:", updatedMember);
-        onSave(updatedMember);
+        // Update was successful, just notify parent to refresh
+        // Don't pass the full object as it contains fields like _id, password that shouldn't be sent again
+        onSave();
       } catch (error) {
         console.error("Error updating member:", error);
       }
@@ -75,7 +116,31 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
   return (
     <div className="sign__wrap">
       <div className="row">
-        <div className="col-12 col-lg-6">
+        {/* Profile Picture Upload */}
+        <div className="col-12 col-md-5">
+          <div className="form__img" style={{ marginBottom: "2rem" }}>
+            <label htmlFor="profile-pic-upload">
+              Upload Profile Picture
+            </label>
+            <input
+              id="profile-pic-upload"
+              name="profile-pic-upload"
+              type="file"
+              accept=".png, .jpg, .jpeg"
+              onChange={handleProfilePicUpload}
+            />
+            <img
+              src={getImageWithFallback(formData.profile_pic, "user")}
+              alt="Profile preview"
+              style={{
+                display: "block",
+                marginTop: "1rem",
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="col-12 col-md-7">
           <form className="sign__form sign__form--profile sign__form--first">
             <div className="row">
               <div className="col-12">
@@ -100,6 +165,7 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
                 name="email"
                 placeholder="Can not Change"
                 inputTitle="Email"
+                value={formData.email}
                 disabled={true}
               />
               <InputField
@@ -128,18 +194,43 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
                   <label className="sign__label" htmlFor="subscription">
                     Subscription
                   </label>
-                  <select
-                    className="js-example-basic-single"
-                    id="subscription"
-                    name="subscription_plan"
-                    value={formData.subscription_plan}
-                    onChange={handleInputChange}
-                  >
-                    <option value="Free">Free</option>
-                    <option value="Basic">Basic</option>
-                    <option value="Premium">Premium</option>
-                    <option value="Ultiamte">Ultiamte</option>
-                  </select>
+                  <div style={{ position: "relative" }}>
+                    <select
+                      className="sign__input"
+                      id="subscription"
+                      name="subscription_plan"
+                      value={formData.subscription_plan}
+                      onChange={handleInputChange}
+                      style={{
+                        paddingRight: "40px",
+                        cursor: "pointer",
+                        appearance: "none",
+                        WebkitAppearance: "none",
+                        MozAppearance: "none",
+                      }}
+                    >
+                      <option value="Free">Free</option>
+                      <option value="Basic">Basic</option>
+                      <option value="Premium">Premium</option>
+                      <option value="Ultimate">Ultimate</option>
+                    </select>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      style={{
+                        position: "absolute",
+                        right: "15px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        width: "16px",
+                        height: "16px",
+                        pointerEvents: "none",
+                        fill: "#e0e0e0",
+                      }}
+                    >
+                      <path d="M17,9.17a1,1,0,0,0-1.41,0L12,12.71,8.46,9.17a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42l4.24,4.24a1,1,0,0,0,1.42,0L17,10.59A1,1,0,0,0,17,9.17Z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
@@ -148,17 +239,41 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
                   <label className="sign__label" htmlFor="status">
                     Status
                   </label>
-                  <select
-                    className="js-example-basic-single"
-                    id="status"
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                  >
-                    <option value="Active">Active</option>
-                    {/* <option value="Moderator">Moderator</option> */}
-                    <option value="Inactive">Inactive</option>
-                  </select>
+                  <div style={{ position: "relative" }}>
+                    <select
+                      className="sign__input"
+                      id="status"
+                      name="status"
+                      value={formData.status}
+                      onChange={handleInputChange}
+                      style={{
+                        paddingRight: "40px",
+                        cursor: "pointer",
+                        appearance: "none",
+                        WebkitAppearance: "none",
+                        MozAppearance: "none",
+                      }}
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      style={{
+                        position: "absolute",
+                        right: "15px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        width: "16px",
+                        height: "16px",
+                        pointerEvents: "none",
+                        fill: "#e0e0e0",
+                      }}
+                    >
+                      <path d="M17,9.17a1,1,0,0,0-1.41,0L12,12.71,8.46,9.17a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42l4.24,4.24a1,1,0,0,0,1.42,0L17,10.59A1,1,0,0,0,17,9.17Z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
               <div className="col-12">

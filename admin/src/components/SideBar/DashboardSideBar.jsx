@@ -1,15 +1,22 @@
 import SidebarNavItem from "./SidebarNavItem";
 import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom"; // Import useLocation
+import { useState } from "react";
 import SidebarUser from "./SideBarUser";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectHeaderImage } from "../../../redux/slices/headerSlice";
 const DashboardSideBar = ({ activeLink }) => {
   const location = useLocation(); // Get the current URL
+  const [isPagesMenuOpen, setIsPagesMenuOpen] = useState(false);
+
   // Function to check if the current location matches the href
   const isActiveLink = (href) => {
     return location.pathname === `/${href}` ? activeLink : "";
+  };
+
+  const togglePagesMenu = () => {
+    setIsPagesMenuOpen(!isPagesMenuOpen);
   };
   // Data for sidebar nav items
   const sidebarData = [
@@ -60,26 +67,50 @@ const DashboardSideBar = ({ activeLink }) => {
         </Link>
 
         <SidebarUser />
-        <ul className="sidebar__nav">
+        <ul
+          className="sidebar__nav"
+          style={{ overflowY: "auto", overflowX: "hidden" }}
+        >
           <li className="sidebar__nav-item">
             <button
-              className="sidebar__nav-link a-tag"
-              data-toggle="collapse"
-              href="#collapseMenu"
+              className={`sidebar__nav-link a-tag ${
+                isPagesMenuOpen ? "sidebar__nav-link--active" : ""
+              }`}
+              onClick={togglePagesMenu}
               role="button"
-              aria-expanded="false"
+              aria-expanded={isPagesMenuOpen}
               aria-controls="collapseMenu"
+              type="button"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M19,5.5H12.72l-.32-1a3,3,0,0,0-2.84-2H5a3,3,0,0,0-3,3v13a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V8.5A3,3,0,0,0,19,5.5Zm1,13a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V5.5a1,1,0,0,1,1-1H9.56a1,1,0,0,1,.95.68l.54,1.64A1,1,0,0,0,12,7.5h7a1,1,0,0,1,1,1Z" />
               </svg>
               <span>Pages</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                style={{
+                  transform: isPagesMenuOpen
+                    ? "rotate(180deg)"
+                    : "rotate(0deg)",
+                  transition: "transform 0.3s ease",
+                }}
+              >
                 <path d="M17,9.17a1,1,0,0,0-1.41,0L12,12.71,8.46,9.17a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42l4.24,4.24a1,1,0,0,0,1.42,0L17,10.59A1,1,0,0,0,17,9.17Z" />
               </svg>
             </button>
 
-            <ul className="collapse sidebar__menu" id="collapseMenu">
+            <ul
+              className={`sidebar__menu ${isPagesMenuOpen ? "show" : ""}`}
+              id="collapseMenu"
+              style={{
+                display: isPagesMenuOpen ? "block" : "none",
+                maxHeight: isPagesMenuOpen ? "500px" : "0",
+                overflow: isPagesMenuOpen ? "visible" : "hidden",
+                transition: "max-height 0.3s ease, opacity 0.3s ease",
+                opacity: isPagesMenuOpen ? 1 : 0,
+              }}
+            >
               <li>
                 <Link className=" a-tag" to="/add-video">
                   Add Video
@@ -91,7 +122,7 @@ const DashboardSideBar = ({ activeLink }) => {
                 </Link>
               </li>
               <li>
-                <Link className=" a-tag" to="/edit-user">
+                <Link className=" a-tag" to="/users">
                   Edit user
                 </Link>
               </li>

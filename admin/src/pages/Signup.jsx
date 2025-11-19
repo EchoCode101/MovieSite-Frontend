@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import config from "../utils/js/config.js";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { adminSignup } from "../../services/allRoutes";
+import { toast } from "react-toastify";
 
 const Signup = () => {
-  const apiUrl = config.apiUrl;
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -45,25 +44,12 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch(`${apiUrl}/admin/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // On success, redirect to login or home page
-        navigate("/signin"); // Redirect to the login page
-      } else {
-        // On failure, show error message
-        setError(data.message || "Something went wrong. Please try again.");
-      }
+      const data = await adminSignup(formData);
+      toast.success(data.message || "Admin registered successfully!");
+      navigate("/signin"); // Redirect to the login page
     } catch (err) {
-      setError("Network error. Please try again." + err);
+      setError(err.message || "Something went wrong. Please try again.");
+      toast.error(err.message || "Registration failed");
     } finally {
       setLoading(false);
     }

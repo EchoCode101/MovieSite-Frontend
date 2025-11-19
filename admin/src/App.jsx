@@ -6,11 +6,13 @@ import {
   useLocation,
 } from "react-router-dom";
 import "./App.css";
+import "./utils/css/modal-overlay.css";
+import "./utils/css/smooth-scrollbar.css";
 import store from "../redux/store";
 import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import UseJQueryReInit from "./components/UseJQueryReInit";
+import ModalManager from "./components/ModalManager";
 
 // Import your pages
 import Index from "./pages/Index";
@@ -29,10 +31,11 @@ import NotFound from "./pages/NotFoundPage";
 import EditReview from "./pages/EditReview";
 import VideoUpload from "./pages/VideoUpload";
 import EditComment from "./pages/EditComment";
-import AddUserForm from "./pages/CreateMember";
+import AddUser from "./pages/AddUser";
 import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardSideBar from "./components/SideBar/DashboardSideBar";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function AppContent() {
   const location = useLocation();
@@ -104,7 +107,7 @@ function AppContent() {
           path="/add-user"
           element={
             <ProtectedRoute>
-              <AddUserForm />
+              <AddUser />
             </ProtectedRoute>
           }
         />
@@ -132,6 +135,14 @@ function AppContent() {
             </ProtectedRoute>
           }
         />{" "}
+        <Route
+          path="/edit-user"
+          element={
+            <ProtectedRoute>
+              <Navigate to="/users" replace />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/edit-user/:memberId"
           element={
@@ -173,24 +184,18 @@ function AppContent() {
 
 function App() {
   return (
-    <Provider store={store}>
-      <Router>
-        {/* Initialize all jQuery files */}
-        <UseJQueryReInit
-          files={[
-            "/src/utils/js/admin.js",
-            "/src/utils/js/bootstrap.bundle.min.js",
-            "/src/utils/js/jquery-3.5.1.min.js",
-            "/src/utils/js/jquery.magnific-popup.min.js",
-            "/src/utils/js/modal.js",
-            "/src/utils/js/select2.min.js",
-            "/src/utils/js/smooth-scrollbar.js",
-          ]}
-        />
-        <AppContent />
-      </Router>
-      <ToastContainer />
-    </Provider>
+    <ErrorBoundary>
+      <Provider store={store}>
+        <Router>
+          {/* Bootstrap JavaScript removed - using React-based solutions instead */}
+          <ErrorBoundary>
+            <AppContent />
+          </ErrorBoundary>
+          <ModalManager />
+        </Router>
+        <ToastContainer />
+      </Provider>
+    </ErrorBoundary>
   );
 }
 
