@@ -64,7 +64,15 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
 
     const updatedFields = {};
     for (const key in formData) {
+      // Skip email if it's empty or unchanged (email is disabled and shouldn't be updated)
+      if (key === "email") {
+        continue;
+      }
       if (formData[key] !== profileData[key]) {
+        // Skip empty strings for optional fields (except profile_pic which can be empty)
+        if (formData[key] === "" && key !== "profile_pic") {
+          continue;
+        }
         updatedFields[key] = formData[key];
       }
     }
@@ -118,10 +126,11 @@ const ProfileDetailsForm = ({ profileData = {}, onSave }) => {
       <div className="row">
         {/* Profile Picture Upload */}
         <div className="col-12 col-md-5">
-          <div className="form__img" style={{ marginBottom: "2rem" }}>
-            <label htmlFor="profile-pic-upload">
-              Upload Profile Picture
-            </label>
+          <div
+            className="form__img"
+            style={{ marginBottom: "2rem", height: "100%" }}
+          >
+            <label htmlFor="profile-pic-upload">Upload Profile Picture</label>
             <input
               id="profile-pic-upload"
               name="profile-pic-upload"

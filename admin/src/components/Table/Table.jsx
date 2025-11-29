@@ -22,28 +22,28 @@ const Table = ({ data, columns, buttonData }) => {
   // Convert Mongoose documents to plain objects
   const plainData = data.map((item) => {
     if (!item) return item;
-    
+
     // Check if it's a Mongoose document (has $__ or _doc)
     if (item.$__ || item._doc) {
       // Extract the actual data from _doc
       const docData = item._doc || {};
       // Get top-level properties that were added (like likes, dislikes)
       const topLevelProps = {};
-      Object.keys(item).forEach(key => {
+      Object.keys(item).forEach((key) => {
         // Skip Mongoose internal properties
-        if (!key.startsWith('$') && key !== '_doc' && key !== 'isNew') {
+        if (!key.startsWith("$") && key !== "_doc" && key !== "isNew") {
           topLevelProps[key] = item[key];
         }
       });
       // Merge _doc data with top-level properties
       return { ...docData, ...topLevelProps };
     }
-    
+
     // If it has toObject method, use it
-    if (typeof item.toObject === 'function') {
+    if (typeof item.toObject === "function") {
       return item.toObject();
     }
-    
+
     return item;
   });
 
@@ -60,20 +60,38 @@ const Table = ({ data, columns, buttonData }) => {
         {plainData.length > 0 ? (
           plainData.map((item, index) => {
             const plainItem = item;
-            
-            const rowId =
+
+            // Ensure rowId is always a string or number
+            let rowId =
               plainItem.member_id ||
               plainItem.video_id ||
               plainItem.comment_id ||
               plainItem.review_id ||
               plainItem.reply_id ||
-              plainItem.id ||
-              (plainItem._id
-                ? typeof plainItem._id === "object" && plainItem._id.toString
-                  ? plainItem._id.toString()
-                  : String(plainItem._id)
-                : null) ||
-              index;
+              plainItem.id;
+
+            // Handle _id conversion
+            if (!rowId && plainItem._id) {
+              if (
+                typeof plainItem._id === "object" &&
+                typeof plainItem._id.toString === "function"
+              ) {
+                rowId = plainItem._id.toString();
+              } else {
+                rowId = String(plainItem._id);
+              }
+            }
+
+            // Fallback to index if still no valid ID
+            if (rowId === null || rowId === undefined) {
+              rowId = index;
+            }
+
+            // Ensure rowId is always string or number
+            rowId =
+              typeof rowId === "string" || typeof rowId === "number"
+                ? rowId
+                : String(rowId);
             return (
               <TableRow
                 key={rowId} // Ensure unique key

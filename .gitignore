@@ -24,3 +24,10 @@ dist-ssr
 *.sw?
 .env.development
 config.js
+main-old
+main/.tanstack/tmp
+.vscode
+.cursorrules
+.env.development
+NEXT_PLAN.md
+DOCUMENTATION_VERIFICATION.md
