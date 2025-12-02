@@ -19,7 +19,10 @@ User comments and reviews management. Allows users to comment on videos and repl
 - `DELETE /api/replies/:id` - Delete a reply
 
 ### Reviews
-- `GET /api/reviews/video/:videoId` - Get reviews for a video
+- `GET /api/reviews/video/:videoId` - Get reviews for a video (legacy endpoint)
+- `GET /api/reviews/target/:targetType/:targetId` - Get reviews by target type and ID
+- `GET /api/reviews/paginated` - Get paginated reviews (with optional filters)
+- `GET /api/reviews/recent` - Get recent reviews (with optional date range)
 - `POST /api/reviews` - Create a review
 - `PUT /api/reviews/:id` - Update a review
 - `DELETE /api/reviews/:id` - Delete a review
@@ -50,6 +53,9 @@ User comments and reviews management. Allows users to comment on videos and repl
 
 ### Reviews
 - `useReviews(videoId)` - Fetch reviews for a video
+- `useReviewsByTarget(targetType, targetId)` - Fetch reviews by target type and ID
+- `usePaginatedReviews(params)` - Fetch paginated reviews
+- `useRecentReviews(params)` - Fetch recent reviews
 - `useCreateReview()` - Create review mutation
 - `useUpdateReview()` - Update review mutation
 - `useDeleteReview()` - Delete review mutation

@@ -15,7 +15,6 @@ import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
 import { Route as ProfilesRouteImport } from './routes/profiles'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
@@ -31,14 +30,12 @@ import { Route as PaymentSuccessRouteImport } from './routes/payment/success'
 import { Route as PaymentCancelRouteImport } from './routes/payment/cancel'
 import { Route as PagesSlugRouteImport } from './routes/pages/$slug'
 import { Route as MoviesIdRouteImport } from './routes/movies/$id'
-import { Route as InterviewIdRouteImport } from './routes/interview/$id'
 import { Route as EpisodesIdRouteImport } from './routes/episodes/$id'
 import { Route as CategoryCategoryIdRouteImport } from './routes/category/$categoryId'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
-import { Route as CategorySimpleCategoryIdRouteImport } from './routes/category/simple/$categoryId'
 import { Route as TvShowsIdSeasonsSeasonIdRouteImport } from './routes/tv-shows/$id/seasons/$seasonId'
 
 const WatchlistRoute = WatchlistRouteImport.update({
@@ -71,11 +68,6 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DevicesRoute = DevicesRouteImport.update({
   id: '/devices',
   path: '/devices',
@@ -97,9 +89,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingIndexRoute = PricingIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PricingRoute,
+  id: '/pricing/',
+  path: '/pricing/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LiveIndexRoute = LiveIndexRouteImport.update({
   id: '/live/',
@@ -151,11 +143,6 @@ const MoviesIdRoute = MoviesIdRouteImport.update({
   path: '/movies/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InterviewIdRoute = InterviewIdRouteImport.update({
-  id: '/interview/$id',
-  path: '/interview/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const EpisodesIdRoute = EpisodesIdRouteImport.update({
   id: '/episodes/$id',
   path: '/episodes/$id',
@@ -186,12 +173,6 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/auth/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CategorySimpleCategoryIdRoute =
-  CategorySimpleCategoryIdRouteImport.update({
-    id: '/category/simple/$categoryId',
-    path: '/category/simple/$categoryId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const TvShowsIdSeasonsSeasonIdRoute =
   TvShowsIdSeasonsSeasonIdRouteImport.update({
     id: '/seasons/$seasonId',
@@ -204,7 +185,6 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/devices': typeof DevicesRoute
-  '/pricing': typeof PricingRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/profiles': typeof ProfilesRoute
@@ -217,7 +197,6 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/episodes/$id': typeof EpisodesIdRoute
-  '/interview/$id': typeof InterviewIdRoute
   '/movies/$id': typeof MoviesIdRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/payment/cancel': typeof PaymentCancelRoute
@@ -228,8 +207,7 @@ export interface FileRoutesByFullPath {
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/catalog': typeof CatalogIndexRoute
   '/live': typeof LiveIndexRoute
-  '/pricing/': typeof PricingIndexRoute
-  '/category/simple/$categoryId': typeof CategorySimpleCategoryIdRoute
+  '/pricing': typeof PricingIndexRoute
   '/tv-shows/$id/seasons/$seasonId': typeof TvShowsIdSeasonsSeasonIdRoute
 }
 export interface FileRoutesByTo {
@@ -249,7 +227,6 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/episodes/$id': typeof EpisodesIdRoute
-  '/interview/$id': typeof InterviewIdRoute
   '/movies/$id': typeof MoviesIdRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/payment/cancel': typeof PaymentCancelRoute
@@ -261,7 +238,6 @@ export interface FileRoutesByTo {
   '/catalog': typeof CatalogIndexRoute
   '/live': typeof LiveIndexRoute
   '/pricing': typeof PricingIndexRoute
-  '/category/simple/$categoryId': typeof CategorySimpleCategoryIdRoute
   '/tv-shows/$id/seasons/$seasonId': typeof TvShowsIdSeasonsSeasonIdRoute
 }
 export interface FileRoutesById {
@@ -270,7 +246,6 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/devices': typeof DevicesRoute
-  '/pricing': typeof PricingRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/profiles': typeof ProfilesRoute
@@ -283,7 +258,6 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/episodes/$id': typeof EpisodesIdRoute
-  '/interview/$id': typeof InterviewIdRoute
   '/movies/$id': typeof MoviesIdRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/payment/cancel': typeof PaymentCancelRoute
@@ -295,7 +269,6 @@ export interface FileRoutesById {
   '/catalog/': typeof CatalogIndexRoute
   '/live/': typeof LiveIndexRoute
   '/pricing/': typeof PricingIndexRoute
-  '/category/simple/$categoryId': typeof CategorySimpleCategoryIdRoute
   '/tv-shows/$id/seasons/$seasonId': typeof TvShowsIdSeasonsSeasonIdRoute
 }
 export interface FileRouteTypes {
@@ -305,7 +278,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/devices'
-    | '/pricing'
     | '/privacy'
     | '/profile'
     | '/profiles'
@@ -318,7 +290,6 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/category/$categoryId'
     | '/episodes/$id'
-    | '/interview/$id'
     | '/movies/$id'
     | '/pages/$slug'
     | '/payment/cancel'
@@ -329,8 +300,7 @@ export interface FileRouteTypes {
     | '/watch/$videoId'
     | '/catalog'
     | '/live'
-    | '/pricing/'
-    | '/category/simple/$categoryId'
+    | '/pricing'
     | '/tv-shows/$id/seasons/$seasonId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -350,7 +320,6 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/category/$categoryId'
     | '/episodes/$id'
-    | '/interview/$id'
     | '/movies/$id'
     | '/pages/$slug'
     | '/payment/cancel'
@@ -362,7 +331,6 @@ export interface FileRouteTypes {
     | '/catalog'
     | '/live'
     | '/pricing'
-    | '/category/simple/$categoryId'
     | '/tv-shows/$id/seasons/$seasonId'
   id:
     | '__root__'
@@ -370,7 +338,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/devices'
-    | '/pricing'
     | '/privacy'
     | '/profile'
     | '/profiles'
@@ -383,7 +350,6 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/category/$categoryId'
     | '/episodes/$id'
-    | '/interview/$id'
     | '/movies/$id'
     | '/pages/$slug'
     | '/payment/cancel'
@@ -395,7 +361,6 @@ export interface FileRouteTypes {
     | '/catalog/'
     | '/live/'
     | '/pricing/'
-    | '/category/simple/$categoryId'
     | '/tv-shows/$id/seasons/$seasonId'
   fileRoutesById: FileRoutesById
 }
@@ -404,7 +369,6 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   DevicesRoute: typeof DevicesRoute
-  PricingRoute: typeof PricingRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   ProfilesRoute: typeof ProfilesRoute
@@ -417,7 +381,6 @@ export interface RootRouteChildren {
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   CategoryCategoryIdRoute: typeof CategoryCategoryIdRoute
   EpisodesIdRoute: typeof EpisodesIdRoute
-  InterviewIdRoute: typeof InterviewIdRoute
   MoviesIdRoute: typeof MoviesIdRoute
   PagesSlugRoute: typeof PagesSlugRoute
   PaymentCancelRoute: typeof PaymentCancelRoute
@@ -428,7 +391,7 @@ export interface RootRouteChildren {
   WatchVideoIdRoute: typeof WatchVideoIdRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
   LiveIndexRoute: typeof LiveIndexRoute
-  CategorySimpleCategoryIdRoute: typeof CategorySimpleCategoryIdRoute
+  PricingIndexRoute: typeof PricingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -475,13 +438,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/devices': {
       id: '/devices'
       path: '/devices'
@@ -512,10 +468,10 @@ declare module '@tanstack/react-router' {
     }
     '/pricing/': {
       id: '/pricing/'
-      path: '/'
-      fullPath: '/pricing/'
+      path: '/pricing'
+      fullPath: '/pricing'
       preLoaderRoute: typeof PricingIndexRouteImport
-      parentRoute: typeof PricingRoute
+      parentRoute: typeof rootRouteImport
     }
     '/live/': {
       id: '/live/'
@@ -587,13 +543,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MoviesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/interview/$id': {
-      id: '/interview/$id'
-      path: '/interview/$id'
-      fullPath: '/interview/$id'
-      preLoaderRoute: typeof InterviewIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/episodes/$id': {
       id: '/episodes/$id'
       path: '/episodes/$id'
@@ -636,13 +585,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/category/simple/$categoryId': {
-      id: '/category/simple/$categoryId'
-      path: '/category/simple/$categoryId'
-      fullPath: '/category/simple/$categoryId'
-      preLoaderRoute: typeof CategorySimpleCategoryIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/tv-shows/$id/seasons/$seasonId': {
       id: '/tv-shows/$id/seasons/$seasonId'
       path: '/seasons/$seasonId'
@@ -652,17 +594,6 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-
-interface PricingRouteChildren {
-  PricingIndexRoute: typeof PricingIndexRoute
-}
-
-const PricingRouteChildren: PricingRouteChildren = {
-  PricingIndexRoute: PricingIndexRoute,
-}
-
-const PricingRouteWithChildren =
-  PricingRoute._addFileChildren(PricingRouteChildren)
 
 interface TvShowsIdRouteChildren {
   TvShowsIdSeasonsSeasonIdRoute: typeof TvShowsIdSeasonsSeasonIdRoute
@@ -681,7 +612,6 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   DevicesRoute: DevicesRoute,
-  PricingRoute: PricingRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   ProfilesRoute: ProfilesRoute,
@@ -694,7 +624,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   CategoryCategoryIdRoute: CategoryCategoryIdRoute,
   EpisodesIdRoute: EpisodesIdRoute,
-  InterviewIdRoute: InterviewIdRoute,
   MoviesIdRoute: MoviesIdRoute,
   PagesSlugRoute: PagesSlugRoute,
   PaymentCancelRoute: PaymentCancelRoute,
@@ -705,7 +634,7 @@ const rootRouteChildren: RootRouteChildren = {
   WatchVideoIdRoute: WatchVideoIdRoute,
   CatalogIndexRoute: CatalogIndexRoute,
   LiveIndexRoute: LiveIndexRoute,
-  CategorySimpleCategoryIdRoute: CategorySimpleCategoryIdRoute,
+  PricingIndexRoute: PricingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

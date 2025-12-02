@@ -1,16 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { SidebarLayout } from "@/components/layouts/sidebar-layout";
 import { ProfileForm } from "@/features/user/components/profile-form";
 import { useProfiles } from "@/features/profiles/hooks/useProfiles";
 import { useActiveSubscription } from "@/features/subscriptions/hooks/useSubscriptions";
 import { useDevices } from "@/features/devices/hooks/useDevices";
 import { useTransactions } from "@/features/transactions/hooks/useTransactions";
-import { Loader2 } from "lucide-react";
+import { Loader2, MessageSquare, Star, User, Users, CreditCard, Smartphone, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Plus, Settings, CreditCard, Smartphone, History } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { requireAuth } from "@/lib/auth-guard";
+import { ProfileCommentsTab } from "@/features/comments/components/profile-comments-tab";
+import { ProfileReviewsTab } from "@/features/comments/components/profile-reviews-tab";
 
 export const Route = createFileRoute("/profile")({
   beforeLoad: async () => {
@@ -20,6 +23,7 @@ export const Route = createFileRoute("/profile")({
 });
 
 function ProfilePage() {
+  const [activeTab, setActiveTab] = useState("profile");
   const { data: profiles, isLoading: profilesLoading } = useProfiles();
   const { data: activeSubscription, isLoading: subscriptionLoading } =
     useActiveSubscription();
@@ -33,26 +37,31 @@ function ProfilePage() {
     devicesLoading ||
     transactionsLoading;
 
+  const sidebarItems = [
+    { value: "profile", label: "Profile", icon: <User className="h-4 w-4" /> },
+    { value: "profiles", label: "Profiles", icon: <Users className="h-4 w-4" /> },
+    { value: "subscription", label: "Subscription", icon: <CreditCard className="h-4 w-4" /> },
+    { value: "devices", label: "Devices", icon: <Smartphone className="h-4 w-4" /> },
+    { value: "transactions", label: "Transactions", icon: <History className="h-4 w-4" /> },
+    { value: "comments", label: "Comments", icon: <MessageSquare className="h-4 w-4" /> },
+    { value: "reviews", label: "Reviews", icon: <Star className="h-4 w-4" /> },
+  ];
+
   return (
     <div className="container mx-auto py-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">My Account</h1>
 
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="profiles">Profiles</TabsTrigger>
-            <TabsTrigger value="subscription">Subscription</TabsTrigger>
-            <TabsTrigger value="devices">Devices</TabsTrigger>
-            <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          </TabsList>
+        <SidebarLayout
+          items={sidebarItems}
+          activeValue={activeTab}
+          onValueChange={setActiveTab}
+        >
 
-          <TabsContent value="profile" className="mt-6">
-            <ProfileForm />
-          </TabsContent>
+          {activeTab === "profile" && <ProfileForm />}
 
-          <TabsContent value="profiles" className="mt-6">
-            {isLoading ? (
+          {activeTab === "profiles" && (
+            isLoading ? (
               <div className="flex items-center justify-center py-20">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
@@ -102,11 +111,11 @@ function ProfilePage() {
                   </div>
                 )}
               </div>
-            )}
-          </TabsContent>
+            )
+          )}
 
-          <TabsContent value="subscription" className="mt-6">
-            {isLoading ? (
+          {activeTab === "subscription" && (
+            isLoading ? (
               <div className="flex items-center justify-center py-20">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
@@ -182,11 +191,11 @@ function ProfilePage() {
                   </div>
                 )}
               </div>
-            )}
-          </TabsContent>
+            )
+          )}
 
-          <TabsContent value="devices" className="mt-6">
-            {isLoading ? (
+          {activeTab === "devices" && (
+            isLoading ? (
               <div className="flex items-center justify-center py-20">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
@@ -225,11 +234,11 @@ function ProfilePage() {
                   </div>
                 )}
               </div>
-            )}
-          </TabsContent>
+            )
+          )}
 
-          <TabsContent value="transactions" className="mt-6">
-            {isLoading ? (
+          {activeTab === "transactions" && (
+            isLoading ? (
               <div className="flex items-center justify-center py-20">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
@@ -291,9 +300,13 @@ function ProfilePage() {
                   </div>
                 )}
               </div>
-            )}
-          </TabsContent>
-        </Tabs>
+            )
+          )}
+
+          {activeTab === "comments" && <ProfileCommentsTab />}
+
+          {activeTab === "reviews" && <ProfileReviewsTab />}
+        </SidebarLayout>
       </div>
     </div>
   );

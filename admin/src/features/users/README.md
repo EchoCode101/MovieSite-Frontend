@@ -1,0 +1,1 @@
+# Users\n\n## Purpose\n\nManage platform users, subscriptions, and permissions.\n\n## Structure\n\n- api/ - API functions for users\n- components/ - React components for users\n- hooks/ - Custom hooks for users\n- types.ts - TypeScript types for users\n

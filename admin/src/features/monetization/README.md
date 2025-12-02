@@ -1,0 +1,1 @@
+# Monetization\n\n## Purpose\n\nManage subscription plans, coupons, transactions, taxes, and payment methods.\n\n## Structure\n\n- plans/ - Subscription plans\n- coupons/ - Coupons and discounts\n- transactions/ - Payment transactions\n- taxes/ - Tax configuration\n- payment-methods/ - Payment methods configuration\n

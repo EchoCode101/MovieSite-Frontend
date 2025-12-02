@@ -1,6 +1,7 @@
 import { apiClient } from '@/config/api'
 import type { ApiResponse } from '@/lib/api-response'
 import { logger } from '@/lib/logger'
+import { API_ERRORS } from '@/lib/api-errors'
 import type { Subscription, SubscriptionPlan, CreateSubscriptionData, CancelSubscriptionData } from '../types'
 
 /**
@@ -21,22 +22,23 @@ export const getSubscriptions = async (): Promise<Subscription[]> => {
     const response = await apiClient.get<ApiResponse<Subscription[]>>('/subscriptions') as unknown as ApiResponse<Subscription[]>
 
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     if (!response.success) {
-      throw new Error(response.message || 'Failed to fetch subscriptions')
+      throw new Error(response.message || API_ERRORS.FETCH_FAILED('subscriptions'))
     }
     // Validate shape
     if (!response.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
     if (!Array.isArray(response.data)) {
-      throw new Error('Invalid response: data is not an array')
+      throw new Error(API_ERRORS.NOT_ARRAY('data'))
     }
     return response.data
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error in subscriptions operation', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -53,10 +55,34 @@ export const getSubscriptions = async (): Promise<Subscription[]> => {
  * }
  */
 /**
+ * Backend plan object structure (may come from populated plan_id)
+ */
+interface BackendPlanObject {
+  _id?: string | { toString(): string }
+  id?: string
+  name?: string
+  slug?: string
+  description?: string
+  price?: number
+  billing_cycle?: string
+  max_profiles?: number
+  max_devices?: number
+  allow_download?: boolean
+  allow_cast?: boolean
+  ad_supported?: boolean
+  is_featured?: boolean
+  is_active?: boolean
+  tax_included?: boolean
+  available_for_ppv?: boolean
+  createdAt?: string
+  updatedAt?: string
+}
+
+/**
  * Parse plan_id string to SubscriptionPlan object
  * Handles various formats: object, JSON string, or stringified JS object
  */
-function parsePlanId(planIdString: string | any): SubscriptionPlan | undefined {
+function parsePlanId(planIdString: string | BackendPlanObject | null | undefined): SubscriptionPlan | undefined {
   if (!planIdString) return undefined
 
   // If it's already an object with _id, transform it
@@ -200,7 +226,43 @@ export const getActiveSubscription = async (): Promise<Subscription | null> => {
     return subscriptionResult
   } catch (err) {
     logger.error('Error fetching active subscription', err instanceof Error ? err : new Error('Unknown error'))
-    throw err instanceof Error ? err : new Error('Unknown error')
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
+  }
+}
+
+/**
+ * Get subscription plan by ID
+ * 
+ * @param planId - Plan ID
+ * @returns Promise resolving to subscription plan
+ * 
+ * Backend Response Format:
+ * {
+ *   success: boolean,
+ *   message?: string,
+ *   data: SubscriptionPlan
+ * }
+ */
+export const getPlanById = async (planId: string): Promise<SubscriptionPlan> => {
+  try {
+    const response = await apiClient.get<ApiResponse<SubscriptionPlan>>(`/subscriptions/plans/${planId}`) as unknown as ApiResponse<SubscriptionPlan>
+
+    if (!response || typeof response !== 'object') {
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
+    }
+
+    if (!response.success) {
+      throw new Error(response.message || API_ERRORS.FETCH_FAILED('subscription plan'))
+    }
+
+    if (!response.data) {
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
+    }
+
+    return response.data
+  } catch (err) {
+    logger.error('Error fetching subscription plan', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -222,18 +284,19 @@ export const createSubscription = async (data: CreateSubscriptionData): Promise<
     // Interceptor returns response.data, so 'response' is already the ApiResponse
     const response = await apiClient.post<ApiResponse<Subscription>>('/subscriptions', data) as unknown as ApiResponse<Subscription>
     if (!response) {
-      throw new Error('Invalid response: response is undefined')
+      throw new Error(API_ERRORS.RESPONSE_DATA_UNDEFINED)
     }
     if (!response.success) {
-      throw new Error(response.message || 'Failed to create subscription')
+      throw new Error(response.message || API_ERRORS.CREATE_FAILED('subscription'))
     }
     // Validate shape
     if (!response.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
     return response.data
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error in subscriptions operation', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -258,7 +321,7 @@ export const cancelSubscription = async (data: CancelSubscriptionData): Promise<
       throw new Error('Invalid response: response is undefined')
     }
     if (!response.success) {
-      throw new Error(response.message || 'Failed to cancel subscription')
+      throw new Error(response.message || API_ERRORS.UPDATE_FAILED('subscription'))
     }
     // Validate shape
     if (!response.data) {
@@ -266,7 +329,8 @@ export const cancelSubscription = async (data: CancelSubscriptionData): Promise<
     }
     return response.data
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error in subscriptions operation', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 

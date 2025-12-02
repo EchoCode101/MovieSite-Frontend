@@ -1,0 +1,1 @@
+# Profiles\n\n## Purpose\n\nManage user profiles across the platform.\n\n## Structure\n\n- api/ - API functions for profiles\n- components/ - React components for profiles\n- hooks/ - Custom hooks for profiles\n- types.ts - TypeScript types for profiles\n

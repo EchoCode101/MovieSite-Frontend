@@ -15,7 +15,6 @@ import {
   Loader2,
   ArrowLeft,
   Play,
-  Clock,
   Calendar,
   Film,
   Search,
@@ -474,7 +473,7 @@ function SeasonDetailPage() {
             </div>
           ) : episodes.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {episodes.map((episode) => (
                   <EnhancedEpisodeCard key={episode.id} episode={episode} />
                 ))}

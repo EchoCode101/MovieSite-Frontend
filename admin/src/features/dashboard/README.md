@@ -1,0 +1,1 @@
+# Dashboard\n\n## Purpose\n\nAdmin analytics and key metrics.\n\n## Structure\n\n- api/ - API functions for dashboard\n- components/ - React components for dashboard\n- hooks/ - Custom hooks for dashboard\n- types.ts - TypeScript types for dashboard\n

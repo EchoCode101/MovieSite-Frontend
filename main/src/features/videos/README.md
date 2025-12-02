@@ -21,7 +21,6 @@ Generic video content management. Provides access to video listings, details, ca
 
 - `useVideos(params)` - Fetch paginated videos
 - `useVideo(id)` - Fetch single video by ID
-- `useCategories()` - Fetch video categories
 - `useRelatedVideos(id)` - Fetch related videos
 
 ## Integration Points

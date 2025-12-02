@@ -7,7 +7,7 @@ interface PaginatedData<T> {
   currentPage: number
   totalPages: number
   totalItems: number
-  [key: string]: any // Allow additional properties like videos, movies, etc.
+  [key: string]: unknown // Allow additional properties like videos, movies, etc.
 }
 
 /**

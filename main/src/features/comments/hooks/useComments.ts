@@ -5,6 +5,9 @@ import {
   createComment,
   updateComment,
   deleteComment,
+  getPaginatedComments,
+  getMyComments,
+  bulkDeleteComments,
   fetchReplies,
   createReply,
   updateReply,
@@ -217,6 +220,87 @@ export const useDeleteComment = () => {
         queryClient.setQueryData(context.foundQueryKey, context.previousComments)
       }
       toast.error('Failed to delete comment')
+    },
+  })
+}
+
+/**
+ * Hook to fetch paginated comments
+ * 
+ * Note: Backend endpoint requires admin authentication.
+ * For user profile, use useMyComments instead.
+ * 
+ * @param params - Pagination parameters
+ * @param options - Optional query options
+ * @returns Query hook for paginated comments
+ */
+export const usePaginatedComments = (
+  params?: {
+    page?: number
+    limit?: number
+    sort?: string
+    order?: 'ASC' | 'DESC'
+    target_type?: 'video' | 'movie' | 'tvshow' | 'episode'
+    target_id?: string
+  },
+  options?: { enabled?: boolean }
+) => {
+  return useQuery({
+    queryKey: queryKeys.comments.paginated(params),
+    queryFn: () => getPaginatedComments(params),
+    enabled: options?.enabled !== false,
+  })
+}
+
+/**
+ * Hook to fetch user's own comments
+ * 
+ * @param params - Pagination parameters
+ * @param options - Optional query options
+ * @returns Query hook for user's comments
+ */
+export const useMyComments = (
+  params?: {
+    page?: number
+    limit?: number
+    sort?: string
+    order?: 'ASC' | 'DESC'
+    target_type?: 'video' | 'movie' | 'tvshow' | 'episode'
+    target_id?: string
+  },
+  options?: { enabled?: boolean }
+) => {
+  return useQuery({
+    queryKey: queryKeys.comments.my(params),
+    queryFn: () => getMyComments(params),
+    enabled: options?.enabled !== false,
+    staleTime: 5 * 60 * 1000, // 5 minutes - prevent refetching too often
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false, // Prevent refetch on window focus
+  })
+}
+
+/**
+ * Hook for bulk delete comments mutation
+ * 
+ * Note: Users can only delete their own comments. Admins can delete any comments.
+ * 
+ * @returns Mutation hook for bulk deleting comments
+ */
+export const useBulkDeleteComments = () => {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: (commentIds: string[]) => bulkDeleteComments(commentIds),
+    onSuccess: () => {
+      // Invalidate all comment queries
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.comments.all,
+      })
+      toast.success('Comments deleted successfully!')
+    },
+    onError: () => {
+      toast.error('Failed to delete comments')
     },
   })
 }

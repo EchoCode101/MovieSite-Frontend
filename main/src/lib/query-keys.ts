@@ -144,6 +144,8 @@ export const queryKeys = {
     lists: () => ['comments'] as const,
     byVideo: (videoId: string) => ['comments', videoId] as const,
     byTarget: (targetType: string, targetId: string) => ['comments', 'target', targetType, targetId] as const,
+    paginated: (params?: { page?: number; limit?: number; sort?: string; order?: 'ASC' | 'DESC'; target_type?: string; target_id?: string }) => ['comments', 'paginated', params] as const,
+    my: (params?: { page?: number; limit?: number; sort?: string; order?: 'ASC' | 'DESC'; target_type?: string; target_id?: string }) => ['comments', 'my', params] as const,
   },
 
   // Replies
@@ -159,6 +161,9 @@ export const queryKeys = {
     lists: () => ['reviews'] as const,
     byVideo: (videoId: string) => ['reviews', videoId] as const,
     byTarget: (targetType: string, targetId: string) => ['reviews', 'target', targetType, targetId] as const,
+    paginated: (params?: { page?: number; limit?: number; targetType?: string; targetId?: string }) => ['reviews', 'paginated', params] as const,
+    recent: (params?: { startDate?: string; endDate?: string }) => ['reviews', 'recent', params] as const,
+    my: (params?: { page?: number; limit?: number; sort?: string; order?: 'ASC' | 'DESC'; target_type?: string; target_id?: string }) => ['reviews', 'my', params] as const,
   },
 
   // Likes & Dislikes
@@ -177,7 +182,6 @@ export const queryKeys = {
     all: ['videos'] as const,
     lists: () => ['videos'] as const,
     list: (params?: { page?: number; limit?: number; sort?: string; order?: string }) => ['videos', params] as const,
-    categories: () => ['categories'] as const,
     related: (id: string) => ['relatedVideos', id] as const,
   },
 

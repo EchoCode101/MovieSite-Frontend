@@ -1,6 +1,7 @@
 import { apiClient } from '@/config/api'
 import type { ApiResponse } from '@/lib/api-response'
 import { logger } from '@/lib/logger'
+import { API_ERRORS } from '@/lib/api-errors'
 import type { Movie, PaginatedMoviesData, BackendMovie } from '../types'
 
 /**
@@ -108,7 +109,7 @@ export const getMovies = async (params?: {
 
     // Check if data is undefined or null
     if (!data) {
-      throw new Error('Invalid response: response data is undefined')
+      throw new Error(API_ERRORS.RESPONSE_DATA_UNDEFINED)
     }
 
     // Check if response is already unwrapped (has movies directly) - shouldn't happen but handle it
@@ -125,14 +126,14 @@ export const getMovies = async (params?: {
 
     // Expect ApiResponse format: { success, message, data }
     if (!data.success) {
-      throw new Error(data.message || 'Failed to fetch movies')
+      throw new Error(data.message || API_ERRORS.FETCH_FAILED('movies'))
     }
     // Validate shape
     if (!data.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
     if (!Array.isArray(data.data.movies)) {
-      throw new Error('Invalid response: movies is not an array')
+      throw new Error(API_ERRORS.NOT_ARRAY('movies'))
     }
     // Transform movies to match frontend type
     try {
@@ -151,11 +152,11 @@ export const getMovies = async (params?: {
       }
     } catch (transformErr) {
       logger.error('Error transforming movies array', transformErr instanceof Error ? transformErr : new Error('Unknown error'))
-      throw new Error(`Failed to transform movies: ${transformErr instanceof Error ? transformErr.message : 'Unknown error'}`)
+      throw new Error(API_ERRORS.UNKNOWN_ERROR)
     }
   } catch (err) {
     logger.error('Error fetching movies', err instanceof Error ? err : new Error('Unknown error'))
-    throw err instanceof Error ? err : new Error('Unknown error')
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -178,19 +179,20 @@ export const getMovieById = async (id: string): Promise<Movie> => {
     const response = await apiClient.get<ApiResponse<BackendMovie>>(`/movies/${id}`) as unknown as ApiResponse<BackendMovie>
 
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     if (!response.success) {
-      throw new Error(response.message || 'Failed to fetch movie')
+      throw new Error(response.message || API_ERRORS.FETCH_FAILED('movie'))
     }
     // Validate shape
     if (!response.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
     return transformMovie(response.data)
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error fetching movie', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -223,11 +225,12 @@ export const getTrendingMovies = async (): Promise<Movie[]> => {
       throw new Error('Invalid response: missing data field')
     }
     if (!Array.isArray(response.data)) {
-      throw new Error('Invalid response: data is not an array')
+      throw new Error(API_ERRORS.NOT_ARRAY('data'))
     }
     return response.data.map(transformMovie)
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error fetching movie', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -260,11 +263,12 @@ export const getFeaturedMovies = async (): Promise<Movie[]> => {
       throw new Error('Invalid response: missing data field')
     }
     if (!Array.isArray(response.data)) {
-      throw new Error('Invalid response: data is not an array')
+      throw new Error(API_ERRORS.NOT_ARRAY('data'))
     }
     return response.data.map(transformMovie)
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error fetching movie', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -297,11 +301,12 @@ export const getComingSoonMovies = async (): Promise<Movie[]> => {
       throw new Error('Invalid response: missing data field')
     }
     if (!Array.isArray(response.data)) {
-      throw new Error('Invalid response: data is not an array')
+      throw new Error(API_ERRORS.NOT_ARRAY('data'))
     }
     return response.data.map(transformMovie)
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error fetching movie', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 

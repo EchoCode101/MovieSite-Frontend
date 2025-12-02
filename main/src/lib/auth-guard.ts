@@ -1,5 +1,6 @@
 import { redirect } from '@tanstack/react-router'
 import { queryClient } from './query'
+import { queryKeys } from './query-keys'
 
 /**
  * Check if user is authenticated
@@ -12,7 +13,7 @@ export function getAuthenticatedUser() {
     if (!token) return null
 
     // Check if user data exists in cache
-    const user = queryClient.getQueryData(['user'])
+    const user = queryClient.getQueryData(queryKeys.user.all)
     return user || null
 }
 
@@ -31,7 +32,7 @@ export async function requireAuth() {
                 const { getUser } = await import('@/features/auth/api/auth')
                 const userData = await getUser()
                 if (userData) {
-                    queryClient.setQueryData(['user'], userData)
+                    queryClient.setQueryData(queryKeys.user.all, userData)
                     return userData
                 }
             } catch (error) {
@@ -75,7 +76,7 @@ export async function requireGuest() {
             const { getUser } = await import('@/features/auth/api/auth')
             const userData = await getUser()
             if (userData) {
-                queryClient.setQueryData(['user'], userData)
+                queryClient.setQueryData(queryKeys.user.all, userData)
                 // User is authenticated, redirect to home
                 throw redirect({
                     to: '/',

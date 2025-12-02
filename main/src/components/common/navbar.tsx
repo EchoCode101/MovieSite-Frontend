@@ -57,7 +57,7 @@ export function Navbar() {
   // Helper to check if a route is active
   const isActive = (path: string) => {
     return (
-      location.pathname === path || location.pathname.startsWith(path + "/")
+      location.pathname === path || location.pathname.startsWith(`${path}/`)
     );
   };
 

@@ -1,5 +1,5 @@
 import { useQuery, useQueries } from '@tanstack/react-query'
-import { getVideos, getVideoById, getCategories, getRelatedVideos } from '../api/videos'
+import { getVideos, getVideoById, getRelatedVideos } from '../api/videos'
 import { queryKeys } from '@/lib/query-keys'
 import { combineQueryResults } from '../utils/combine-query-results'
 import type { Video } from '../types'
@@ -127,13 +127,6 @@ export const useVideo = (id: string) => {
     queryKey: queryKeys.video.detail('video', id),
     queryFn: () => getVideoById(id),
     enabled: !!id,
-  })
-}
-
-export const useCategories = () => {
-  return useQuery({
-    queryKey: queryKeys.videos.categories(),
-    queryFn: getCategories,
   })
 }
 

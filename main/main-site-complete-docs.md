@@ -1,6 +1,6 @@
 # Frontend Application Documentation
 
-**Version:** 2.0.0  
+**Version:** 2.1.0  
 **Last Updated:** 2025-01-29  
 **Project:** Vidstie - Video Streaming Platform Frontend  
 **Framework:** React 19 + TypeScript + Vite + TanStack Router + TanStack Query
@@ -742,15 +742,19 @@ function EpisodesList() {
 
 - `useComments.ts`: Comment hooks
   - `useComments(videoId)`: Fetch comments
+  - `useMyComments()`: Fetch user's own comments with pagination
   - `useCreateComment()`: Create comment
   - `useUpdateComment()`: Update comment
   - `useDeleteComment()`: Delete comment
+  - `useBulkDeleteComments()`: Bulk delete comments
   - `useCreateReply()`: Reply to comment
 - `useReviews.ts`: Review hooks
   - `useReviews(videoId)`: Fetch reviews
+  - `useMyReviews()`: Fetch user's own reviews with pagination
   - `useCreateReview()`: Create review
-  - `useUpdateReview()`: Update review
-  - `useDeleteReview()`: Delete review
+  - `useUpdateReview()`: Update review (handles both array and paginated cache structures)
+  - `useDeleteReview()`: Delete review (handles both array and paginated cache structures)
+  - `useBulkDeleteReviews()`: Bulk delete reviews
 
 ### Pay-Per-View (`features/pay-per-view/`)
 
@@ -1299,6 +1303,18 @@ export const queryKeys = {
     detail: (id: string) => ['episodes', id] as const,
   },
   
+  // Comments
+  comments: {
+    all: ['comments'] as const,
+    my: (params?: { page?: number; limit?: number; sort?: string; order?: 'ASC' | 'DESC' }) => ['comments', 'my', params] as const,
+  },
+  
+  // Reviews
+  reviews: {
+    all: ['reviews'] as const,
+    my: (params?: { page?: number; limit?: number; sort?: string; order?: 'ASC' | 'DESC' }) => ['reviews', 'my', params] as const,
+  },
+  
   // ... many more feature query keys
 } as const;
 ```
@@ -1642,6 +1658,10 @@ import { cn } from '@/lib/utils'
 - `not-found.tsx`: 404 Not Found page component
 - `upgrade-prompt.tsx`: Upgrade prompt for premium features
 
+**Located in `src/components/layouts/`**:
+
+- `sidebar-layout.tsx`: Reusable sidebar layout component with left sidebar navigation and right content area (used in profile page)
+
 ### Feature-Specific Components
 
 **Videos Feature** (`src/features/videos/components/`):
@@ -1668,9 +1688,11 @@ import { cn } from '@/lib/utils'
 - `comment-item.tsx`: Individual comment component
 - `comment-form.tsx`: Add/edit comment form
 - `reply-item.tsx`: Reply to comment component
+- `profile-comments-tab.tsx`: User's own comments tab with bulk delete (used in profile page)
 - `review-list.tsx`: Display reviews list
 - `review-item.tsx`: Individual review component
 - `review-form.tsx`: Add/edit review form
+- `profile-reviews-tab.tsx`: User's own reviews tab with bulk delete (used in profile page)
 
 **Profiles Feature** (`src/features/profiles/components/`):
 - `profile-selector.tsx`: Profile selection dropdown
@@ -2815,6 +2837,52 @@ Update comment.
 
 Delete comment.
 
+#### GET `/comments/my`
+
+Get user's own comments with pagination.
+
+**Query Parameters**:
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 10)
+- `sort`: Sort field (default: "createdAt")
+- `order`: Sort direction (`ASC` | `DESC`, default: "DESC")
+- `target_type`: Filter by target type (optional)
+- `target_id`: Filter by target ID (optional)
+
+**Response**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "currentPage": 1,
+    "totalPages": 5,
+    "totalItems": 50,
+    "comments": [
+      {
+        "id": "comment-id",
+        "content": "Great movie!",
+        "createdAt": "2024-01-01T00:00:00Z",
+        "likesCount": 10,
+        "dislikesCount": 2
+      }
+    ]
+  }
+}
+```
+
+#### DELETE `/comments/bulk`
+
+Bulk delete comments.
+
+**Request**:
+
+```json
+{
+  "ids": ["comment-id-1", "comment-id-2"]
+}
+```
+
 ### Reviews Endpoints
 
 #### GET `/reviews/video/:videoId`
@@ -2832,6 +2900,53 @@ Create review.
   "video_id": "video-id",
   "rating": 5,
   "content": "Review text"
+}
+```
+
+#### GET `/reviews/my`
+
+Get user's own reviews with pagination.
+
+**Query Parameters**:
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 10)
+- `sort`: Sort field (default: "createdAt")
+- `order`: Sort direction (`ASC` | `DESC`, default: "DESC")
+- `target_type`: Filter by target type (optional)
+- `target_id`: Filter by target ID (optional)
+
+**Response**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "currentPage": 1,
+    "totalPages": 5,
+    "totalItems": 50,
+    "reviews": [
+      {
+        "id": "review-id",
+        "rating": 5,
+        "review_content": "Excellent!",
+        "createdAt": "2024-01-01T00:00:00Z",
+        "likesCount": 10,
+        "dislikesCount": 2
+      }
+    ]
+  }
+}
+```
+
+#### DELETE `/reviews/bulk`
+
+Bulk delete reviews.
+
+**Request**:
+
+```json
+{
+  "ids": ["review-id-1", "review-id-2"]
 }
 ```
 
@@ -3627,6 +3742,29 @@ const { data, isLoading } = useResource();
 
 ## Changelog
 
+### Version 2.1.0 (2025-01-29)
+
+- **Profile Page Enhancements**:
+  - Redesigned profile page with modern sidebar layout (left sidebar navigation, right content area)
+  - Added user-specific comments endpoint integration (`GET /api/comments/my`)
+  - Added user-specific reviews endpoint integration (`GET /api/reviews/my`)
+  - Implemented bulk delete functionality for both comments and reviews
+  - Fixed review update/delete mutations to handle paginated cache structures
+  - Added `useMyComments` and `useMyReviews` hooks for user-specific data
+  - Added `useBulkDeleteReviews` mutation hook
+  - Created reusable `SidebarLayout` component
+
+- **Query Keys Updates**:
+  - Added `comments.my` query key for user-specific comments
+  - Added `reviews.my` query key for user-specific reviews
+
+- **Component Updates**:
+  - Updated `ProfileCommentsTab` to use `useMyComments` instead of admin endpoint
+  - Updated `ProfileReviewsTab` to use `useMyReviews` and added bulk delete UI
+  - Fixed mutation cache invalidation for both array and paginated data structures
+
+---
+
 ### Version 2.0.0 (2025-01-29)
 
 - **Major Updates**:
@@ -3668,7 +3806,7 @@ This documentation is part of the Vidstie project.
 
 ---
 
-**Document Version**: 2.0.0  
+**Document Version**: 2.1.0  
 **Last Updated**: 2025-01-29  
 **Maintained By**: Development Team
 

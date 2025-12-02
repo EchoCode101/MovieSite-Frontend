@@ -6,14 +6,12 @@ import {
   Network,
   SquareFunction,
   StickyNote,
-  X,
 } from 'lucide-react'
 
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
@@ -34,14 +32,6 @@ export default function Header() {
   const currentPath = router.location.pathname
 
   const isActive = (path: string) => currentPath === path
-
-  const navItems = [
-    {
-      title: 'Home',
-      href: '/',
-      icon: Home,
-    },
-  ]
 
   const demoItems = [
     {

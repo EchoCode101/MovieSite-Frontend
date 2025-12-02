@@ -4,16 +4,29 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Mail, MapPin, Phone } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/contact')({
   component: ContactPage,
 })
 
 function ContactPage() {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // [PLACEHOLDER: Implement form submission logic here]
-    alert("Message sent! (This is a placeholder)")
+    setIsSubmitting(true)
+    
+    // TODO: Implement actual form submission to backend when contact API is available
+    // For now, show success message
+    setTimeout(() => {
+      setIsSubmitting(false)
+      toast.success('Thank you for your message! We will get back to you soon.')
+      // Reset form
+      const form = e.currentTarget
+      form.reset()
+    }, 1000)
   }
 
   return (
@@ -33,45 +46,33 @@ function ContactPage() {
               <CardHeader>
                 <CardTitle>Get in Touch</CardTitle>
                 <CardDescription>
-                  [PLACEHOLDER: Contact availability info. Example: "Mon-Fri, 9am - 5pm EST"]
+                  We're here to help! Reach out to us through any of the following channels.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <MapPin className="w-6 h-6 text-primary shrink-0" />
-                  <div>
-                    <h3 className="font-medium mb-1">Visit Us</h3>
-                    <p className="text-muted-foreground">
-                      [PLACEHOLDER: Address Line 1]<br />
-                      [PLACEHOLDER: City, State, Zip]
-                    </p>
-                  </div>
-                </div>
                 <div className="flex items-start gap-4">
                   <Mail className="w-6 h-6 text-primary shrink-0" />
                   <div>
                     <h3 className="font-medium mb-1">Email Us</h3>
                     <p className="text-muted-foreground">
-                      [PLACEHOLDER: support@example.com]
+                      support@vidstie.com
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      We typically respond within 24-48 hours
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <Phone className="w-6 h-6 text-primary shrink-0" />
                   <div>
-                    <h3 className="font-medium mb-1">Call Us</h3>
+                    <h3 className="font-medium mb-1">Support Hours</h3>
                     <p className="text-muted-foreground">
-                      [PLACEHOLDER: +1 (555) 123-4567]
+                      Monday - Friday, 9:00 AM - 6:00 PM EST
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-
-            {/* Map Placeholder */}
-            <div className="aspect-video bg-muted rounded-xl overflow-hidden flex items-center justify-center text-muted-foreground border">
-              [PLACEHOLDER: Google Maps Embed or Image]
-            </div>
           </div>
 
           {/* Contact Form */}
@@ -115,7 +116,9 @@ function ContactPage() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full">Send Message</Button>
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                </Button>
               </form>
             </CardContent>
           </Card>

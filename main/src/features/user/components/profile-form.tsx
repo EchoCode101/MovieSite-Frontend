@@ -107,7 +107,7 @@ export function ProfileForm() {
     : user.username?.[0]?.toUpperCase() || 'U'
 
   return (
-    <Card className="max-w-2xl mx-auto mt-10">
+    <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

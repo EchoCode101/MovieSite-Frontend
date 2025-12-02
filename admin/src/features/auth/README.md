@@ -1,0 +1,1 @@
+# Auth\n\n## Purpose\n\nAdmin authentication (login, token handling).\n\n## Structure\n\n- api/ - API functions for auth\n- components/ - React components for auth\n- hooks/ - Custom hooks for auth\n- types.ts - TypeScript types for auth\n

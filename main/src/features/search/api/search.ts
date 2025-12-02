@@ -1,5 +1,7 @@
 import { apiClient } from '@/config/api'
 import type { ApiResponse } from '@/lib/api-response'
+import { logger } from '@/lib/logger'
+import { API_ERRORS } from '@/lib/api-errors'
 
 export type SearchResult = {
   id: string
@@ -56,34 +58,35 @@ export const searchContent = async (
     })
 
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     if (!response.success) {
-      throw new Error(response.message || 'Search failed')
+      throw new Error(response.message || API_ERRORS.FETCH_FAILED('search results'))
     }
 
     // Validate shape
     if (!response.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
 
     // Handle different response shapes based on type
     if (type === 'all') {
       const results = response.data.results as { videos: SearchResult[]; videoCount: number; users: SearchResult[]; userCount: number }
       if (!results.videos || !results.users) {
-        throw new Error('Invalid response: missing videos or users in results')
+        throw new Error(API_ERRORS.MISSING_REQUIRED_FIELDS('videos or users in results'))
       }
       // Combine videos and users for "all" type
       return [...results.videos, ...results.users]
     } else {
       const results = response.data.results as SearchResult[]
       if (!Array.isArray(results)) {
-        throw new Error('Invalid response: results is not an array')
+        throw new Error(API_ERRORS.NOT_ARRAY('results'))
       }
       return results
     }
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error performing search', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }

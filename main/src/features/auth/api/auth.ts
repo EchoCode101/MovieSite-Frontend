@@ -1,6 +1,7 @@
 import { apiClient } from '@/config/api'
 import type { ApiResponse } from '@/lib/api-response'
 import { logger } from '@/lib/logger'
+import { API_ERRORS } from '@/lib/api-errors'
 import type {
   LoginCredentials,
   RegisterCredentials,
@@ -36,27 +37,27 @@ export const login = async (credentials: LoginCredentials): Promise<LoginRespons
 
     // Check if response has the expected structure
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response format: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     // Debug: Log response structure in development
     logger.debug('Login response', { response })
 
     if (!response.success) {
-      throw new Error(response.message || 'Login failed')
+      throw new Error(response.message || API_ERRORS.LOGIN_FAILED)
     }
 
     // Validate shape
     if (!response.token) {
-      throw new Error('Invalid response: missing token field')
+      throw new Error(API_ERRORS.MISSING_FIELD('token'))
     }
     if (!response.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
 
     // Ensure required fields are present
     if (!response.data.id || !response.data.username || !response.data.email) {
-      throw new Error(`Invalid response: missing required user fields. Received: ${JSON.stringify(response.data)}`)
+      throw new Error(API_ERRORS.MISSING_REQUIRED_FIELDS('id, username, email'))
     }
 
     return {
@@ -71,17 +72,8 @@ export const login = async (credentials: LoginCredentials): Promise<LoginRespons
       },
     }
   } catch (err) {
-    // Re-throw with better error message if it's an Error instance
-    if (err instanceof Error) {
-      // Log error for debugging
-      logger.error('Login error', err)
-      throw err
-    }
-    // Handle axios errors that might have been transformed
-    const errorMessage = typeof err === 'object' && err !== null && 'message' in err
-      ? String(err.message)
-      : 'Login failed. Please try again.'
-    throw new Error(errorMessage)
+    logger.error('Login error', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.LOGIN_FAILED)
   }
 }
 
@@ -106,24 +98,24 @@ export const register = async (credentials: RegisterCredentials): Promise<Regist
 
     // Check if response has the expected structure
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response format: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     // Debug: Log response structure in development
     logger.debug('Register response', { response })
 
     if (!response.success) {
-      throw new Error(response.message || 'Registration failed')
+      throw new Error(response.message || API_ERRORS.REGISTRATION_FAILED)
     }
 
     // Validate shape - response.data should contain the user object
     if (!response.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
 
     // Ensure required fields are present
     if (!response.data.id || !response.data.username || !response.data.email) {
-      throw new Error(`Invalid response: missing required user fields. Received: ${JSON.stringify(response.data)}`)
+      throw new Error(API_ERRORS.MISSING_REQUIRED_FIELDS('id, username, email'))
     }
 
     return {
@@ -137,17 +129,8 @@ export const register = async (credentials: RegisterCredentials): Promise<Regist
       },
     }
   } catch (err) {
-    // Re-throw with better error message if it's an Error instance
-    if (err instanceof Error) {
-      // Log error for debugging
-      logger.error('Registration error', err)
-      throw err
-    }
-    // Handle axios errors that might have been transformed
-    const errorMessage = typeof err === 'object' && err !== null && 'message' in err
-      ? String(err.message)
-      : 'Registration failed. Please try again.'
-    throw new Error(errorMessage)
+    logger.error('Registration error', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.REGISTRATION_FAILED)
   }
 }
 
@@ -168,19 +151,20 @@ export const logout = async (): Promise<{ message: string }> => {
     const response = await apiClient.post<ApiResponse<{ message: string }>>('/users/logout')
 
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     if (!response.success) {
-      throw new Error(response.message || 'Logout failed')
+      throw new Error(response.message || API_ERRORS.LOGOUT_FAILED)
     }
     // Validate shape
     if (!response.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
     return response.data
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error in auth operation', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -204,16 +188,16 @@ export const getUser = async (): Promise<User> => {
 
     // Check if response is undefined or null
     if (!response) {
-      throw new Error('Invalid response: response data is undefined')
+      throw new Error(API_ERRORS.RESPONSE_DATA_UNDEFINED)
     }
 
     // Expect ApiResponse format: { success, message, data }
     if (!response.success) {
-      throw new Error(response.message || 'Failed to fetch user profile')
+      throw new Error(response.message || API_ERRORS.FETCH_FAILED('user profile'))
     }
     // Validate shape
     if (!response.data) {
-      throw new Error('Invalid response: missing data field')
+      throw new Error(API_ERRORS.MISSING_DATA_FIELD)
     }
 
     // Map all fields from backend response to User type
@@ -231,7 +215,7 @@ export const getUser = async (): Promise<User> => {
     }
   } catch (err) {
     logger.error('Error fetching user profile', err instanceof Error ? err : new Error('Unknown error'))
-    throw err instanceof Error ? err : new Error('Unknown error')
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }
 
@@ -253,13 +237,14 @@ export const validateToken = async (): Promise<TokenValidationResponse> => {
     const response = await apiClient.post('/token/validate') as TokenValidationResponse
     // Token validation endpoint returns direct response, not wrapped in ApiResponse
     if (!response.isValid) {
-      throw new Error('Token is invalid')
+      throw new Error(API_ERRORS.TOKEN_VALIDATION_FAILED)
     }
     if (!response.user) {
-      throw new Error('Invalid response: missing user field')
+      throw new Error(API_ERRORS.MISSING_FIELD('user'))
     }
     return response
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Unknown error')
+    logger.error('Error in auth operation', err instanceof Error ? err : new Error('Unknown error'))
+    throw err instanceof Error ? err : new Error(API_ERRORS.UNKNOWN_ERROR)
   }
 }

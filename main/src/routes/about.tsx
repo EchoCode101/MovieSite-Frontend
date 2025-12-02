@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 
 export const Route = createFileRoute('/about')({
@@ -9,7 +8,7 @@ export const Route = createFileRoute('/about')({
 function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section Placeholder */}
+      {/* Hero Section */}
       <section className="relative h-[40vh] w-full bg-muted flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-black/50 z-10" />
         <img 
@@ -20,7 +19,7 @@ function AboutPage() {
         <div className="relative z-20 text-center px-4">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">About Us</h1>
           <p className="text-xl text-gray-200 max-w-2xl mx-auto">
-            [PLACEHOLDER: Your Company Tagline or Mission Statement goes here]
+            Your premier destination for high-quality video streaming content
           </p>
         </div>
       </section>
@@ -32,10 +31,10 @@ function AboutPage() {
             <h2 className="text-3xl font-bold tracking-tight">Our Mission</h2>
             <div className="prose dark:prose-invert text-muted-foreground">
               <p>
-                [PLACEHOLDER: Describe your company's mission here. What drives you? What problem are you solving? Example: "We are dedicated to providing the best video streaming experience..."]
+                We are dedicated to providing the best video streaming experience for our users. Our platform offers a vast library of movies, TV shows, and exclusive content, all accessible through an intuitive and user-friendly interface.
               </p>
               <p>
-                [PLACEHOLDER: Add more details about your values and vision. Example: "We believe in transparency, quality, and community..."]
+                We believe in transparency, quality, and community. Our commitment is to deliver exceptional entertainment while maintaining the highest standards of service and user experience.
               </p>
             </div>
           </div>
@@ -50,31 +49,30 @@ function AboutPage() {
 
         <Separator />
 
-        {/* Team Section */}
+        {/* Values Section */}
         <section>
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight mb-4">Meet Our Team</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              [PLACEHOLDER: Intro text about your team. Example: "The passionate people behind the platform."]
-            </p>
+            <h2 className="text-3xl font-bold tracking-tight mb-4">Our Values</h2>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {[1, 2, 3, 4].map((item) => (
-              <Card key={item} className="overflow-hidden border-none shadow-none bg-transparent">
-                <div className="aspect-square bg-muted rounded-xl mb-4 overflow-hidden">
-                  <img 
-                    src={`https://i.pravatar.cc/400?img=${item + 10}`} 
-                    alt="Team Member" 
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <CardContent className="p-0 text-center">
-                  <h3 className="font-bold text-lg">[Member Name]</h3>
-                  <p className="text-sm text-muted-foreground">[Job Title]</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center space-y-4">
+              <h3 className="text-xl font-semibold">Quality</h3>
+              <p className="text-muted-foreground">
+                We curate only the best content, ensuring high-quality streaming experiences for all our users.
+              </p>
+            </div>
+            <div className="text-center space-y-4">
+              <h3 className="text-xl font-semibold">Accessibility</h3>
+              <p className="text-muted-foreground">
+                Our platform is designed to be accessible to everyone, with flexible subscription plans and user-friendly features.
+              </p>
+            </div>
+            <div className="text-center space-y-4">
+              <h3 className="text-xl font-semibold">Innovation</h3>
+              <p className="text-muted-foreground">
+                We continuously improve our platform with new features and technologies to enhance your viewing experience.
+              </p>
+            </div>
           </div>
         </section>
       </div>

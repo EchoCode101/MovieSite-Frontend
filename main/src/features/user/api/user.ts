@@ -49,7 +49,7 @@ export const getUserVideos = async (params?: { page?: number; limit?: number }):
     const response = await apiClient.get<ApiResponse<UserVideosData>>('/users/videos', { params }) as unknown as ApiResponse<UserVideosData>
 
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     if (!response.success) {
@@ -123,7 +123,7 @@ export const fetchVideoUrl = async (videoId: string): Promise<VideoUrlData> => {
     const response = await apiClient.get<ApiResponse<VideoUrlData>>(`/users/fetchVideoUrl/${videoId}`) as unknown as ApiResponse<VideoUrlData>
 
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     if (!response.success) {
@@ -198,7 +198,7 @@ export const updateUserSubscription = async (plan: string): Promise<{ subscripti
     })
 
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     if (!response.success) {
@@ -232,7 +232,7 @@ export const deleteSavedVideo = async (id: string): Promise<void> => {
     const response = await apiClient.delete<ApiResponse<null>>(`/users/videos/${id}`)
 
     if (!response || typeof response !== 'object') {
-      throw new Error('Invalid response: response is not an object')
+      throw new Error(API_ERRORS.INVALID_RESPONSE_FORMAT)
     }
 
     if (!response.success) {

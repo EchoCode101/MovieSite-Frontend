@@ -172,19 +172,6 @@ export const getVideoById = async (id: string): Promise<Video> => {
   }
 }
 
-/**
- * Get categories (mock implementation - backend doesn't have public endpoint yet)
- * 
- * @returns Promise resolving to categories list
- */
-export const getCategories = async (): Promise<{ id: string; name: string }[]> => {
-  return [
-    { id: '1', name: 'Action' },
-    { id: '2', name: 'Comedy' },
-    { id: '3', name: 'Drama' },
-    { id: '4', name: 'Sci-Fi' },
-  ]
-}
 
 /**
  * Get related videos

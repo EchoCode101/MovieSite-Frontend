@@ -41,7 +41,7 @@ function LivePage() {
           )}
 
           {channels && channels.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {channels.map((channel) => (
                 <Link key={channel.id} to={`/live/${channel.id}`}>
                   <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
